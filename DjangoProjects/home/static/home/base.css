@@ -1,0 +1,41 @@
+html {
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+header h1 {
+  overflow: hidden;
+  background-color: #ff7465;
+  padding: 14px;
+  margin: 0;
+  font-size: xx-large;
+  color: #111111;
+}
+
+header nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+header nav li {
+  float: left;
+}
+
+header nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+header nav li a:hover {
+  background-color: #111;
+}
