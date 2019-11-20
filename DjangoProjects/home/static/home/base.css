@@ -45,5 +45,39 @@ header nav li a:hover {
 }
 
 .activated {
-  background-color: #bf5b4f;
+    background-color: #bf5b4f;
+}
+
+ul.messages {
+    margin: 0;
+    padding-right: 0px;
+    padding-left: 28px;
+    background-color: rgba(33, 33, 33, 0.89);
+}
+
+ul.messages li {
+    display: block;
+}
+
+ul.messages li.debug {
+    color: #8c6917;
+}
+
+ul.messages li.info {
+    color: #b3b74f;
+}
+
+ul.messages li.success {
+    color: #00bf11;
+    text-shadow: rgba(0, 234, 17, 0.63) 1px 1px 2px;
+}
+
+ul.messages li.warning {
+    color: #bf6f00;
+    text-shadow: rgba(249, 146, 0, 0.72) 1px 1px 2px;
+}
+
+ul.messages li.error {
+    color: #bf0500;
+    text-shadow: rgba(234, 5, 0, 0.72) 1px 1px 2px;
 }
