@@ -50,8 +50,7 @@ header nav li a:hover {
 
 ul.messages {
     margin: 0;
-    padding-right: 0px;
-    padding-left: 28px;
+    padding-left: 14px;
     background-color: rgba(33, 33, 33, 0.89);
 }
 
