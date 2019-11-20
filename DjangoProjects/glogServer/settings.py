@@ -24,6 +24,8 @@ SECRET_KEY = 'g$$34u-c@p#-x*)$r2zv1pc#4g%l9otf5qzyyxjn+9_sdhbw9^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+MESSAGE_LEVEL = 0
+
 ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.29', 'glog.dust-of-the-universe.com']
 
 # Application definition
@@ -118,3 +120,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+

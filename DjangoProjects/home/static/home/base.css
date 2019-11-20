@@ -61,7 +61,7 @@ ul.messages li {
 }
 
 ul.messages li.debug {
-    color: #8c6917;
+    color: #fff;
 }
 
 ul.messages li.info {
