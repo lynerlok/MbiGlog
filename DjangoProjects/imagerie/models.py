@@ -10,7 +10,7 @@ import numpy as np
 import requests
 from PIL import Image as PImage
 from django.db import models
-from django.db.models import QuerySet, Count
+from django.db.models import QuerySet, Count, Sum
 from keras.models import Model
 
 from django.conf import settings as st
@@ -31,12 +31,12 @@ class RankTaxon(Annotation):
 
 
 class Taxon(models.Model):
-    tax_id = models.IntegerField(primary_key=True)
+    tax_id = models.IntegerField(null=True)
     name = models.CharField(max_length=50)
     sup_taxon = models.ForeignKey('Taxon', on_delete=models.SET_NULL, null=True)
-    found_in_ncbi = models.BooleanField(default=True)
+
     rank = models.ForeignKey('RankTaxon', on_delete=models.PROTECT)
-    id_generator = 10000000
+
 
     def save(self, *args, **kwargs):
         if self.tax_id is None:
@@ -51,10 +51,7 @@ class Taxon(models.Model):
             tax_id = self.get_id_from_name(self.name.split()[0])
             if tax_id:
                 self.tax_id = tax_id
-            else:
-                Taxon.id_generator += 1
-                self.found_in_ncbi = False
-                self.tax_id = Taxon.id_generator
+
 
     @staticmethod
     def get_id_from_name(name):
@@ -93,7 +90,7 @@ class Image(models.Model):  # TODO Un parser sur notre jeux de données qui pour
     type = models.ForeignKey('TypeImage', on_delete=models.PROTECT)
 
     def __str__(self):
-        return f'{self.image.name} : {self.specie.name}'
+        return self.image.name
 
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
@@ -108,7 +105,9 @@ class Image(models.Model):  # TODO Un parser sur notre jeux de données qui pour
 
 
 class SubmittedImage(Image):
-    pass
+    @property
+    def specie(self):
+        return self.prediction_set.values('specie').annotate(tot_conf=Sum('confidence')).first()
 
 
 class GroundTruthImage(Image):
