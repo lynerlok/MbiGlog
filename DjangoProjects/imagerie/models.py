@@ -10,7 +10,7 @@ import numpy as np
 import requests
 from PIL import Image as PImage
 from django.db import models
-from django.db.models import QuerySet, Count
+from django.db.models import QuerySet, Count, Sum
 from keras.models import Model
 
 from django.conf import settings as st
@@ -31,30 +31,26 @@ class RankTaxon(Annotation):
 
 
 class Taxon(models.Model):
-    tax_id = models.IntegerField(primary_key=True)
+    tax_id = models.IntegerField(null=True)
     name = models.CharField(max_length=50)
     sup_taxon = models.ForeignKey('Taxon', on_delete=models.SET_NULL, null=True)
-    found_in_ncbi = models.BooleanField(default=True)
+
     rank = models.ForeignKey('RankTaxon', on_delete=models.PROTECT)
-    id_generator = 10000000
 
     def save(self, *args, **kwargs):
         if self.tax_id is None:
             self.set_id_from_name()
         super(Taxon, self).save(*args, **kwargs)
 
-    def set_id_from_name(self):
-        tax_id = self.get_id_from_name(self.name)
-        if tax_id:
-            self.tax_id = tax_id
+    @property
+    def clean_name(self):
+        if self.rank.id != 8:
+            return self.name.split()[0]
         else:
-            tax_id = self.get_id_from_name(self.name.split()[0])
-            if tax_id:
-                self.tax_id = tax_id
-            else:
-                Taxon.id_generator += 1
-                self.found_in_ncbi = False
-                self.tax_id = Taxon.id_generator
+            return ' '.join(self.name.split()[:2])
+
+    def set_id_from_name(self):
+        self.tax_id = self.get_id_from_name(self.clean_name)
 
     @staticmethod
     def get_id_from_name(name):
@@ -65,9 +61,9 @@ class Taxon(models.Model):
 
     def __str__(self):
         if self.sup_taxon is None:
-            return self.name
+            return self.clean_name
         else:
-            return "{} > {}".format(str(self.sup_taxon), self.name)
+            return "{} > {}".format(str(self.sup_taxon), self.clean_name)
 
 
 class Specie(Taxon):
@@ -86,18 +82,17 @@ class TypeImage(Annotation):
     pass
 
 
-class Image(models.Model):  # TODO Un parser sur notre jeux de données qui pourra populer la db
+class Image(models.Model):
     image = models.ImageField(upload_to="images/")
     date = models.DateTimeField(auto_now_add=True)
-    specie = models.ForeignKey('Specie', on_delete=models.SET_NULL, null=True)
     content = models.ForeignKey('ContentImage', on_delete=models.PROTECT)
     type = models.ForeignKey('TypeImage', on_delete=models.PROTECT)
-    trustworthy = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.image.name} : {self.specie.name}'
+        return self.image.name
 
     def preprocess(self):
+        """Preprocess of GoogLeNet for now"""
         img = imageio.imread(self.image.path, pilmode='RGB')
         img = np.array(PImage.fromarray(img).resize((224, 224))).astype(np.float32)
         img[:, :, 0] -= 123.68
@@ -106,6 +101,16 @@ class Image(models.Model):  # TODO Un parser sur notre jeux de données qui pour
         img[:, :, [0, 1, 2]] = img[:, :, [2, 1, 0]]
         img = img.transpose((2, 0, 1))
         return np.expand_dims(img, axis=0)
+
+
+class SubmittedImage(Image):
+    @property
+    def specie(self):
+        return self.prediction_set.values('specie').annotate(tot_conf=Sum('confidence')).first()
+
+
+class GroundTruthImage(Image):
+    specie = models.ForeignKey('Specie', on_delete=models.SET_NULL, null=True)
 
 
 class ImageClassifier(models.Model):
@@ -151,11 +156,10 @@ class CNNArchitecture(models.Model):
 
 
 class CNN(ImageClassifier):
-    training_data = models.FilePathField(allow_folders=True, null=True)
-    architecture = models.ForeignKey('CNNArchitecture', on_delete=models.PROTECT)
-    available = models.BooleanField(default=False)
+    architecture = models.ForeignKey(CNNArchitecture, on_delete=models.PROTECT)
+    learning_data = models.FilePathField(allow_folders=True, null=True)
     classes = models.ManyToManyField(Specie, through="Class", related_name='+')
-    training_images = models.ManyToManyField(Image, related_name="trained_cnn")
+    available = models.BooleanField(default=False)
     nn_model = None
     train_images = None
     train_labels = None
@@ -170,21 +174,15 @@ class CNN(ImageClassifier):
         self.split_images(test_fraction=0.2)
         self.nn_model.fit(self.train_images, self.train_labels, epochs=10)
         _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
-        self.training_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.architecture.name}_'
-                                                                        f'{self.date.year}_'
-                                                                        f'{self.date.month}_'
-                                                                        f'{self.date.day}_'
-                                                                        f'{self.date.hour}')
-        os.mkdir(self.training_data)
-        self.nn_model.save(self.training_data)
+        self.save_model()
         self.available = True
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
-            images = Image.objects.all()
-        images = images.filter(trustworthy=True)
+            images = GroundTruthImage.objects.all()
 
-        images.values('specie__name').annotate(Count('specie')) # TODO A tester pas sûr du tout que ça marche mais permet de gérer un queryset en entrée à priori
+        images.values('specie__name').annotate(Count(
+            'specie'))  # TODO A tester pas sûr du tout que ça marche mais permet de gérer un queryset en entrée à priori
         # for image in images:
         #     try:
         #         self.classes.get(specie=image.specie)
@@ -220,13 +218,48 @@ class CNN(ImageClassifier):
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.nn_model = self.architecture.compile()
-            self.nn_model.load_weights(self.training_data)
-
+            self.nn_model.load_weights(self.learning_data)
         predictions = self.nn_model.predict(images)
         predictions.argmax()  # TODO extract max p for all given images and get Specie from here
+
+    def save_model(self):
+        self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.architecture.name}_'
+                                                                           f'{self.date.year}_'
+                                                                           f'{self.date.month}_'
+                                                                           f'{self.date.day}_'
+                                                                           f'{self.date.hour}')
+        os.mkdir(self.learning_data)
+        self.nn_model.save(self.learning_data)
+
+    def load_model(self):
+        pass
+
+
+class CNNSpeciality(models.Model):
+    accuracy = models.DecimalField(max_digits=4, decimal_places=3)
+
+    class Meta:
+        abstract = True
+
+
+class CNNContent(CNNSpeciality):
+    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='contents')
+    content = models.ForeignKey(ContentImage, on_delete=models.CASCADE, related_name='cnns_specialiazed_in')
+
+
+class CNNType(CNNSpeciality):
+    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='types')
+    type = models.ForeignKey(TypeImage, on_delete=models.CASCADE, related_name='cnns_specialiazed_in')
 
 
 class Class(models.Model):
     pos = models.IntegerField()
     cnn = models.ForeignKey(CNN, on_delete=models.CASCADE)
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE, null=True)
+
+
+class Prediction(models.Model):
+    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE)
+    image = models.ForeignKey(SubmittedImage, on_delete=models.CASCADE)
+    specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
+    confidence = models.DecimalField(max_digits=4, decimal_places=3)
