@@ -24,12 +24,10 @@ class Command(BaseCommand):
         SPECIES, _ = RankTaxon.objects.get_or_create(name='Species')
 
         for file_path in Path(dir_path).iterdir():
-            if file_path.suffix == "xml":
-                image = file_path.name
-                image.replace('xml', 'jpg')
+            if file_path.suffix == ".xml":
+                image = file_path.name.replace('xml', 'jpg')
                 annot_path = file_path.absolute().as_posix()
-                image_path = file_path.absolute().as_posix()
-                image_path.replace('xml', 'jpg')
+                image_path = file_path.absolute().as_posix().replace('xml', 'jpg')
 
                 xml = ET.parse(annot_path)
                 root = xml.getroot()
