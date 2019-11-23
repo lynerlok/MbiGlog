@@ -82,7 +82,7 @@ class TypeImage(Annotation):
     pass
 
 
-class Image(models.Model):  # TODO Un parser sur notre jeux de données qui pourra populer la db
+class Image(models.Model):
     image = models.ImageField(upload_to="images/")
     date = models.DateTimeField(auto_now_add=True)
     content = models.ForeignKey('ContentImage', on_delete=models.PROTECT)
@@ -158,7 +158,6 @@ class CNNArchitecture(models.Model):
 class CNN(ImageClassifier):
     architecture = models.ForeignKey(CNNArchitecture, on_delete=models.PROTECT)
     learning_data = models.FilePathField(allow_folders=True, null=True)
-    training_images = models.ManyToManyField(GroundTruthImage, related_name="cnns_trained_on")
     classes = models.ManyToManyField(Specie, through="Class", related_name='+')
     available = models.BooleanField(default=False)
     nn_model = None
@@ -175,19 +174,12 @@ class CNN(ImageClassifier):
         self.split_images(test_fraction=0.2)
         self.nn_model.fit(self.train_images, self.train_labels, epochs=10)
         _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
-        self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.architecture.name}_'
-                                                                           f'{self.date.year}_'
-                                                                           f'{self.date.month}_'
-                                                                           f'{self.date.day}_'
-                                                                           f'{self.date.hour}')
-        os.mkdir(self.learning_data)
-        self.nn_model.save(self.learning_data)
+        self.save_model()
         self.available = True
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
-            images = Image.objects.all()
-        images = images.filter(trustworthy=True)
+            images = GroundTruthImage.objects.all()
 
         images.values('specie__name').annotate(Count(
             'specie'))  # TODO A tester pas sûr du tout que ça marche mais permet de gérer un queryset en entrée à priori
@@ -227,15 +219,37 @@ class CNN(ImageClassifier):
         if self.nn_model is None:
             self.nn_model = self.architecture.compile()
             self.nn_model.load_weights(self.learning_data)
-
         predictions = self.nn_model.predict(images)
         predictions.argmax()  # TODO extract max p for all given images and get Specie from here
 
     def save_model(self):
-        pass
+        self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.architecture.name}_'
+                                                                           f'{self.date.year}_'
+                                                                           f'{self.date.month}_'
+                                                                           f'{self.date.day}_'
+                                                                           f'{self.date.hour}')
+        os.mkdir(self.learning_data)
+        self.nn_model.save(self.learning_data)
 
     def load_model(self):
         pass
+
+
+class CNNSpeciality(models.Model):
+    accuracy = models.DecimalField(max_digits=4, decimal_places=3)
+
+    class Meta:
+        abstract = True
+
+
+class CNNContent(CNNSpeciality):
+    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='contents')
+    content = models.ForeignKey(ContentImage, on_delete=models.CASCADE, related_name='cnns_specialiazed_in')
+
+
+class CNNType(CNNSpeciality):
+    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='types')
+    type = models.ForeignKey(TypeImage, on_delete=models.CASCADE, related_name='cnns_specialiazed_in')
 
 
 class Class(models.Model):
