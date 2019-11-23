@@ -37,7 +37,6 @@ class Taxon(models.Model):
 
     rank = models.ForeignKey('RankTaxon', on_delete=models.PROTECT)
 
-
     def save(self, *args, **kwargs):
         if self.tax_id is None:
             self.set_id_from_name()
@@ -47,8 +46,12 @@ class Taxon(models.Model):
         tax_id = self.get_id_from_name(self.name)
         if tax_id:
             self.tax_id = tax_id
-        else:
+        elif self.rank.id != 8:
             tax_id = self.get_id_from_name(self.name.split()[0])
+            if tax_id:
+                self.tax_id = tax_id
+        else:
+            tax_id = self.get_id_from_name(' '.join(self.name.split()[:1]))
             if tax_id:
                 self.tax_id = tax_id
 
@@ -64,7 +67,8 @@ class Taxon(models.Model):
         if self.sup_taxon is None:
             return self.name
         else:
-            return "{} > {}".format(str(self.sup_taxon), self.name)
+            name = self.name.split()[0] if self.rank.id != 8 else ' '.join(self.name.split()[:2])
+            return "{} > {}".format(str(self.sup_taxon), name)
 
 
 class Specie(Taxon):
