@@ -55,6 +55,5 @@ class Command(BaseCommand):
                                                                     image=image_path)
                 print(image, 'saved')
 
-
-def handle(self, *args, **options):
-    self._populate_db(options["dir_path"])
+    def handle(self, *args, **options):
+        self._populate_db(options["dir_path"])
