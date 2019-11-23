@@ -42,19 +42,15 @@ class Taxon(models.Model):
             self.set_id_from_name()
         super(Taxon, self).save(*args, **kwargs)
 
-    def set_id_from_name(self):
-        tax_id = self.get_id_from_name(self.name)
-        if tax_id:
-            self.tax_id = tax_id
-        elif self.rank.id != 8:
-            tax_id = self.get_id_from_name(self.name.split()[0])
-            if tax_id:
-                self.tax_id = tax_id
+    @property
+    def clean_name(self):
+        if self.rank.id != 8:
+            return self.name.split()[0]
         else:
-            tax_id = self.get_id_from_name(' '.join(self.name.split()[:1]))
-            if tax_id:
-                self.tax_id = tax_id
+            return ' '.join(self.name.split()[:1])
 
+    def set_id_from_name(self):
+        self.tax_id = self.get_id_from_name(self.clean_name)
 
     @staticmethod
     def get_id_from_name(name):
@@ -65,10 +61,9 @@ class Taxon(models.Model):
 
     def __str__(self):
         if self.sup_taxon is None:
-            return self.name
+            return self.clean_name
         else:
-            name = self.name.split()[0] if self.rank.id != 8 else ' '.join(self.name.split()[:2])
-            return "{} > {}".format(str(self.sup_taxon), name)
+            return "{} > {}".format(str(self.sup_taxon), self.clean_name)
 
 
 class Specie(Taxon):
