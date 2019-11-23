@@ -1,9 +1,9 @@
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
 from django.core.management.base import BaseCommand
-from django.core.files.base import ContentFile
 
 from imagerie.models import *
-import os
-import xml.etree.ElementTree as ET
 
 
 class Command(BaseCommand):
@@ -22,12 +22,14 @@ class Command(BaseCommand):
         FAMILY, _ = RankTaxon.objects.get_or_create(name='Family')
         GENUS, _ = RankTaxon.objects.get_or_create(name='Genus')
         SPECIES, _ = RankTaxon.objects.get_or_create(name='Species')
-        try:
-            i = 0
-            while True:
-                image = f'{i}.jpg'
-                annot_path = os.path.join(dir_path, f'{i}.xml')
-                image_path = os.path.join(dir_path, image)
+
+        for file_path in Path(dir_path).iterdir():
+            if file_path.suffix == "xml":
+                image = file_path.name
+                image.replace('xml', 'jpg')
+                annot_path = file_path.absolute().as_posix()
+                image_path = file_path.absolute().as_posix()
+                image_path.replace('xml', 'jpg')
 
                 xml = ET.parse(annot_path)
                 root = xml.getroot()
@@ -49,12 +51,10 @@ class Command(BaseCommand):
                                                          sup_taxon=genus,
                                                          vernacular_name=root.find('VernacularNames').text,
                                                          latin_name=root.find('ClassId').text)
-                gtimage, _ = GroundTruthImage.objects.get_or_create(specie=specie, content=content, type=typeImage, image=image_path)
+                gtimage, _ = GroundTruthImage.objects.get_or_create(specie=specie, content=content, type=typeImage,
+                                                                    image=image_path)
                 print(image, 'saved')
-                i += 1
 
-        except FileNotFoundError:
-            pass
 
-    def handle(self, *args, **options):
-        self._populate_db(options["dir_path"])
+def handle(self, *args, **options):
+    self._populate_db(options["dir_path"])
