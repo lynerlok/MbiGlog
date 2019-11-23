@@ -47,7 +47,7 @@ class Taxon(models.Model):
         if self.rank.id != 8:
             return self.name.split()[0]
         else:
-            return ' '.join(self.name.split()[:1])
+            return ' '.join(self.name.split()[:2])
 
     def set_id_from_name(self):
         self.tax_id = self.get_id_from_name(self.clean_name)

@@ -10,7 +10,7 @@ class Command(BaseCommand):
     args = '<directory_of_images_and_annotation_path>'
     help = 'our help string comes here'
     taxon_names = ["Regnum", 'Class', 'Subclass', 'Superorder', 'Order', 'Family', 'Genus', 'Species']
-    taxon_ranks = [RankTaxon.objects.get_or_create(name=name) for name in taxon_names]
+    taxon_ranks = [RankTaxon.objects.get_or_create(name=name)[0] for name in taxon_names]
 
     def add_arguments(self, parser):
         parser.add_argument('dir_path')
