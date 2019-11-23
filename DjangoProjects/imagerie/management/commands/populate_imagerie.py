@@ -49,8 +49,7 @@ class Command(BaseCommand):
                                                          sup_taxon=genus,
                                                          vernacular_name=root.find('VernacularNames').text,
                                                          latin_name=root.find('ClassId').text)
-                gtimage = GroundTruthImage(specie=specie, content=content, type=typeImage, image=image_path)
-                gtimage.save()
+                gtimage, _ = GroundTruthImage.objects.get_or_create(specie=specie, content=content, type=typeImage, image=image_path)
                 print(image, 'saved')
                 i += 1
 
