@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    NGS
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block nav %}
+    <nav>
+        <ul>
+            <li><a href="{% url "img_home" %}">Imagerie</a></li>
+            <li class="activated"><a href="{% url "ngs_home" %}">NGS</a></li>
+            <li><a href="{% url "mtb_home" %}">Métabolomique</a></li>
+            <li><a href="{% url "prt_home" %}">Protéomique</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

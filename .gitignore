@@ -3,3 +3,8 @@
 
 # Ignore python virtual environment
 PythonVenv/
+venv
+
+# Ignore nohup.out for the server
+nohup.out
+DjangoProjects/nohup.out
