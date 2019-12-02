@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Think run before run script : 
-source /usr/local/bin/virtualenvwrapper.sh
-workon PythonVenv
+#source /usr/local/bin/virtualenvwrapper.sh
+#workon PythonVenv
 
 # Django server in development mode
 
