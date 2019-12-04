@@ -8,3 +8,6 @@ venv
 # Ignore nohup.out for the server
 nohup.out
 DjangoProjects/nohup.out
+
+# Ignore virtualenvwrapper files
+

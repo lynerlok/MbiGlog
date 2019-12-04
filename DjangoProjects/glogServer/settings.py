@@ -32,11 +32,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_variable('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 MESSAGE_LEVEL = 0
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.29', 'glog.dust-of-the-universe.com']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -90,14 +90,21 @@ WSGI_APPLICATION = 'glogServer.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_env_variable('DATABASE_NAME'),
-        'USER': get_env_variable('DATABASE_USER'),
-        'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
-	'HOST': '127.0.0.1',
-	'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'DevDatabase.db',
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': get_env_variable('DATABASE_NAME'),
+#        'USER': get_env_variable('DATABASE_USER'),
+#        'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
+#	'HOST': 'glog.dust-of-the-universe.com',
+#	'PORT': '5432',
+#    }
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -137,5 +144,4 @@ MEDIA_URL = "/media/"
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'statics/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
