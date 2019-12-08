@@ -22,15 +22,16 @@ Here all instructions to install and run the server :
 
 9. Modify PythonVenv/bin/postactivate and put these lines :
 	
-	`export DATABASE_NAME='djangoDev'`
-	`export DATABASE_USER='DBdev'`
-	`export DATABASE_PASSWORD='NohJah8o'`
+	`export DATABASE_NAME='djangoDev'`<br />
+	`export DATABASE_USER='DBdev'`<br />
+	`export DATABASE_PASSWORD='NohJah8o'`<br />
 	`export SECRET_KEY=<put your secret key generated with https://miniwebtool.com/django-secret-key-generator/ for example>'`
 
 10. Modify PythonVenv/bin/predeactivate and put these lines :
-	`unset DATABASE_NAME`
-	`unset DATABASE_USER`
-	`unset DATABASE_PASSWORD`
+
+	`unset DATABASE_NAME` <br />
+	`unset DATABASE_USER` <br />
+	`unset DATABASE_PASSWORD` <br />
 	`unset SECRET_KEY`
 
 11. Now, install all dependancies (or just your dependancies in this case comments in requirments.txt undesired deps) (e.g `pip install -r requirments.txt`)
