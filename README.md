@@ -10,7 +10,7 @@ Here all instructions to install and run the server :
 
 3. Export your env variable (e.g `export WORKON_HOME=$HOME/.environments`)
 
-4. Save the env var in your system (e.g `echo export WORKON_HOME=$HOME/Envs >> ~/.bashrc`)
+4. Save the env var in your system (e.g `echo export WORKON_HOME=$HOME/.environments >> ~/.bashrc`)
  
 5. Activate virtualenvwrapper (e.g `source /usr/local/bin/virtualenvwrapper.sh`)
 
