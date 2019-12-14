@@ -6,13 +6,13 @@ Here all instructions to install and run the server :
 
 1. Install virtualenvwrapper (e.g `pip install virtualenvwrapper` or `pip install --user virtualenvwrapper`)
 
-3. Export your env variable (e.g `export WORKON_HOME=/<path>/<to>/<MbiGlog>/`)
+2. Create the environment directory (e.g `mkdir $HOME/.environments`)  
 
-4. Save the env var in your system (e.g `echo export WORKON_HOME=/<path>/<to>/<MbiGlog> >> ~/.bashrc`)
+3. Export your env variable (e.g `export WORKON_HOME=$HOME/.environments`)
+
+4. Save the env var in your system (e.g `echo export WORKON_HOME=$HOME/.environments >> ~/.bashrc`)
  
 5. Activate virtualenvwrapper (e.g `source /usr/local/bin/virtualenvwrapper.sh`)
-
-5. Change directory to the root of the project (e.g `cd MbiGlog`)
 
 6. Create the python virtual environment (e.g `mkvirtualenv PythonVenv`)
 
@@ -20,14 +20,14 @@ Here all instructions to install and run the server :
 
 8. You are in the venv (you can see `(PythonVenv)` before prompt $)
 
-9. Modify PythonVenv/bin/postactivate and put these lines :
+9. Modify PythonVenv/bin/postactivate in the environment directory and put these lines :
 	
 	`export DATABASE_NAME='djangoDev'`<br />
 	`export DATABASE_USER='DBdev'`<br />
 	`export DATABASE_PASSWORD='NohJah8o'`<br />
 	`export SECRET_KEY=<put your secret key generated with https://miniwebtool.com/django-secret-key-generator/ for example>'`
 
-10. Modify PythonVenv/bin/predeactivate and put these lines :
+10. Modify PythonVenv/bin/predeactivate in the environment directory and put these lines :
 
 	`unset DATABASE_NAME` <br />
 	`unset DATABASE_USER` <br />
