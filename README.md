@@ -20,14 +20,14 @@ Here all instructions to install and run the server :
 
 8. You are in the venv (you can see `(PythonVenv)` before prompt $)
 
-9. Modify postactivate in the environment directory (e.g `$HOME/.environments/PythonVenv/postactivate`) and put these lines :
+9. Modify postactivate in the environment directory (e.g `$HOME/.environments/PythonVenv/bin/postactivate`) and put these lines :
 	
 	`export DATABASE_NAME='djangoDev'`<br />
 	`export DATABASE_USER='DBdev'`<br />
 	`export DATABASE_PASSWORD='NohJah8o'`<br />
 	`export SECRET_KEY=<put your secret key generated with https://miniwebtool.com/django-secret-key-generator/ for example>'`
 
-10. Modify predeactivate in the environment directory (e.g `$HOME/.environments/PythonVenv/postactivate`) and put these lines :
+10. Modify predeactivate in the environment directory (e.g `$HOME/.environments/PythonVenv/bin/postactivate`) and put these lines :
 
 	`unset DATABASE_NAME` <br />
 	`unset DATABASE_USER` <br />
