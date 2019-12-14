@@ -57,5 +57,3 @@ Here all instructions to install and run the server :
 21. Your request is added to the main code !
 
 ## NOTE : TO update forked repository please make a pull request between this repo and your repo !
-## AT THIS TIME the databases server reject connection (port 5432) so be patient I debug (please no flooding in issue)
-
