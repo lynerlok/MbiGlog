@@ -10,7 +10,7 @@ Here all instructions to install and run the server :
 
 3. Export your env variable (e.g `export WORKON_HOME=$HOME/.environments`)
 
-4. Save the env var in your system (e.g `echo export WORKON_HOME=$HOME/.environments >> ~/.bashrc`)
+4. Save the env var in your system (e.g `echo export WORKON_HOME=$HOME/Envs >> ~/.bashrc`)
  
 5. Activate virtualenvwrapper (e.g `source /usr/local/bin/virtualenvwrapper.sh`)
 
@@ -20,14 +20,14 @@ Here all instructions to install and run the server :
 
 8. You are in the venv (you can see `(PythonVenv)` before prompt $)
 
-9. Modify postactivate in the base environment directory (e.g `$HOME/.virtualenvs/`) and put these lines :
+9. Modify postactivate in the environment directory (e.g `$HOME/Envs/PythonVenv/postactivate`) and put these lines :
 	
 	`export DATABASE_NAME='djangoDev'`<br />
 	`export DATABASE_USER='DBdev'`<br />
 	`export DATABASE_PASSWORD='NohJah8o'`<br />
 	`export SECRET_KEY=<put your secret key generated with https://miniwebtool.com/django-secret-key-generator/ for example>'`
 
-10. Modify predeactivate in the base environment directory (e.g `$HOME/.virtualenvs/`) and put these lines :
+10. Modify predeactivate in the environment directory (e.g `$HOME/Envs/PythonVenv/postactivate`) and put these lines :
 
 	`unset DATABASE_NAME` <br />
 	`unset DATABASE_USER` <br />
