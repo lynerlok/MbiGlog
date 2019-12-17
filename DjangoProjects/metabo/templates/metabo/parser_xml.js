@@ -9,16 +9,6 @@ autres :
 Laporte ANTOINE
 */
 
-
-function getQuery(obj) {
-	return function (info) {
-		let queryAnswer = obj.querySelector(info).textContent;
-		return queryAnswer;
-	}
-}
-
-const querySelectorAll = (key, doc) => [...doc.querySelectorAll(key)];
-
 const struct = (groups) => {
 	// console.log(groups);
 	let gene_ID = {
