@@ -1,35 +1,31 @@
 /*
 PARSER XML
 04/11/2019
-Lecomte MAXIME
-Merchadou KEVIN
+ANDRÉ Charlotte
+GALLARDO Jean Clément
+LECOMTE Maxime
+LAPORTE Antoine
+MERCHADOU Kévin
 
-
-autres :
-Laporte ANTOINE
 */
 
 const struct = (groups) => {
-	// console.log(groups);
 	let gene_ID = {
-		"GLYCOLYSIS": []
+		"GLYCOLYSIS": [],
+		"proteine" : []
 	};
-
-	groups.reduce((accu, cur) => {
-		if (cur.attributes[0].name === 'ID') {
-			gene_ID.GLYCOLYSIS.push(cur.attributes[2].nodeValue); // recuperation frameid
-			return accu;
-		}
-	}, []);
+	groups.forEach(cur =>
+		(cur.attributes[0].name === 'ID') ?
+		gene_ID.GLYCOLYSIS.push(cur.attributes[2].nodeValue) :
+		(cur.attributes.length === 3) ?
+		gene_ID.proteine.push(cur.attributes[2].nodeValue) : '');
 	return gene_ID;
 }
 
 const parseXML = (text) => {
 	let parser = new DOMParser();
 	let doc = parser.parseFromString(text, "application/xml");
-	let secStruct = struct(querySelectorAll('Gene', doc)); // balise a recuperer
-
-	console.log('secstruc',secStruct);
+	let secStruct = struct(doc.querySelectorAll("Gene,Protein")); // balise a recuperer
 }
 
 
