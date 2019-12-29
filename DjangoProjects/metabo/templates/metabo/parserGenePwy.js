@@ -11,16 +11,16 @@ MERCHADOU Kévin
 
 const struct = (groups) => {
 	// console.log(groups);
-	let pwyID = "";
+	let pwyID = [];
 	let gene_Id = [];
 	let gene_ID = {
 		"gene_ID" : [], // contiendra la liste gene pour un pwyID donné
-		pwyID : [],  // contiend le pwyID
+		"pwyID" : [],  // contiend le pwyID
 		"proteine" : [] // contiendra la liste des enzymes pour un chaque gene
 	};
 
 	groups.forEach(cur =>
-		(cur.textContent.match(/[A-Z]*:[A-Z]*[0-9]*/g)) ? gene_ID.pwyID.push(cur.textContent.match(/[A-Z]*:[A-Z]*[0-9]*/g)) :
+		(cur.textContent.match(/[A-Z]*:[A-Z]*[0-9]*/g)) ? gene_ID.pwyID.push(cur.textContent.match(/[A-Z]*:[A-Z]*-[0-9]*/g)) :
 		(cur.attributes[0].name === 'ID') ?
 		gene_ID.gene_ID.push(cur.attributes[2].nodeValue) :
 		(cur.attributes.length === 3) ?
