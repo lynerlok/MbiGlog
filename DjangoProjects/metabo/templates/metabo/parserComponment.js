@@ -10,13 +10,17 @@ MERCHADOU Kévin
 */
 
 const struct = (groups) => {
-	// console.log(groups);
+	console.log(groups);
 	let componment = {
-		"proteinID": []
-	};
+		"orgid" : [],
+		"location": [],
+		"enzName" : []
+	}; // /[[A-Z]* *[A-Z]*/g
 	groups.forEach(cur =>
+		(componment.enzName.length === 0 && cur.attributes[0].value.match("entry name") && cur.attributes[1].value.match(/[[A-Z][a-z]*_[A-Z][a-z]*/g)) ?
+		componment.enzName.push(cur.attributes[1].value) :
 		(cur.attributes[1].nodeValue.match(/C:[a-z]*/g)) ?
-		componment.proteinID.push(cur.attributes[1].nodeValue):0);// recupere aussi les pathway ressource
+		componment.location.push(cur.attributes[1].nodeValue) : componment.orgid.length === 0 && cur.attributes[0].value.match("gene ID") && cur.attributes[1].value.match(/[A-Z]*[0-9]*/g) ? componment.orgid.push(cur.attributes[1].value) : 0);
 	return componment;
 }
 
