@@ -14,21 +14,25 @@ class Pathway(models.Model):
 
 class Gene(models.Model):
     id_gene = models.CharField(max_length=20) ## todo recupere common-name in  gene of pwy pour rentrer id uniprot
-    gene = models.ManyToManyField(Pathway)
-
-    response = requests.get('https://websvc.biocyc.org/apixml',
-                            {'fn': 'genes-of-pathway', 'id':'ARA:PWY-82'})
-    root = ET.fromstring(response.content)
-
-    for element in root.iter('Gene'):
-        if 'ID' in element.attrib:
-            print(element.attrib['frameid'])
+    # gene = models.ManyToManyField(Pathway)
+    #
+    # response = requests.get('https://websvc.biocyc.org/apixml',
+    #                         {'fn': 'genes-of-pathway', 'id':'ARA:PWY-82'})
+    # root = ET.fromstring(response.content)
+    #
+    # for element in root.iter('Gene'):
+    #     if 'ID' in element.attrib:
+    #         print(element.attrib['frameid'])
 
 class Enzyme(models.Model):
     name = models.TextField()
-    cofactor_in = models.TextField()
-    cofactor_out = models.TextField()
+    # cofactor_in = models.ManyToManyField(CoFactor)
+    # cofactor_out = models.ManyToManyField(CoFactor)
 
+class CoFactor(models.Model):
+    # cofactor_in = models.TextField()
+    # cofactor_out = models.TextField()
+    pass
 
 
 
@@ -48,12 +52,14 @@ class Reaction(models.Model):
     #     return render(request, "metabo/home.html", locals())
 
 
-
+class Component(models.Model):
+    name = models.CharField(max_length=50)
+    # pwyList = models.ManyToManyField(Pathway)
 
 class Metabolite(models.Model):
     name = models.CharField(max_length=50)
-    reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE) ## todo manytomany
-    #
+    # reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE) ## todo manytomany
+    # #
     # def metabo(self):
     #     response = requests.get('https://websvc.biocyc.org/apixml', {'fn': 'substrates-of-reaction', 'id': 'ARA:RXN-3'})
     #     root = ET.fromstring(response.content)
