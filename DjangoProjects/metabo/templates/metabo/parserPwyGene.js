@@ -12,16 +12,15 @@
 const struct = (groups) => {
 	console.log(groups);
 	let orgid = [];
-	let gene_Id = [];
 	let pwy_ID = {
-		"orgid" : [],
-		"pwyID" : [],// contiendra la liste pwy pour un gene ID donné
-		"pwyList" : [],
+		"geneid" : [],// id du gene
+		"pwyID" : [], // contiendra l'id  pwy pour un gene ID donné
+		"pwyList" : [], // nom de chaque pwyid
 		"ReactionList" : [] // contiendra la liste des reaction pour un pwy en cle
 	};
 
 	groups.forEach(cur =>
-		(cur.textContent.match(/[A-Z]*:[A-Z]*[0-9]*/g)) ? pwy_ID.orgid.push(cur.textContent.match(/[A-Z]*:[A-Z]*[0-9]*[A-Z]*[0-9]*/g)) :
+		(cur.textContent.match(/[A-Z]*:[A-Z]*[0-9]*/g)) ? pwy_ID.geneid.push(cur.textContent.match(/[A-Z]*:[A-Z]*[0-9]*[A-Z]*[0-9]*/g)) :
 		(cur.attributes[0].name === 'ID') ?
 		pwy_ID.pwyID.push(cur.attributes[2].nodeValue) :
 		(cur.attributes.length === 4) ?

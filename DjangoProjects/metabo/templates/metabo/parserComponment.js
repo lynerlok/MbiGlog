@@ -12,9 +12,9 @@ MERCHADOU Kévin
 const struct = (groups) => {
 	console.log(groups);
 	let componment = {
-		"orgid" : [],
-		"location": [],
-		"enzName" : []
+		"orgid" : [], // contiendra l'ID du gene
+		"location": [], // lieu ou les reactions se font
+		"enzName" : [] // nom de l'enzyme
 	}; // /[[A-Z]* *[A-Z]*/g
 	groups.forEach(cur =>
 		(componment.enzName.length === 0 && cur.attributes[0].value.match("entry name") && cur.attributes[1].value.match(/[[A-Z][a-z]*_[A-Z][a-z]*/g)) ?

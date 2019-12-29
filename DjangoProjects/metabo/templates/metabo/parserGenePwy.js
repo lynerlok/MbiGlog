@@ -12,7 +12,6 @@ MERCHADOU Kévin
 const struct = (groups) => {
 	// console.log(groups);
 	let pwyID = [];
-	let gene_Id = [];
 	let gene_ID = {
 		"gene_ID" : [], // contiendra la liste gene pour un pwyID donné
 		"pwyID" : [],  // contiend le pwyID
