@@ -4,17 +4,19 @@ import requests
 
 # Create your views here.
 def home(request):
-    response = requests.get('https://websvc.biocyc.org/apixml',
-                            {'fn': 'genes-of-pathway', 'id':'ARA:PWY-82'})
-
-
-    # response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
-    #                         {'taxid': '3702', 'id': 'ARA:AT5G52560'})
+    response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
+                             {'gene':'AT5G52560','organism': 'Arabidopsis thaliana','taxid': '3702'}, headers={"Accept": "application/xml"})
     root = ET.fromstring(response.content)
-    # requestURL = "
-    #
-    # r = requests.get(requestURL, headers={"Accept": "application/xml"})
-    for element in root.iter('Gene'):
-        if 'ID' in element.attrib:
-            print(element.attrib['frameid'])
+    content = response.content
+    responseBody = response.text
+    # balise = ['name','property']
+    # for b in balise:
+    for element in root.iter('property'):
+        print(lala)
+        print('bu')
+        if len(element.attrib) == 0:
+            print('okkk')
+            print(element.text)
+            # if 'entry name' in element.attrib['type']:
+            #     print('ok')
     return render(request, "metabo/home.html", locals())
