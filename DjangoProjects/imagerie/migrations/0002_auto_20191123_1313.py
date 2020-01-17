@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('accuracy', models.DecimalField(decimal_places=3, max_digits=4)),
                 ('cnn', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='types', to='imagerie.CNN')),
-                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cnns_specialiazed_in', to='imagerie.TypeImage')),
+                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cnns_specialiazed_in', to='imagerie.BackgroundType')),
             ],
             options={
                 'abstract': False,
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('accuracy', models.DecimalField(decimal_places=3, max_digits=4)),
                 ('cnn', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contents', to='imagerie.CNN')),
-                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cnns_specialiazed_in', to='imagerie.ContentImage')),
+                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cnns_specialiazed_in', to='imagerie.PlantOrgan')),
             ],
             options={
                 'abstract': False,

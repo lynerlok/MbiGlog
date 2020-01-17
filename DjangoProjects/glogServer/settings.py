@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'metabo',
     'ngs',
     'proteo'
-
 ]
 
 MIDDLEWARE = [
