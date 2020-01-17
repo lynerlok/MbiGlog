@@ -13,7 +13,7 @@ const struct = (groups) => {
 	console.log(groups);
 	let pwy_ID = {
 		"ReactionList" : [], // contiendra le nom de chaque reaction
-		""metabolites" : []
+		"metabolites" : []
 	};
 
 	groups.forEach(cur =>

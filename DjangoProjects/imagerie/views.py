@@ -6,7 +6,7 @@ from django.contrib import messages
 def home(request):
     a = 5
     messages.debug(request, "debug")
-    messages.info(request, f'a value is {a}')
+    messages.info(request, 'a value is {}'.format(a))
     messages.success(request, "success")
     messages.warning(request, "WARNING")
     messages.error(request, "ERROR")

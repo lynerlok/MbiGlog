@@ -54,7 +54,7 @@ class Taxon(models.Model):
 
     @staticmethod
     def get_id_from_name(name):
-        url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=taxonomy&term={name}"
+        url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=taxonomy&term={}".format(name)
         root = ElementTree.fromstring(requests.get(url).content)
         if int(root.find('Count').text) > 0:
             return int(root.find('IdList').find('Id').text)
@@ -177,41 +177,41 @@ class CNN(ImageClassifier):
         self.save_model()
         self.available = True
 
-    def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
-        if images is None:
-            images = GroundTruthImage.objects.all()
-
-        images.values('specie__name').annotate(Count(
-            'specie'))  # TODO A tester pas sûr du tout que ça marche mais permet de gérer un queryset en entrée à priori
-        # for image in images:
-        #     try:
-        #         self.classes.get(specie=image.specie)
-        #     except DoesNotExist:
-        #         if images.filter(specie=image.specie)
-        #         Class.objects.create(pos=id_class, specie=image.specie, cnn=self)
-        # self.train_images = []
-        # self.train_labels = []
-        # self.test_images = []
-        # self.test_labels = []
-        # id_class = 1
-        # for specie in Specie.objects.all():
-        #     trustfull_class_images = specie.image_set.filter(trustworthy=True)
-        #     nb_image = 0
-        #     nb_occurency = trustfull_class_images.count()
-        #     if nb_occurency > 10:
-        #         Class.objects.create(pos=id_class, specie=specie, cnn=self)
-        #         id_class += 1
-        #         train_test_limit = nb_occurency * (1 - test_fraction)
-        #         for image in trustfull_class_images:
-        #             nb_image += 1
-        #             if nb_image <= train_test_limit:
-        #                 self.train_images.append(image)
-        #                 self.train_labels.append(id_class)
-        #             else:
-        #                 self.test_images.append(image)
-        #                 self.test_labels.append(id_class)
-        #     else:
-        #         Class
+    # def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
+    #     if images is None:
+    #         images = GroundTruthImage.objects.all()
+    #
+    #     images.values('specie__name').annotate(Count(
+    #         'specie'))  # TODO A tester pas sûr du tout que ça marche mais permet de gérer un queryset en entrée à priori
+    #     for image in images:
+    #         try:
+    #             self.classes.get(specie=image.specie)
+    #         except DoesNotExist:
+    #             if images.filter(specie=image.specie):
+    #                 Class.objects.create(pos=id_class, specie=image.specie, cnn=self)
+    #     self.train_images = []
+    #     self.train_labels = []
+    #     self.test_images = []
+    #     self.test_labels = []
+    #     id_class = 1
+    #     for specie in Specie.objects.all():
+    #         trustfull_class_images = specie.image_set.filter(trustworthy=True)
+    #         nb_image = 0
+    #         nb_occurency = trustfull_class_images.count()
+    #         if nb_occurency > 10:
+    #             Class.objects.create(pos=id_class, specie=specie, cnn=self)
+    #             id_class += 1
+    #             train_test_limit = nb_occurency * (1 - test_fraction)
+    #             for image in trustfull_class_images:
+    #                 nb_image += 1
+    #                 if nb_image <= train_test_limit:
+    #                     self.train_images.append(image)
+    #                     self.train_labels.append(id_class)
+    #                 else:
+    #                     self.test_images.append(image)
+    #                     self.test_labels.append(id_class)
+    #         else:
+    #             pass
 
     def classify(self, images: Iterable[Image]):
         if not self.available:
@@ -222,14 +222,14 @@ class CNN(ImageClassifier):
         predictions = self.nn_model.predict(images)
         predictions.argmax()  # TODO extract max p for all given images and get Specie from here
 
-    def save_model(self):
-        self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.architecture.name}_'
-                                                                           f'{self.date.year}_'
-                                                                           f'{self.date.month}_'
-                                                                           f'{self.date.day}_'
-                                                                           f'{self.date.hour}')
-        os.mkdir(self.learning_data)
-        self.nn_model.save(self.learning_data)
+    # def save_model(self):
+    #     self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', '{}_'.format(self.architecture.name)
+    #                                                                        '{self.date.year}_'
+    #                                                                        '{self.date.month}_'
+    #                                                                        '{self.date.day}_'
+    #                                                                        '{self.date.hour}')
+    #     os.mkdir(self.learning_data)
+    #     self.nn_model.save(self.learning_data)
 
     def load_model(self):
         pass
