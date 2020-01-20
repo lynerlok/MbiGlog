@@ -5,161 +5,154 @@ import io
 import re
 
 
-
 # Create your models here.
 
 
 class Pathway(models.Model):
-    print('\n ------------------------------------ PATHWAY CLASS ----------------------------------- \n')
+    # print('\n ------------------------------------ PATHWAY CLASS ----------------------------------- \n')
     name = models.CharField(max_length=64)
-    geneList = models.TextField()
-    enzyList = models.TextField()
+
+    # 'id':'ARA:PWY-82'
+
+    def save(self, *args, **kwargs):
+        if Pathway.objects.filter(name=self.name).count() == 0:
+            super(Pathway, self).save(*args, **kwargs)
+            response = requests.get('https://websvc.biocyc.org/apixml',
+                                    {'fn': 'genes-of-pathway', 'id': 'ARA:'+self.name})
+            root = ET.fromstring(response.content)
+            for element in root.iter('Gene'):
+                if 'ID' in element.attrib:
+                    gene, _ = Gene.objects.get_or_create(id_gene=element.attrib['frameid'])
+
+                    if self not in gene.pathways.all():
+                        gene.pathways.add(self)
 
 
 
 class Gene(models.Model):
-    print('\n ------------------------------------ GENE CLASS -------------------------------------- \n')
+    # print('\n ------------------------------------ GENE CLASS -------------------------------------- \n')
 
-    id_gene = models.CharField(max_length=20) ## todo recupere common-name in  gene of pwy pour rentrer id uniprot
-    gene = models.ManyToManyField(Pathway)
+    id_gene = models.CharField(max_length=20, primary_key=True)  ## todo recupere common-name in  gene of pwy pour rentrer id uniprot
+    pathways = models.ManyToManyField(Pathway, related_name='genes')
 
-    response = requests.get('https://websvc.biocyc.org/apixml',
-                            {'fn': 'genes-of-pathway', 'id':'ARA:PWY-82'})
-    root = ET.fromstring(response.content)
-    genePwyList = []
-    # for element in root.iter('Gene'):
-    #     if 'ID' in element.attrib:
-    #         print('Genes of pathway : '+element.attrib['frameid'])
-    #         genePwyList.append(element.attrib['frameid'])
 
-    def requestFromBiocyc(self):
+    def get_or_create_pathways(self):
         response = requests.get('https://websvc.biocyc.org/apixml',
-                                {'fn': 'genes-of-pathway', 'id':'ARA:PWY-82'})
+                                {'fn': 'pathways-of-gene', 'id': 'ARA:' + self.id_gene})
         root = ET.fromstring(response.content)
-        genePwyList = []
-        for element in root.iter('Gene'):
+        for element in root.iter('Pathway'):
             if 'ID' in element.attrib:
-                # print('Genes of pathway : '+element.attrib['frameid'])
-                genePwyList.append(element.attrib['frameid'])
-                return genePwyList
+                pathway, _ = Pathway.objects.get_or_create(name=element.attrib['frameid'])
+                pathway.save()
+                if self not in pathway.genes.all():
+                    pathway.genes.add(self)
+
 
 
 
 
 class Enzyme(models.Model):
-    print('\n ------------------------------------ ENZYME CLASS ------------------------------------- \n')
+    # print('\n ------------------------------------ ENZYME CLASS ------------------------------------- \n')
+
     name = models.TextField()
-    # cofactor_in = models.ManyToManyField(CoFactor)
-    # cofactor_out = models.ManyToManyField(CoFactor)
+    pathways = models.ManyToManyField(Pathway,related_name='enzymes')
 
-    requestURL = "https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&gene=AT5G52560&organism=Arabidopsis%20thaliana&taxid=3702"
-    r = requests.get(requestURL, headers={"Accept": "application/xml"})
-    responseBody = r.text
-    buf = io.StringIO(responseBody)
-    line = buf.readline()
-    cof = re.findall(r'<name>\w+\([0-9]*[\+|\-]\)',line)
-    enzN = re.findall(r'<fullName>[A-Z]+\-*\_*[a-z]*\s*[a-z]*',line)
-    cofactors = []
-    enzName = []
-    for x in cof:
-        cofactors.append(x.replace('<name>', ''))
-    print(cofactors)
-    for x in enzN:
-        enzName.append(x.replace('<fullName>',''))
-    print(enzName)
-
-
-
-    def requestFromUniProt(self):
-        requestURL = "https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&gene=AT5G52560&organism=Arabidopsis%20thaliana&taxid=3702"
-        r = requests.get(requestURL, headers={"Accept": "application/xml"})
+    def save(self, *args, **kwargs):
+        response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
+                                {'offset': '0', 'size':'100','gene': Gene.id_gene,'organism':'Arabidopsis thaliana','taxid':'3702'})
+        r = requests.get(response, headers={"Accept": "application/xml"})
         responseBody = r.text
         buf = io.StringIO(responseBody)
         line = buf.readline()
-        cof = re.findall(r'<name>\w+\([0-9]*[\+|\-]\)',line)
-        enzN = re.findall(r'<fullName>[A-Z]+\-*\_*[a-z]*\s*[a-z]*',line)
-        cofactors = []
-        enzName = []
-        for x in cof:
-            cofactors.append(x.replace('<name>', ''))
-        print(cofactors)
+        enzN = re.findall(r'<fullName>[A-Z]+\-*\_*[a-z]*\s*[a-z]*', line)
         for x in enzN:
-            enzName.append(x.replace('<fullName>',''))
-        print(enzName)
+            enzName = Enzyme.objects.get_or_create(name=x.replace('<fullName>', ''))
+            if self not in enzName.enzymes:
+                enzName.enzymes.add(self)
 
-
-
-class CoFactor(models.Model):
-    print('\n ------------------------------------ COFACTOR CLASS ----------------------------------- \n')
-    # cofactor_in = models.TextField()
-    # cofactor_out = models.TextField()
-    pass
+        super(Enzyme, self).save(*args, **kwargs)
 
 
 
 class Reaction(models.Model):
-    print('\n ------------------------------------ REACTION CLASS ----------------------------------- \n')
+    # print('\n ------------------------------------ REACTION CLASS ----------------------------------- \n')
 
     name = models.TextField()
+    pathways = models.ManyToManyField(Pathway,related_name='reactionName')
 
     # for metabolite in self.metabolite_set:   ## va chercher les metabolites pour 1 reaction
 
 
-    def requestFromBiocyc(self):
-        response = requests.get('https://websvc.biocyc.org/apixml',{'fn': 'pathways-of-gene', 'id': 'ARA:AT5G52560'})
+    def save(self, *args, **kwargs):
+        response = requests.get('https://websvc.biocyc.org/apixml',
+                                {'fn': 'pathways-of-gene', 'id':Gene.id_gene})
         root = ET.fromstring(response.content)
-        pwyGeneList = []
         for element in root.iter('Reaction'):
-            pwyGeneList.append(element.attrib['frameid'])
-        print(pwyGeneList)
-        return pwyGeneList
+            if 'ID' in element.attrib:
+                pathway = Pathway.objects.get_or_create(name=element.attrib['ID'])
+                if self not in pathway.reactionName:
+                    pathway.reactionName.add(self)
+        super(Reaction, self).save(*args, **kwargs)
+
+class CoFactor(models.Model):
+    # print('\n ------------------------------------ COFACTOR CLASS ----------------------------------- \n')
+    name = models.TextField()
+    enzymeCof= models.ManyToManyField(Enzyme,related_name='cofactors')
+
+    def save(self, *args, **kwargs):
+        response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
+                                {'offset': '0', 'size':'100','gene': Gene.id_gene,'organism':'Arabidopsis thaliana','taxid':'3702'})
+        r = requests.get(response, headers={"Accept": "application/xml"})
+        responseBody = r.text
+        buf = io.StringIO(responseBody)
+        line = buf.readline()
+        cof = re.findall(r'<name>\w+\([0-9]*[\+|\-]\)', line)
+        for x in cof:
+            cofs =CoFactor.objects.get_or_create(cofactors=x.replace('<name>', ''))
+            if self not in cofs.cofactors:
+               cofs.cofactors.add(self)
+        super(CoFactor, self).save(*args, **kwargs)
+
 
 
 
 class Component(models.Model):
-    global x
-    print('\n ------------------------------------ COMPONENT CLASS ---------------------------------- \n')
-
+    # print('\n ------------------------------------ COMPONENT CLASS ---------------------------------- \n')
     name = models.CharField(max_length=50)
-    pwyList = models.ManyToManyField(Pathway)
+    pathways = models.ManyToManyField(Pathway,related_name='componentName')
 
-    def requestFromUniProt(self):
-        requestURL = "https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&protein=Pyruvate%20kinase&taxid=3702"
-        r = requests.get(requestURL, headers={"Accept": "application/xml"})
+    def save(self, *args, **kwargs):
+        response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
+                                {'offset': '0', 'size': '100', 'protein': 'Pyruvate Kinase', 'organism': 'Arabidopsis thaliana',
+                                 'taxid': '3702'})
+        r = requests.get(response, headers={"Accept": "application/xml"})
         responseBody = r.text
         buf = io.StringIO(responseBody)
+        line = buf.readline()
         loc = re.findall(r'C:[a-z]*\s*[a-z]*', line)
-        path = re.findall(r'\"UniPathway\"\s*id=\"UPA00109\"', line)
         location = []
-        pathway = []
         for x in loc:
             if x not in location:
-                location.append(x)
+                location=Component.objects.get_or_create(componentName=x)
+            if self not in location.componentName:
+                location.componentName.add(self)
+        super(Component, self).save(*args, **kwargs)
 
-        for x in path:
-            if x not in pathway:
-                pathway.append(x)
-
-        pathway=re.sub(r'\"UniPathway\"\sid=', '',x)
-        print(pathway)
-        print(location)
-#
 class Metabolite(models.Model):
-    print('\n ------------------------------------ METABOLITE CLASS --------------------------------- \n')
-
+    # print('\n ------------------------------------ METABOLITE CLASS --------------------------------- \n')
+    #ARA:RXN-3
     name = models.CharField(max_length=50)
-    # reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE) ## todo manytomany
+    reaction = models.ManyToManyField(Reaction, related_name='metaboList')
 
-
-
-    def metabo(self):
-        response = requests.get('https://websvc.biocyc.org/apixml', {'fn': 'substrates-of-reaction', 'id': 'ARA:RXN-3'})
+    def save(self, *args, **kwargs):
+        response = requests.get('https://websvc.biocyc.org/apixml', {'fn': 'substrates-of-reaction', 'id': self.name})
         root = ET.fromstring(response.content)
         subsR = []
         subsReact = []
         for element in root.iter('common-name'):
             subsR.append(element.text)
         for e in subsR:
-            if e not in subsReact:
-                subsReact.append(re.sub(r'\&|\;|<SUP>|</SUP>', '', e))
-        print(subsReact)
+            subsReact = Metabolite.objects.get_or_create(metaboList=re.sub(r'\&|\;|<SUP>|</SUP>', '', e))
+            if self not in subsReact.metaboList:
+                subsReact.metaboList.add(self)
+        super(Metabolite, self).save(*args, **kwargs)

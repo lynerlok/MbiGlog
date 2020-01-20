@@ -1,7 +1,11 @@
 from django.shortcuts import render
-import xml.etree.ElementTree as ET
-import requests
+from metabo.models import *
+
 
 # Create your views here.
 def home(request):
+    geneList = ['AT5G52560','AT4G16130','GQT-5255']
+    for i in geneList:
+        gene, _ = Gene.objects.get_or_create(id_gene=i)
+        gene.get_or_create_pathways()
     return render(request, "metabo/home.html", locals())

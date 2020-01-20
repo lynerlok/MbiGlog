@@ -14,14 +14,14 @@ import os
 
 ## Configure get_env_var to set env var for database
 
-# from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured
  
-# def get_env_variable(var_name):
-#     try:
-#         return os.environ[var_name]
-#     except KeyError:
-#         error_msg = "Set the %s environment variable" % var_name
-#         raise ImproperlyConfigured(error_msg)
+def get_env_variable(var_name):
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = "Set the %s environment variable" % var_name
+        raise ImproperlyConfigured(error_msg)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g$$34u-c@p#-x*)$r2zv1pc#4g%l9otf5qzyyxjn+9_sdhbw9^'
+SECRET_KEY = 'aaa'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'metabo',
     'ngs',
     'proteo'
+
 ]
 
 MIDDLEWARE = [
@@ -90,7 +91,7 @@ WSGI_APPLICATION = 'glogServer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': 'DevDatabase.db',
     }
 }
 
