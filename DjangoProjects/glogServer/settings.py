@@ -15,7 +15,7 @@ import os
 ## Configure get_env_var to set env var for database
 
 from django.core.exceptions import ImproperlyConfigured
- 
+
 def get_env_variable(var_name):
     try:
         return os.environ[var_name]

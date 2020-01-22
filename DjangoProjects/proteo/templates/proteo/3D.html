@@ -2,20 +2,20 @@
 
 
 {% block content %}
-<body>
-  <script src="ngl.js">
+<body style="background-color: black">
+  {% load static %}
+  <div id="visu_3D" style="background-color: black">
+      <div style="text-align:center;">
+        <p style="color: white"> Entrez l'ID PDB : </p>
+        <input id="pdbidInput" style="opacity:0.7; width:4em;"/>
+      </div>
+    <div id="visualisation" style="width:auto; height:500px;text-align: center;"></div>
+  </div>
+  <script src="{% static "proteo/ngl.js"%}">
   /*AS Rose, AR Bradley, Y Valasatava, JM Duarte, A Prlić and PW Rose. NGL viewer: web-based molecular graphics for large complexes. Bioinformatics: bty419, 2018. doi:10.1093/bioinformatics/bty419
   AS Rose and PW Hildebrand. NGL Viewer: a web application for molecular visualization. Nucl Acids Res (1 July 2015) 43 (W1): W576-W579 first published online April 29, 2015. doi:10.1093/nar/gkv402*/
   </script>
-  <script type="text/javascript">
-  let three=document.getElementById("three");
-  three.classList.add("activated");
-  var stage;
-  document.addEventListener("DOMContentLoaded", function () {
-    stage = new NGL.Stage("viewport");
-    stage.loadFile("rcsb://1crn.mmtf", {defaultRepresentation: true});
-  });
-  </script>
-  <p>3 DIMENSION</p>
+  <script src="{% static "proteo/visu3D.js"%}"></script>
 </body>
+
 {% endblock %}
