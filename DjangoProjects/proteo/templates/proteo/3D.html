@@ -1,14 +1,20 @@
 {% extends "proteo/base.html" %}
 
 
-
-
 {% block content %}
 <body>
-  <script src="https://github.com/arose/ngl/blob/master/dist/ngl.js"></script>
+  <script src="ngl.js">
+  /*AS Rose, AR Bradley, Y Valasatava, JM Duarte, A Prlić and PW Rose. NGL viewer: web-based molecular graphics for large complexes. Bioinformatics: bty419, 2018. doi:10.1093/bioinformatics/bty419
+  AS Rose and PW Hildebrand. NGL Viewer: a web application for molecular visualization. Nucl Acids Res (1 July 2015) 43 (W1): W576-W579 first published online April 29, 2015. doi:10.1093/nar/gkv402*/
+  </script>
   <script type="text/javascript">
   let three=document.getElementById("three");
   three.classList.add("activated");
+  var stage;
+  document.addEventListener("DOMContentLoaded", function () {
+    stage = new NGL.Stage("viewport");
+    stage.loadFile("rcsb://1crn.mmtf", {defaultRepresentation: true});
+  });
   </script>
   <p>3 DIMENSION</p>
 </body>
