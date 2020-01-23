@@ -1,11 +1,8 @@
 import os
-import sys
-from importlib import import_module
-from pathlib import Path
+from abc import abstractmethod
 from typing import Iterable
 from xml.etree import ElementTree
 
-from abc import abstractmethod
 import imageio
 import numpy as np
 import requests
@@ -13,7 +10,6 @@ from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
-from keras.models import Model
 
 
 class Label(models.Model):
@@ -155,7 +151,7 @@ class CNN(ImageClassifier):
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
-        predictions = self.nn_model.predict(images)
+        predictions = self.nn_model.predict(images)  # TODO register predictions in Prediction class
         predictions.argmax()  # TODO extract max p for all given images and get Specie from here
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
@@ -176,23 +172,6 @@ class CNN(ImageClassifier):
     def load_model(self):
         self.set_tf_model()
         self.nn_model.load_weights(self.learning_data)
-
-
-class CNNSpeciality(models.Model):
-    accuracy = models.DecimalField(max_digits=4, decimal_places=3)
-
-    class Meta:
-        abstract = True
-
-
-class CNNPlantOrgan(CNNSpeciality):
-    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='contents')
-    content = models.ForeignKey(PlantOrgan, on_delete=models.CASCADE, related_name='cnns_specialiazed_in')
-
-
-class CNNBackgroundType(CNNSpeciality):
-    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='types')
-    type = models.ForeignKey(BackgroundType, on_delete=models.CASCADE, related_name='cnns_specialiazed_in')
 
 
 class Class(models.Model):

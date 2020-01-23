@@ -1,0 +1,83 @@
+html {
+    font-family: "Roboto", sans-serif;
+}
+
+body {
+    margin: 0;
+}
+
+header h1 {
+    background-color: #ff7465;
+    padding: 14px;
+    margin: 0;
+}
+
+header h1 a {
+    font-size: xx-large;
+    color: #111111;
+    text-decoration: none;
+}
+
+
+header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+header nav li {
+    float: left;
+}
+
+header nav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+header nav li a:hover {
+    background-color: #111;
+}
+
+.activated {
+    background-color: #bf5b4f;
+}
+
+ul.messages {
+    margin: 0;
+    padding-left: 14px;
+    background-color: rgba(33, 33, 33, 0.89);
+}
+
+ul.messages li {
+    display: block;
+    padding: 4px 0 4px 0;
+}
+
+ul.messages li.debug {
+    color: #fff;
+}
+
+ul.messages li.info {
+    color: #b3b74f;
+}
+
+ul.messages li.success {
+    color: #00bf11;
+    text-shadow: rgba(0, 234, 17, 0.63) 1px 1px 2px;
+}
+
+ul.messages li.warning {
+    color: #bf6f00;
+    text-shadow: rgba(249, 146, 0, 0.72) 1px 1px 2px;
+}
+
+ul.messages li.error {
+    color: #bf0500;
+    text-shadow: rgba(234, 5, 0, 0.72) 1px 1px 2px;
+}
