@@ -12,6 +12,17 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+## Configure get_env_var to set env var for database
+
+from django.core.exceptions import ImproperlyConfigured
+ 
+def get_env_variable(var_name):
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = "Set the %s environment variable" % var_name
+        raise ImproperlyConfigured(error_msg)
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,14 +30,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g$$34u-c@p#-x*)$r2zv1pc#4g%l9otf5qzyyxjn+9_sdhbw9^'
-
+SECRET_KEY = get_env_variable('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 MESSAGE_LEVEL = 0
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.29', 'glog.dust-of-the-universe.com']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -42,6 +52,7 @@ INSTALLED_APPS = [
     'metabo',
     'ngs',
     'proteo'
+
 ]
 
 MIDDLEWARE = [
@@ -80,9 +91,20 @@ WSGI_APPLICATION = 'glogServer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': 'DevDatabase.db',
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': get_env_variable('DATABASE_NAME'),
+#        'USER': get_env_variable('DATABASE_USER'),
+#        'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
+#	'HOST': 'glog.dust-of-the-universe.com',
+#	'PORT': '5432',
+#    }
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -122,5 +144,4 @@ MEDIA_URL = "/media/"
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
