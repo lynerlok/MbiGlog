@@ -1,0 +1,25 @@
+{% extends "imagerie/base.html" %}
+{% block title %}Ma page d'accueil{% endblock %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static "imagerie/imagerie.css" %}">
+{% block content %}
+    <div id="rectangle_background">
+        <h2>Import photography</h2>
+        {% if envoi %}Votre image a bien été envoyé !{% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Upload</button>
+        </form>
+
+    </div>
+
+{% endblock %}
+
+
+
+
+
+
+
