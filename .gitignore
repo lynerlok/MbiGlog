@@ -4,3 +4,4 @@
 # Ignore python virtual environment
 PythonVenv/
 venv
+/DjangoProjects/db.sqlite3
