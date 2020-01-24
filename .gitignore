@@ -11,3 +11,4 @@ DjangoProjects/nohup.out
 __pycache__
 media
 db.sqlite3
+settings.py
