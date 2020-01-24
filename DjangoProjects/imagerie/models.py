@@ -141,7 +141,7 @@ class CNN(ImageClassifier):
 
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
-        self.nn_model.fit(self.train_images, self.train_labels, epochs=10)
+        self.nn_model.fit(self.train_images, self.train_labels, epochs=10, batch_size=100)
         _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
         self.save_model()
         self.available = True
