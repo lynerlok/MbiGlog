@@ -1,5 +1,5 @@
-from pathlib import Path
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
@@ -43,8 +43,8 @@ class Command(BaseCommand):
                                                          vernacular_name=root.find('VernacularNames').text,
                                                          latin_name=root.find('ClassId').text)
 
-                gtimage, _ = GroundTruthImage.objects.get_or_create(specie=specie, content=plant_organ, type=background_type,
-                                                                    image=image_path)
+                gtimage, _ = GroundTruthImage.objects.get_or_create(specie=specie, plant_organ=plant_organ,
+                                                                    background_type=background_type, image=image_path)
                 print(image, 'saved')
 
     def handle(self, *args, **options):

@@ -1,6 +1,6 @@
 import os
 from abc import abstractmethod
-from typing import Iterable
+from typing import *
 from xml.etree import ElementTree
 
 import imageio
@@ -139,26 +139,47 @@ class CNN(ImageClassifier):
         # TODO Deal with training data only if specified, otherwise use all available data
         #  (Maybe use filter kwargs instead of directly give training dataset)
 
-        self.split_images(test_fraction=0.2)
+        self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
         self.nn_model.fit(self.train_images, self.train_labels, epochs=10)
         _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
         self.save_model()
         self.available = True
 
-    def classify(self, images: Iterable[Image]):
+    def classify(self, images: List[Image]):
         if not self.available:
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
-        predictions = self.nn_model.predict(images)  # TODO register predictions in Prediction class
+        predictions = self.nn_model.predict(images)
         predictions.argmax()  # TODO extract max p for all given images and get Specie from here
+        for cnn_class in self.class_set:
+            for i in range(len(images)):
+                pred = Prediction(cnn=self, image=images[i], specie=cnn_class.specie,
+                                  confidence=predictions[i][cnn_class.pos])
+                pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
             images = GroundTruthImage.objects.all()
-
-        images.values('specie__name').annotate(Count('specie'))  # TODO Split data according to results
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=10)
+        specie_to_pos = {}
+        for i in range(len(species)):
+            specie = Specie.objects.get(latin_name=species[i]['specie__name'])
+            Class(cnn=self, specie=specie, pos=i)
+            specie_to_pos[specie] = i
+        train_images = []
+        train_labels = []
+        test_images = []
+        test_labels = []
+        nb_images = len(images)
+        for i in range(nb_images):
+            if i < (1 - test_fraction) * nb_images:
+                train_images.append(images[i])
+                train_labels.append(specie_to_pos[images[i].specie])
+            else:
+                test_images.append(images[i])
+                test_labels.append(specie_to_pos[images[i].specie])
 
     def save_model(self):
         self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.__class__.__name__}_'
