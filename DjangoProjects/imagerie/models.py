@@ -226,6 +226,9 @@ class Prediction(models.Model):
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
     confidence = models.DecimalField(max_digits=4, decimal_places=3)
 
+    def __str__(self):
+        return "{} guessed {} ({}%) on {} ".format(self.cnn.name, self.specie.name, self.confidence, self.image)
+
 
 class AlexNet(CNN):
 
