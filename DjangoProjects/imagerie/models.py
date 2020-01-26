@@ -145,7 +145,7 @@ class CNN(ImageClassifier):
     def train(self, training_data=None):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
-        self.nn_model.fit(self.train_images, self.train_labels, epochs=10, verbose=2)
+        self.nn_model.fit(self.train_images, self.train_labels, epochs=50, verbose=2)
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
         self.available = True
@@ -180,15 +180,13 @@ class CNN(ImageClassifier):
         images = list(images)
         shuffle(images)
         specie_to_pos = {}
-        self.save()
+        self.save()  # allow to create ref to CNN in classes
         for i in range(len(species)):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
-        train_images = []
-        train_labels = []
-        test_images = []
-        test_labels = []
+
+        train_images, train_labels, test_images, test_labels = [], [], [], []
         nb_images = len(images)
         for i in range(nb_images):
             if i < (1 - test_fraction) * nb_images:
@@ -197,6 +195,7 @@ class CNN(ImageClassifier):
             else:
                 test_images.append(images[i].preprocess())
                 test_labels.append(specie_to_pos[images[i].specie])
+
         self.train_images = np.array(train_images)
         self.train_labels = np.array(train_labels)
         self.test_images = np.array(test_images)

@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 
 from imagerie.models import *
+
+
 # from imagerie.tf_models.AlexNet import AlexNet
 
 
@@ -16,9 +18,9 @@ class Command(BaseCommand):
         self.test()
 
     def test(self):
-        a, _ = AlexNet.objects.get_or_create(name="Test1")
+        natural = BackgroundType.objects.get(name='NaturalBackground')
+        fruit = PlantOrgan.objects.get(name='Fruit')
+        a, _ = AlexNet.objects.get_or_create(name="NF", specialized_background=natural, specialized_organ=fruit)
         images = GroundTruthImage.objects.filter(
             Q(specie__name__contains='Rhamnus') | Q(specie__name__contains='Euphorbia'))
-        print(len(images))
         a.train(images)
-        print(a.accuracy)
