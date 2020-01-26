@@ -13,6 +13,7 @@ from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
+import tensorflow as tf
 
 
 class Label(models.Model):
@@ -198,7 +199,7 @@ class CNN(ImageClassifier):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
         if not os.path.isdir(path):
             os.mkdir(path)
-        path = os.path.join(path, f'{self.__class__.__name__}_'
+        path = os.path.join(path, f'{self.name}_'
                                   f'{self.date.year}_'
                                   f'{self.date.month}_'
                                   f'{self.date.day}_'
@@ -209,8 +210,8 @@ class CNN(ImageClassifier):
         self.save()
 
     def load_model(self):
-        self.set_tf_model()
-        self.nn_model.load_weights(self.learning_data)
+        self.nn_model = tf.keras.models.load_model(self.learning_data)
+
 
 
 class Class(models.Model):
