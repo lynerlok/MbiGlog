@@ -174,18 +174,18 @@ class CNN(ImageClassifier):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
-        train_images = []
-        train_labels = []
-        test_images = []
-        test_labels = []
+        train_images = np.array([])
+        train_labels = np.array([])
+        test_images = np.array([])
+        test_labels = np.array([])
         nb_images = len(images)
         for i in range(nb_images):
             if i < (1 - test_fraction) * nb_images:
-                train_images.append(images[i].preprocess())
-                train_labels.append(specie_to_pos[images[i].specie])
+                np.append(train_images, images[i].preprocess())
+                np.append(train_labels, specie_to_pos[images[i].specie])
             else:
-                test_images.append(images[i].preprocess())
-                test_labels.append(specie_to_pos[images[i].specie])
+                np.append(test_images, images[i].preprocess())
+                np.append(test_labels, specie_to_pos[images[i].specie])
 
     def save_model(self):
         self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.__class__.__name__}_'
