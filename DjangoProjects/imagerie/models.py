@@ -99,7 +99,7 @@ class Image(models.Model):
         img[:, :, 0] -= 123.68
         img[:, :, 1] -= 116.779
         img[:, :, 2] -= 103.939
-        img[:, :, [0, 1, 2]] = img[:, :, [2, 1, 0]]
+        # img[:, :, [0, 1, 2]] = img[:, :, [2, 1, 0]]
         img = img.transpose((2, 0, 1))
         return img
 
