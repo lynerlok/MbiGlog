@@ -98,6 +98,7 @@ class Image(models.Model):
         img = img.transpose((2, 0, 1))
         return np.expand_dims(img, axis=0)
 
+
 class SubmittedImage(Image):
     @property
     def specie(self):
@@ -165,7 +166,8 @@ class CNN(ImageClassifier):
         specie_to_pos = {}
         for i in range(len(species)):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
-            Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
+            c = Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
+            c.save()
             specie_to_pos[specie] = i
         train_images = []
         train_labels = []
