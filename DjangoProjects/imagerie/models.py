@@ -7,13 +7,13 @@ import imageio
 import keras
 import numpy as np
 import requests
+import tensorflow as tf
 from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
-import tensorflow as tf
 
 
 class Label(models.Model):
@@ -149,7 +149,9 @@ class CNN(ImageClassifier):
         self.set_tf_model()
         print(self.train_images.shape)
         self.nn_model.fit(self.train_images, self.train_labels, epochs=2, verbose=2)
-        _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
+        _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
+        print(accuracy)
+        self.accuracy = accuracy
         self.save_model()
         self.available = True
 
@@ -162,8 +164,8 @@ class CNN(ImageClassifier):
         predictions.argmax()  # TODO extract max p for all given images and get Specie from here
         for cnn_class in self.class_set:
             for i in range(len(images)):
-                pred = Prediction(cnn=self, image=images[i], specie=cnn_class.specie,
-                                  confidence=predictions[i][cnn_class.pos])
+                pred, _ = Prediction.objects.get_or_create(cnn=self, image=images[i], specie=cnn_class.specie)
+                pred.confidence = predictions[i][cnn_class.pos]
                 pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
@@ -211,7 +213,6 @@ class CNN(ImageClassifier):
 
     def load_model(self):
         self.nn_model = tf.keras.models.load_model(self.learning_data)
-
 
 
 class Class(models.Model):
