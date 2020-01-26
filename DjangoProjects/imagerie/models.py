@@ -160,7 +160,10 @@ class CNN(ImageClassifier):
         predictions = self.nn_model.predict(processed_images)
         for i in range(len(images)):
             for cnn_class in self.class_set.all():
-                pred = Prediction.objects.get(cnn=self, image=images[i], specie=cnn_class.specie)
+                try:
+                    pred = Prediction.objects.get(cnn=self, image=images[i], specie=cnn_class.specie)
+                except Prediction.DoesNotExist:
+                    pred = Prediction(cnn=self, image=images[i], specie=cnn_class.specie)
                 pred.confidence = predictions[i][cnn_class.pos]
                 pred.save()
 
