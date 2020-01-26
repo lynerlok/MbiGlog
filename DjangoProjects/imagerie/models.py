@@ -9,6 +9,7 @@ import numpy as np
 import requests
 from PIL import Image as PImage
 from django.conf import settings as st
+from django.core.exceptions import SuspiciousFileOperation
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
@@ -92,7 +93,10 @@ class Image(models.Model):
 
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
-        img = imageio.imread(self.image.path, pilmode='RGB')
+        try:
+            img = imageio.imread(self.image.path, pilmode='RGB')
+        except SuspiciousFileOperation:
+            pass
         img = np.array(PImage.fromarray(img).resize((224, 224))).astype(np.float32)
         img[:, :, 0] -= 123.68
         img[:, :, 1] -= 116.779
