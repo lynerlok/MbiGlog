@@ -83,7 +83,7 @@ class BackgroundType(Label):
 
 
 class Image(models.Model):
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to="/media/Datas/Pictures")
     date = models.DateTimeField(auto_now_add=True)
     plant_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT)
     background_type = models.ForeignKey('BackgroundType', on_delete=models.PROTECT)
@@ -93,10 +93,8 @@ class Image(models.Model):
 
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
-        try:
-            img = imageio.imread(self.image.path, pilmode='RGB')
-        except SuspiciousFileOperation:
-            pass
+
+        img = imageio.imread(self.image.path, pilmode='RGB')
         img = np.array(PImage.fromarray(img).resize((224, 224))).astype(np.float32)
         img[:, :, 0] -= 123.68
         img[:, :, 1] -= 116.779
