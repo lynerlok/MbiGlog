@@ -150,7 +150,7 @@ class CNN(ImageClassifier):
         print(self.test_images.shape)
         print(self.test_labels.shape)
         self.nn_model.fit(self.train_images, self.train_labels, epochs=2, verbose=2)
-        _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=2)
+        _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         print(accuracy)
         self.accuracy = accuracy
         self.save_model()
