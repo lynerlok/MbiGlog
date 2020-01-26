@@ -22,8 +22,8 @@ class Command(BaseCommand):
         name = urlparse(url).path.split('/')[-1]
 
         s_image = SubmittedImage()  # set any other fields, but don't commit to DB (ie. don't save())
-        s_image.background_type = BackgroundType.objects.get(name__contains='natural')
-        s_image.plant_organ = PlantOrgan.objects.get(name__contains='fruit')
+        s_image.background_type = BackgroundType.objects.get(name='NaturalBackground')
+        s_image.plant_organ = PlantOrgan.objects.get(name='Fruit')
 
         response = requests.get(url)
         if response.status_code == 200:
