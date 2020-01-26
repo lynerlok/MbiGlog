@@ -196,13 +196,15 @@ class CNN(ImageClassifier):
         print(self.train_labels.shape)
 
     def save_model(self):
-        self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.__class__.__name__}_'
+        path = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.__class__.__name__}_'
                                                                            f'{self.date.year}_'
                                                                            f'{self.date.month}_'
                                                                            f'{self.date.day}_'
                                                                            f'{self.date.hour}')
-        os.mkdir(self.learning_data)
+        os.mkdir(path)
+        self.learning_data = path
         self.nn_model.save(self.learning_data)
+        self.save()
 
     def load_model(self):
         self.set_tf_model()
