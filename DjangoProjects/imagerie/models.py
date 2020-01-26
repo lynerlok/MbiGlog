@@ -202,11 +202,10 @@ class CNN(ImageClassifier):
                                   f'{self.date.year}_'
                                   f'{self.date.month}_'
                                   f'{self.date.day}_'
-                                  f'{self.date.hour}')
-        if not os.path.isdir(path):
-            os.mkdir(path)
-        self.learning_data = path
+                                  f'{self.date.hour}.h5')
+
         self.nn_model.save(self.learning_data)
+        self.learning_data = path
         self.save()
 
     def load_model(self):
