@@ -145,14 +145,11 @@ class CNN(ImageClassifier):
     def train(self, training_data=None):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
-        print(self.test_images.shape)
-        print(self.test_labels.shape)
         self.nn_model.fit(self.train_images, self.train_labels, epochs=2, verbose=2)
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
-        print(accuracy)
         self.accuracy = accuracy
-        self.save_model()
         self.available = True
+        self.save_model()
 
     def classify(self, images: List[Image]):
         if not self.available:
