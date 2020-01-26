@@ -151,12 +151,13 @@ class CNN(ImageClassifier):
         self.available = True
         self.save_model()
 
-    def classify(self, images: np.ndarray):
+    def classify(self, images: List[SubmittedImage]):
         if not self.available:
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
-        predictions = self.nn_model.predict(images)
+        processed_images = np.array([image.preprocess() for image in images])
+        predictions = self.nn_model.predict(processed_images)
         for i in range(len(images)):
             for cnn_class in self.class_set.all():
                 pred, _ = Prediction.objects.get_or_create(cnn=self, image=images[i], specie=cnn_class.specie)
