@@ -164,7 +164,7 @@ class CNN(ImageClassifier):
                     pred = Prediction.objects.get(cnn=self, image=images[i], specie=cnn_class.specie)
                 except Prediction.DoesNotExist:
                     pred = Prediction(cnn=self, image=images[i], specie=cnn_class.specie)
-                pred.confidence = predictions[i][cnn_class.pos]
+                pred.confidence = float(predictions[i][cnn_class.pos])
                 pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
