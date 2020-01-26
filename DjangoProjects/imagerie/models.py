@@ -17,7 +17,6 @@ from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling
 from keras.models import Sequential
 
 
-# TODO Add CNNSpeciality et Request
 class Label(models.Model):
     name = models.CharField(max_length=50)
 
@@ -86,7 +85,6 @@ class BackgroundType(Label):
 
 class Image(models.Model):
     image = models.ImageField(upload_to="images/")
-    date = models.DateTimeField(auto_now_add=True)
     plant_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT)
     background_type = models.ForeignKey('BackgroundType', on_delete=models.PROTECT)
 
@@ -95,19 +93,14 @@ class Image(models.Model):
 
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
-
         img = imageio.imread(self.image.path, pilmode='RGB')
         img = np.array(PImage.fromarray(img).resize((224, 224))).astype(np.float32)
-        # img[:, :, 0] -= 123.68
-        # img[:, :, 1] -= 116.779
-        # img[:, :, 2] -= 103.939
-        # img[:, :, [0, 1, 2]] = img[:, :, [2, 1, 0]]
-        # img = img.transpose((2, 0, 1))
-
         return img
 
 
 class SubmittedImage(Image):
+    request = models.ForeignKey('Request', on_delete=models.CASCADE, related_name='submitted_images')
+
     @property
     def specie(self):
         return self.prediction_set.values('specie').annotate(tot_conf=Sum('confidence')).first()
@@ -129,10 +122,16 @@ class ImageClassifier(models.Model):
         abstract = True
 
 
+class Request(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+
+
 class CNN(ImageClassifier):
     learning_data = models.FilePathField(allow_folders=True, null=True)
     classes = models.ManyToManyField(Specie, through="Class", related_name='+')
     available = models.BooleanField(default=False)
+    specialized_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT, null=True, default=None)
+    specialized_background = models.ForeignKey('BackgroundType', on_delete=models.PROTECT, null=True, default=None)
     nn_model = None
     train_images = None
     train_labels = None
@@ -152,11 +151,12 @@ class CNN(ImageClassifier):
         self.available = True
         self.save_model()
 
-    def classify(self, images: List[SubmittedImage]):
+    def classify(self, request: Request):
         if not self.available:
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
+        images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
         for i in range(len(images)):
@@ -171,6 +171,11 @@ class CNN(ImageClassifier):
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
             images = GroundTruthImage.objects.all()
+        if self.specialized_organ:
+            images = images.filter(plant_organ=self.specialized_organ)
+        if self.specialized_background:
+            images = images.filter(background_type=self.specialized_background)
+
         species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=10)
         images = list(images)
         shuffle(images)

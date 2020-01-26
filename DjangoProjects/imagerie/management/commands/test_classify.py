@@ -29,11 +29,11 @@ class Command(BaseCommand):
         if response.status_code == 200:
             s_image.image.save(name, ContentFile(response.content), save=True)
 
-        images = [s_image]
-
+        request = Request()
+        request.submitted_images.add(s_image)
+        request.save()
         a = AlexNet.objects.get(name="Test1")
-        a.classify(images)
-        for image in images:
+        a.classify(request)
+        for image in request.submitted_images.all():
             for pred in image.prediction_set.all():
                 print(pred)
-
