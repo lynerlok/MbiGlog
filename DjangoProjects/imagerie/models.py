@@ -279,8 +279,8 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        self.nn_model.add(Dense(17))
+        self.nn_model.add(Dense(len(self.classes)))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
-        self.nn_model.compile(loss=keras.losses.categorical_crossentropy, optimizer='adam', metrics=["accuracy"])
+        self.nn_model.compile(loss=keras.losses.sparse_categorical_crossentropy, optimizer='adam', metrics=["accuracy"])
