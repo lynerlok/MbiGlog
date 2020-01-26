@@ -29,7 +29,7 @@ class Command(BaseCommand):
         if response.status_code == 200:
             s_image.image.save(name, ContentFile(response.content), save=True)
 
-        images = [s_image]
+        images = np.array([s_image.preprocess()])
 
         a = AlexNet.objects.get(name="Test1")
         a.classify(images)

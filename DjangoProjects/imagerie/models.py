@@ -151,7 +151,7 @@ class CNN(ImageClassifier):
         self.available = True
         self.save_model()
 
-    def classify(self, images: List[Image]):
+    def classify(self, images: np.ndarray):
         if not self.available:
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
