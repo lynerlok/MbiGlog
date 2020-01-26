@@ -19,5 +19,6 @@ class Command(BaseCommand):
         a = AlexNet()
         images = GroundTruthImage.objects.filter(
             Q(specie__name__contains='Rhamnus') | Q(specie__name__contains='Euphorbia'))
+        print(len(images))
         a.train(images)
         print(a.accuracy)

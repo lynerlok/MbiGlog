@@ -98,6 +98,8 @@ class Image(models.Model):
         img = img.transpose((2, 0, 1))
         return np.expand_dims(img, axis=0)
 
+from imagerie.tf_models.AlexNet import AlexNet
+
 
 class SubmittedImage(Image):
     @property
@@ -141,7 +143,7 @@ class CNN(ImageClassifier):
 
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
-        self.nn_model.fit(self.train_images, self.train_labels, epochs=10, batch_size=100)
+        self.nn_model.fit(self.train_images, self.train_labels, epochs=2, batch_size=16, steps_per_epoch=2, verbose=2)
         _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
         self.save_model()
         self.available = True
@@ -166,7 +168,7 @@ class CNN(ImageClassifier):
         specie_to_pos = {}
         for i in range(len(species)):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
-            Class(cnn=self, specie=specie, pos=i)
+            Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
         train_images = []
         train_labels = []
