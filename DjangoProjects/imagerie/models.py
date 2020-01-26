@@ -179,10 +179,10 @@ class CNN(ImageClassifier):
         nb_images = len(images)
         for i in range(nb_images):
             if i < (1 - test_fraction) * nb_images:
-                train_images.append(images[i])
+                train_images.append(images[i].preprocess())
                 train_labels.append(specie_to_pos[images[i].specie])
             else:
-                test_images.append(images[i])
+                test_images.append(images[i].preprocess())
                 test_labels.append(specie_to_pos[images[i].specie])
 
     def save_model(self):
