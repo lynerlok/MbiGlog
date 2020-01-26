@@ -98,9 +98,6 @@ class Image(models.Model):
         img = img.transpose((2, 0, 1))
         return np.expand_dims(img, axis=0)
 
-from imagerie.tf_models.AlexNet import AlexNet
-
-
 class SubmittedImage(Image):
     @property
     def specie(self):
