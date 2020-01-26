@@ -83,7 +83,7 @@ class BackgroundType(Label):
 
 
 class Image(models.Model):
-    image = models.ImageField(upload_to="/media/Datas/Pictures")
+    image = models.ImageField(upload_to="images/")
     date = models.DateTimeField(auto_now_add=True)
     plant_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT)
     background_type = models.ForeignKey('BackgroundType', on_delete=models.PROTECT)
