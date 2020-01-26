@@ -9,7 +9,6 @@ import numpy as np
 import requests
 from PIL import Image as PImage
 from django.conf import settings as st
-from django.core.exceptions import SuspiciousFileOperation
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
@@ -148,7 +147,7 @@ class CNN(ImageClassifier):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
         print(self.train_images.shape)
-        self.nn_model.fit(self.train_images, self.train_labels, epochs=10, verbose=2)
+        self.nn_model.fit(self.train_images, self.train_labels, epochs=2, verbose=2)
         _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
         self.save_model()
         self.available = True
@@ -196,12 +195,16 @@ class CNN(ImageClassifier):
         print(self.train_labels.shape)
 
     def save_model(self):
-        path = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.__class__.__name__}_'
-                                                                           f'{self.date.year}_'
-                                                                           f'{self.date.month}_'
-                                                                           f'{self.date.day}_'
-                                                                           f'{self.date.hour}')
-        os.mkdir(path)
+        path = os.path.join(st.MEDIA_ROOT, 'training_datas')
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        path = os.path.join(path, f'{self.__class__.__name__}_'
+                                  f'{self.date.year}_'
+                                  f'{self.date.month}_'
+                                  f'{self.date.day}_'
+                                  f'{self.date.hour}')
+        if not os.path.isdir(path):
+            os.mkdir(path)
         self.learning_data = path
         self.nn_model.save(self.learning_data)
         self.save()
@@ -222,9 +225,6 @@ class Prediction(models.Model):
     image = models.ForeignKey(SubmittedImage, on_delete=models.CASCADE)
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
     confidence = models.DecimalField(max_digits=4, decimal_places=3)
-
-
-
 
 
 class AlexNet(CNN):
