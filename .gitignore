@@ -6,4 +6,4 @@ PythonVenv/
 venv
 /DjangoProjects/db.sqlite3
 settings.py
-migrations
+DjangoProjects/imagerie/migrations
