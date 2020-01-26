@@ -204,7 +204,7 @@ class CNN(ImageClassifier):
                                   f'{self.date.day}_'
                                   f'{self.date.hour}.h5')
 
-        self.nn_model.save(self.learning_data)
+        self.nn_model.save(path)
         self.learning_data = path
         self.save()
 
