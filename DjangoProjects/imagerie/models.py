@@ -1,5 +1,6 @@
 import os
 from abc import abstractmethod
+from random import shuffle
 from typing import *
 from xml.etree import ElementTree
 
@@ -14,7 +15,7 @@ from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
-from random import shuffle
+
 
 class Label(models.Model):
     name = models.CharField(max_length=50)
@@ -159,9 +160,8 @@ class CNN(ImageClassifier):
         if self.nn_model is None:
             self.load_model()
         predictions = self.nn_model.predict(images)
-        predictions.argmax()  # TODO extract max p for all given images and get Specie from here
-        for cnn_class in self.class_set:
-            for i in range(len(images)):
+        for i in range(len(images)):
+            for cnn_class in self.class_set:
                 pred, _ = Prediction.objects.get_or_create(cnn=self, image=images[i], specie=cnn_class.specie)
                 pred.confidence = predictions[i][cnn_class.pos]
                 pred.save()
@@ -194,8 +194,6 @@ class CNN(ImageClassifier):
         self.train_labels = np.array(train_labels)
         self.test_images = np.array(test_images)
         self.test_labels = np.array(test_labels)
-        print(train_labels)
-        print(test_labels)
 
     def save_model(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
