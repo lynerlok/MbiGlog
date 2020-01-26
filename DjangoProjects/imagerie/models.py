@@ -114,7 +114,7 @@ class GroundTruthImage(Image):
 
 class ImageClassifier(models.Model):
     date = models.DateTimeField(auto_now_add=True)
-    accuracy = models.DecimalField(max_digits=4, decimal_places=3)
+    accuracy = models.DecimalField(max_digits=4, decimal_places=3, null=True)
     name = models.CharField(max_length=50)
 
     def classify(self, images: Iterable[Image]) -> Iterable[Specie]:
