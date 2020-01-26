@@ -14,7 +14,7 @@ from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
-
+from random import shuffle
 
 class Label(models.Model):
     name = models.CharField(max_length=50)
@@ -170,6 +170,8 @@ class CNN(ImageClassifier):
         if images is None:
             images = GroundTruthImage.objects.all()
         species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=10)
+        images = list(images)
+        shuffle(images)
         specie_to_pos = {}
         self.save()
         for i in range(len(species)):
@@ -192,6 +194,7 @@ class CNN(ImageClassifier):
         self.train_labels = np.array(train_labels)
         self.test_images = np.array(test_images)
         self.test_labels = np.array(test_labels)
+        print(train_labels)
         print(test_labels)
 
     def save_model(self):
