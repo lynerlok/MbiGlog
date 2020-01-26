@@ -164,10 +164,10 @@ class CNN(ImageClassifier):
             images = GroundTruthImage.objects.all()
         species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=10)
         specie_to_pos = {}
+        self.save()
         for i in range(len(species)):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
-            c = Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
-            c.save()
+            Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
         train_images = []
         train_labels = []

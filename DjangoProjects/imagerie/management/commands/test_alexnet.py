@@ -16,7 +16,7 @@ class Command(BaseCommand):
         self.test()
 
     def test(self):
-        a = AlexNet()
+        a = AlexNet.objects.get_or_create(pk=1)
         images = GroundTruthImage.objects.filter(
             Q(specie__name__contains='Rhamnus') | Q(specie__name__contains='Euphorbia'))
         print(len(images))
