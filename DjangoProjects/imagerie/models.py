@@ -146,7 +146,7 @@ class CNN(ImageClassifier):
 
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
-        print(self.train_images.shape)
+        print(self.train_labels.shape)
         self.nn_model.fit(self.train_images, self.train_labels, epochs=10, verbose=2)
         _, self.accuracy = self.nn_model.evaluate(self.test_images, self.test_labels)
         self.save_model()
@@ -175,18 +175,22 @@ class CNN(ImageClassifier):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
-        self.train_images = np.array([])
-        self.train_labels = np.array([])
-        self.test_images = np.array([])
-        self.test_labels = np.array([])
+        train_images = []
+        train_labels = []
+        test_images = []
+        test_labels = []
         nb_images = len(images)
         for i in range(nb_images):
             if i < (1 - test_fraction) * nb_images:
-                np.append(self.train_images, images[i].preprocess())
-                np.append(self.train_labels, specie_to_pos[images[i].specie])
+                train_images.append(images[i].preprocess())
+                train_labels.append(specie_to_pos[images[i].specie])
             else:
-                np.append(self.test_images, images[i].preprocess())
-                np.append(self.test_labels, specie_to_pos[images[i].specie])
+                test_images.append(images[i].preprocess())
+                test_labels.append(specie_to_pos[images[i].specie])
+        self.train_images = np.array(train_images)
+        self.train_labels = np.array(train_labels)
+        self.test_images = np.array(test_images)
+        self.test_labels = np.array(test_labels)
 
     def save_model(self):
         self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.__class__.__name__}_'
