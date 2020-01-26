@@ -33,4 +33,7 @@ class Command(BaseCommand):
 
         a = AlexNet.objects.get(name="Test1")
         a.classify(images)
+        for image in images:
+            for pred in image.prediction_set.all():
+                print(pred)
 

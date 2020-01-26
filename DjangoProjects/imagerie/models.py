@@ -17,6 +17,7 @@ from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling
 from keras.models import Sequential
 
 
+# TODO Add CNNSpeciality et Request
 class Label(models.Model):
     name = models.CharField(max_length=50)
 
