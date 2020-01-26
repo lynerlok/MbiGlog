@@ -142,9 +142,6 @@ class CNN(ImageClassifier):
         pass
 
     def train(self, training_data=None):
-        # TODO Deal with training data only if specified, otherwise use all available data
-        #  (Maybe use filter kwargs instead of directly give training dataset)
-
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
         print(self.test_images.shape)
@@ -195,6 +192,7 @@ class CNN(ImageClassifier):
         self.train_labels = np.array(train_labels)
         self.test_images = np.array(test_images)
         self.test_labels = np.array(test_labels)
+        print(test_labels)
 
     def save_model(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
