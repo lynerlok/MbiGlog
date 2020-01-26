@@ -176,6 +176,7 @@ class CNN(ImageClassifier):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
+        print(specie_to_pos)
         train_images = []
         train_labels = []
         test_images = []
@@ -192,6 +193,7 @@ class CNN(ImageClassifier):
         self.train_labels = np.array(train_labels)
         self.test_images = np.array(test_images)
         self.test_labels = np.array(test_labels)
+        print(self.train_labels.shape)
 
     def save_model(self):
         self.learning_data = os.path.join(st.MEDIA_ROOT, 'training_datas', f'{self.__class__.__name__}_'
