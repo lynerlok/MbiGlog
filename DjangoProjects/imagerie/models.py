@@ -145,11 +145,10 @@ class CNN(ImageClassifier):
     def set_tf_model(self):
         pass
 
-
     def train(self, training_data=None):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
-        print(self.classes)
+
         self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=20, verbose=2)
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
@@ -184,7 +183,11 @@ class CNN(ImageClassifier):
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
         species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=100)
+
+        for specie in species:
+            print(specie['specie__name'], specie['nb_image'])
         images = list(images)
+        print(len(images))
         shuffle(images)
         specie_to_pos = {}
         self.save()  # allow to create ref to CNN in classes
