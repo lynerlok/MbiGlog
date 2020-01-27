@@ -4,5 +4,6 @@
 # Ignore python virtual environment
 PythonVenv/
 venv
+DjangoProjects/glogServer/settings.py
 /DjangoProjects/db.sqlite3
 DjangoProjects/imagerie/migrations
