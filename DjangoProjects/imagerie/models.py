@@ -165,6 +165,7 @@ class CNN(ImageClassifier):
         ordered_predictions = np.argsort(predictions, axis=1)
         print(predictions)
         print(ordered_predictions)
+        print(np.take_along_axis(predictions, ordered_predictions, axis=1))
         for i in range(len(images)):
             for cnn_class in self.class_set.all():
                 if ordered_predictions[i, cnn_class.pos] < 5:
