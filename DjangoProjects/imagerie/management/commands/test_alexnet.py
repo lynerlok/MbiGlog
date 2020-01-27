@@ -19,8 +19,8 @@ class Command(BaseCommand):
 
     def test(self):
         natural = BackgroundType.objects.get(name='NaturalBackground')
-        fruit = PlantOrgan.objects.get(name='Fruit')
-        a, _ = AlexNet.objects.get_or_create(name="NF", specialized_background=natural, specialized_organ=fruit)
+        leaf = PlantOrgan.objects.get(name='Leaf')
+        a, _ = AlexNet.objects.get_or_create(name="NL", specialized_background=natural, specialized_organ=leaf)
         images = GroundTruthImage.objects.filter(
-            Q(specie__name__contains='Rhamnus') | Q(specie__name__contains='Euphorbia'))
+            Q(specie__name='Olea europaea') | Q(specie__name='Phillyrea angustifolia'))
         a.train()
