@@ -5,5 +5,4 @@
 PythonVenv/
 venv
 /DjangoProjects/db.sqlite3
-settings.py
 DjangoProjects/imagerie/migrations
