@@ -182,7 +182,7 @@ class CNN(ImageClassifier):
             images = images.filter(plant_organ=self.specialized_organ)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=40)
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=200)
         images = list(images)
         shuffle(images)
         specie_to_pos = {}
@@ -300,5 +300,5 @@ class AlexNet(CNN):
 
         # Compile the self.nn_model
         self.nn_model.compile(loss=keras.losses.sparse_categorical_crossentropy,
-                              optimizer='adam',
+                              optimizer='adagrad',
                               metrics=["sparse_categorical_accuracy"])
