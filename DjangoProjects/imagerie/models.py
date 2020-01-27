@@ -162,10 +162,10 @@ class CNN(ImageClassifier):
         images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
-        ordered_predictions = np.argsort(predictions)
+        ordered_predictions = np.argsort(-predictions)
         for i in range(len(images)):
             for cnn_class in self.class_set.all():
-                if ordered_predictions[i][cnn_class.pos] < 5:
+                if ordered_predictions[i, cnn_class.pos] < 5:
                     try:
                         pred = Prediction.objects.get(cnn=self, image=images[i], specie=cnn_class.specie)
                     except Prediction.DoesNotExist:
