@@ -177,12 +177,9 @@ class CNN(ImageClassifier):
         print(images)
         if self.specialized_organ:
             images = images.filter(plant_organ=self.specialized_organ)
-        print(images)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        print(images)
         species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=5)
-        print(species)
         images = list(images)
         shuffle(images)
         specie_to_pos = {}
@@ -191,18 +188,16 @@ class CNN(ImageClassifier):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
-        print(specie_to_pos)
         train_images, train_labels, test_images, test_labels = [], [], [], []
         nb_images = len(images)
-        print(images)
         for i in range(nb_images):
-            print(images[i])
-            if i < (1 - test_fraction) * nb_images:
-                train_images.append(images[i].preprocess())
-                train_labels.append(specie_to_pos[images[i].specie])
-            else:
-                test_images.append(images[i].preprocess())
-                test_labels.append(specie_to_pos[images[i].specie])
+            if images[i].specie in specie_to_pos:
+                if i < (1 - test_fraction) * nb_images:
+                    train_images.append(images[i].preprocess())
+                    train_labels.append(specie_to_pos[images[i].specie])
+                else:
+                    test_images.append(images[i].preprocess())
+                    test_labels.append(specie_to_pos[images[i].specie])
 
         self.train_images = np.array(train_images)
         self.train_labels = np.array(train_labels)
