@@ -303,5 +303,5 @@ class AlexNet(CNN):
 
         # Compile the self.nn_model
         self.nn_model.compile(loss=keras.losses.sparse_categorical_crossentropy,
-                              optimizer='adagrad',
+                              optimizer='adam',
                               metrics=["sparse_categorical_accuracy"])
