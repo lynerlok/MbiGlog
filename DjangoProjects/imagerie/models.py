@@ -191,6 +191,7 @@ class CNN(ImageClassifier):
         print(specie_to_pos)
         train_images, train_labels, test_images, test_labels = [], [], [], []
         nb_images = len(images)
+        print(images)
         for i in range(nb_images):
             print(images[i])
             if i < (1 - test_fraction) * nb_images:
