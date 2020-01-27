@@ -168,11 +168,13 @@ class CNN(ImageClassifier):
         for i in range(len(images)):
             for cnn_class in self.class_set.all():
                 if ordered_predictions[i, cnn_class.pos] < 5:
+                    print(ordered_predictions[i, cnn_class.pos], "=>", predictions[i, cnn_class.pos],
+                          float(predictions[i, cnn_class.pos]))
                     try:
                         pred = Prediction.objects.get(cnn=self, image=images[i], specie=cnn_class.specie)
                     except Prediction.DoesNotExist:
                         pred = Prediction(cnn=self, image=images[i], specie=cnn_class.specie)
-                    pred.confidence = float(predictions[i][cnn_class.pos])
+                    pred.confidence = float(predictions[i, cnn_class.pos])
                     pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
