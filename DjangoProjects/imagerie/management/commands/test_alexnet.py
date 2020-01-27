@@ -18,7 +18,7 @@ class Command(BaseCommand):
         self.test()
 
     def test(self):
-        natural = BackgroundType.objects.get(name='NaturalBackground')
+        natural = BackgroundType.objects.get(name='SheetAsBackground')
         leaf = PlantOrgan.objects.get(name='Leaf')
         a, _ = AlexNet.objects.get_or_create(name="NL", specialized_background=natural, specialized_organ=leaf)
         images = GroundTruthImage.objects.filter(
