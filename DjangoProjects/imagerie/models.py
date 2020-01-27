@@ -148,7 +148,7 @@ class CNN(ImageClassifier):
     def train(self, training_data=None):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
-        self.nn_model.fit(self.train_images, self.train_labels, epochs=50, verbose=2)
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=200, epochs=50, verbose=2)
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
         self.available = True
@@ -180,7 +180,7 @@ class CNN(ImageClassifier):
             images = images.filter(plant_organ=self.specialized_organ)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=5)
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=40)
         images = list(images)
         shuffle(images)
         specie_to_pos = {}
