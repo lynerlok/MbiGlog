@@ -23,4 +23,4 @@ class Command(BaseCommand):
         a, _ = AlexNet.objects.get_or_create(name="NF", specialized_background=natural, specialized_organ=fruit)
         images = GroundTruthImage.objects.filter(
             Q(specie__name__contains='Rhamnus') | Q(specie__name__contains='Euphorbia'))
-        a.train(images)
+        a.train()

@@ -174,7 +174,6 @@ class CNN(ImageClassifier):
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
             images = GroundTruthImage.objects.all()
-        print(images)
         if self.specialized_organ:
             images = images.filter(plant_organ=self.specialized_organ)
         if self.specialized_background:
