@@ -99,7 +99,7 @@ class Image(models.Model):
 
 
 class SubmittedImage(Image):
-    request = models.ForeignKey('Request', on_delete=models.CASCADE, related_name='submitted_images')
+    request = models.ForeignKey('Request', on_delete=models.CASCADE, related_name='submitted_images', null=True)
 
     @property
     def specie(self):
