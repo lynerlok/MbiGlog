@@ -162,7 +162,8 @@ class CNN(ImageClassifier):
         images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
-        ordered_predictions = np.argsort(-predictions)
+        ordered_predictions = np.argsort(-predictions, axis=1)
+        print(ordered_predictions)
         for i in range(len(images)):
             for cnn_class in self.class_set.all():
                 if ordered_predictions[i, cnn_class.pos] < 5:
