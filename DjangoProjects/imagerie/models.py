@@ -171,11 +171,14 @@ class CNN(ImageClassifier):
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
             images = GroundTruthImage.objects.all()
+        print(images)
         if self.specialized_organ:
             images = images.filter(plant_organ=self.specialized_organ)
+        print(images)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=10)
+        print(images)
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=5)
         print(species)
         images = list(images)
         shuffle(images)
