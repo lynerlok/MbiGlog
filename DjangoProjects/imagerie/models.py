@@ -162,7 +162,7 @@ class CNN(ImageClassifier):
         images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
-        ordered_predictions = np.argsort(predictions, axis=1)
+        ordered_predictions = np.argsort(-predictions, axis=1)
         print(predictions)
         print(ordered_predictions)
         print(np.take_along_axis(predictions, ordered_predictions, axis=1))
