@@ -20,7 +20,7 @@ class Command(BaseCommand):
     def test(self):
         natural = BackgroundType.objects.get(name='SheetAsBackground')
         leaf = PlantOrgan.objects.get(name='Leaf')
-        a, _ = AlexNet.objects.get_or_create(name="NL", specialized_background=natural, specialized_organ=leaf)
+        a, _ = AlexNet.objects.get_or_create(name="SL", specialized_background=natural, specialized_organ=leaf)
         images = GroundTruthImage.objects.filter(
             Q(specie__name='Olea europaea') | Q(specie__name='Phillyrea angustifolia'))
         a.train()
