@@ -14,6 +14,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print(len(Request.objects.all()))
-        Request.objects.filter(date__lt=now() - timedelta(minutes=5)).delete()
+        Request.objects.filter(date__lt=now() - timedelta(days=1)).delete()
         print(len(Request.objects.all()))
 
