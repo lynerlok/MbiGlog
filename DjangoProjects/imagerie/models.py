@@ -188,7 +188,7 @@ class CNN(ImageClassifier):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
-
+        print(specie_to_pos)
         train_images, train_labels, test_images, test_labels = [], [], [], []
         nb_images = len(images)
         for i in range(nb_images):
