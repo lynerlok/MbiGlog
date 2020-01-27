@@ -32,7 +32,7 @@ class Command(BaseCommand):
         request = Request()
         request.submitted_images.add(s_image)
         request.save()
-        a = AlexNet.objects.get(name="Test1")
+        a = AlexNet.objects.get(name="NF")
         a.classify(request)
         for image in request.submitted_images.all():
             for pred in image.prediction_set.all():
