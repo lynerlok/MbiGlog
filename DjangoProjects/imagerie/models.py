@@ -16,6 +16,7 @@ from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
 from keras.utils import to_categorical
+from keras.optimizers import SGD
 
 
 class Label(models.Model):
@@ -214,7 +215,7 @@ class CNN(ImageClassifier):
         self.train_labels = to_categorical(np.array(train_labels))
 
         self.test_images = np.array(test_images)
-        self.test_labels = np.array(test_labels)
+        self.test_labels = to_categorical(np.array(test_labels))
 
     def save_model(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
@@ -309,6 +310,7 @@ class AlexNet(CNN):
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
+        opt = SGD(lr=0.01)
         self.nn_model.compile(loss="mean_squared_logarithmic_error",
-                              optimizer=keras.optimizers.Adam(lr=0.01),
+                              optimizer=opt,
                               metrics=["accuracy"])
