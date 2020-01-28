@@ -209,7 +209,9 @@ class CNN(ImageClassifier):
                     test_labels.append(specie_to_pos[images[i].specie])
 
         self.train_images = np.array(train_images)
+        print(train_images)
         self.train_labels = np.array(train_labels)
+        print(train_labels)
         self.test_images = np.array(test_images)
         self.test_labels = np.array(test_labels)
 
