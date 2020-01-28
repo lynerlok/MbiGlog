@@ -306,7 +306,7 @@ class AlexNet(CNN):
 
         # Output Layer
         #self.nn_model.add(Dense(len(self.classes.all())))
-        self.nn_model.add(Dense(37))
+        self.nn_model.add(Dense(36))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
