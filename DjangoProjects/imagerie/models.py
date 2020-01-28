@@ -1,9 +1,11 @@
 import os
 from abc import abstractmethod
+from random import shuffle
 from typing import *
 from xml.etree import ElementTree
 
 import imageio
+import keras
 import numpy as np
 import requests
 import tensorflow as tf
@@ -146,29 +148,17 @@ class CNN(ImageClassifier):
         pass
 
     def train(self, training_data=None):
-        # Respect GPU please :) 
-        # gpus = tf.config.experimental.list_physical_devices('GPU')
-        # tf.config.experimental.set_memory_growth(gpus[0], True)
-
+        self.classes.all().delete()
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
 
-        # Create a callback that saves the model's weights
         checkpoint_dir = self.checkpoint_dir_path
         checkpoint_path = os.path.join(checkpoint_dir, f'{self.name}_cp_{{epoch:04d}}.ckpt')
         cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                          save_weights_only=False,
                                                          verbose=1, period=5)
 
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=50, verbose=2)
-
-        aug = ImageDataGenerator(dtype='float16')
-        aug.fit(self.train_images)
-        self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        # self.nn_model.fit_generator(aug.flow(self.train_images, self.train_labels, batch_size=10),
-        #                             validation_data=(self.test_images, self.test_labels),
-        #                             steps_per_epoch=len(self.train_images) // 10,
-        #                             epochs=50, callbacks=[cp_callback])
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=20, verbose=2, callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = float(accuracy)
         print(self.accuracy)
@@ -181,11 +171,6 @@ class CNN(ImageClassifier):
         if self.nn_model is None:
             self.load_model()
 
-        # Respect GPU please :) 
-        # gpus = tf.config.experimental.list_physical_devices('GPU')
-        # tf.config.experimental.set_memory_growth(gpus[0], True)
-
-        # images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
         original_index_sorted = np.argsort(-predictions, axis=1)
@@ -342,7 +327,7 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        self.nn_model.add(Dense(121))
+        self.nn_model.add(Dense(len(self.classes.all())))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
