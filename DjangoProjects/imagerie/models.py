@@ -16,7 +16,7 @@ from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
 from keras.utils import to_categorical
-from keras.optimizers import SGD
+
 
 
 class Label(models.Model):
@@ -310,7 +310,7 @@ class AlexNet(CNN):
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
-        opt = SGD(lr=0.01)
-        self.nn_model.compile(loss="mean_squared_logarithmic_error",
-                              optimizer=opt,
+
+        self.nn_model.compile(loss="categorical_crossentropy",
+                              optimizer="adam",
                               metrics=["accuracy"])
