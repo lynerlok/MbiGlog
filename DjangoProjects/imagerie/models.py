@@ -307,6 +307,6 @@ class AlexNet(CNN):
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
-        self.nn_model.compile(loss="loss_mean_squared_logarithmic_error",
+        self.nn_model.compile(loss="mean_squared_logarithmic_error",
                               optimizer=keras.optimizers.Adam(lr=0.01),
                               metrics=["sparse_categorical_accuracy"])
