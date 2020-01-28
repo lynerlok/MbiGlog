@@ -146,13 +146,13 @@ class CNN(ImageClassifier):
         pass
 
     def train(self, training_data=None):
-        self.split_images(training_data, test_fraction=0.3)
+        self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
 
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=10, verbose=2)
-        _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
-        self.accuracy = accuracy
-        print(accuracy)
+        #self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=10, verbose=2)
+        #_, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
+        #self.accuracy = accuracy
+        #print(accuracy)
         self.available = True
         self.save_model()
 
@@ -198,6 +198,7 @@ class CNN(ImageClassifier):
             specie_to_pos[specie] = i
         train_images, train_labels, test_images, test_labels = [], [], [], []
         nb_images = len(images)
+        print(specie_to_pos)
         for i in range(nb_images):
             if images[i].specie in specie_to_pos:
                 if i < (1 - test_fraction) * nb_images:
@@ -304,6 +305,6 @@ class AlexNet(CNN):
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
-        self.nn_model.compile(loss=keras.losses.categorical_crossentropy,
+        self.nn_model.compile(loss=keras.losses.sparse_categorical_crossentropy,
                               optimizer=keras.optimizers.Adam(lr=0.01),
-                              metrics=["accuracy"])
+                              metrics=["sparse_categorical_accuracy"])
