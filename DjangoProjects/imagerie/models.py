@@ -94,7 +94,7 @@ class Image(models.Model):
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
         img = imageio.imread(self.image.path, pilmode='RGB')
-        img = np.array(PImage.fromarray(img).resize((224, 224))).astype(np.float32)
+        img = np.array(PImage.fromarray(img).resize((224, 224)))
         return img
 
 
@@ -149,10 +149,10 @@ class CNN(ImageClassifier):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
 
-        #self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=10, verbose=2)
-        #_, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
-        #self.accuracy = accuracy
-        #print(accuracy)
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=10, verbose=2)
+        _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
+        self.accuracy = accuracy
+        print(accuracy)
         self.available = True
         self.save_model()
 
@@ -203,8 +203,12 @@ class CNN(ImageClassifier):
             if images[i].specie in specie_to_pos:
                 if i < (1 - test_fraction) * nb_images:
                     if i < 4:
+                        print("#########")
                         print(images[i].specie)
+
+                        print("#########")
                     train_images.append(images[i].preprocess())
+
                     train_labels.append(specie_to_pos[images[i].specie])
                 else:
                     test_images.append(images[i].preprocess())
