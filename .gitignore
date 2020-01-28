@@ -11,3 +11,6 @@ DjangoProjects/nohup.out
 
 # Ignore virtualenvwrapper files
 
+# Ignore pycache
+
+*/__pycache__/
