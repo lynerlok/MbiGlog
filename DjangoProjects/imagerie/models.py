@@ -202,6 +202,8 @@ class CNN(ImageClassifier):
         for i in range(nb_images):
             if images[i].specie in specie_to_pos:
                 if i < (1 - test_fraction) * nb_images:
+                    if i < 4:
+                        print(images[images[i].species])
                     train_images.append(images[i].preprocess())
                     train_labels.append(specie_to_pos[images[i].specie])
                 else:
@@ -209,7 +211,8 @@ class CNN(ImageClassifier):
                     test_labels.append(specie_to_pos[images[i].specie])
 
         self.train_images = np.array(train_images)
-        print(self.train_images)
+
+
         self.train_labels = np.array(train_labels)
         print(self.train_labels)
         self.test_images = np.array(test_images)
