@@ -23,4 +23,4 @@ class Command(BaseCommand):
         a, _ = AlexNet.objects.get_or_create(name="SL", specialized_background=natural, specialized_organ=leaf)
         images = GroundTruthImage.objects.filter(
             Q(specie__name='Olea europaea') | Q(specie__name='Phillyrea angustifolia'))
-        a.train()
+        a.train(images)

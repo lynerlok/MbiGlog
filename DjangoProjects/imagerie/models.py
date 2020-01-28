@@ -198,17 +198,10 @@ class CNN(ImageClassifier):
             specie_to_pos[specie] = i
         train_images, train_labels, test_images, test_labels = [], [], [], []
         nb_images = len(images)
-        print(specie_to_pos)
         for i in range(nb_images):
             if images[i].specie in specie_to_pos:
                 if i < (1 - test_fraction) * nb_images:
-                    if i < 4:
-                        print("#########")
-                        print(images[i].specie)
-
-                        print("#########")
                     train_images.append(images[i].preprocess())
-
                     train_labels.append(specie_to_pos[images[i].specie])
                 else:
                     test_images.append(images[i].preprocess())
@@ -218,7 +211,7 @@ class CNN(ImageClassifier):
 
 
         self.train_labels = np.array(train_labels)
-        print(self.train_labels)
+
         self.test_images = np.array(test_images)
         self.test_labels = np.array(test_labels)
 
@@ -314,6 +307,6 @@ class AlexNet(CNN):
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
-        self.nn_model.compile(loss=keras.losses.sparse_categorical_crossentropy,
+        self.nn_model.compile(loss="loss_mean_squared_logarithmic_error",
                               optimizer=keras.optimizers.Adam(lr=0.01),
                               metrics=["sparse_categorical_accuracy"])
