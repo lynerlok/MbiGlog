@@ -36,7 +36,7 @@ DEBUG = False
 
 MESSAGE_LEVEL = 0
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','glog.dust-of-the-universe.com']
 
 # Application definition
 
@@ -94,7 +94,7 @@ DATABASES = {
         'NAME': get_env_variable('DATABASE_NAME'),
         'USER': get_env_variable('DATABASE_USER'),
         'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
-	'HOST': 'glog.dust-of-the-universe.com',
+	'HOST': '127.0.0.1',
 	'PORT': '5432',
     }
 }
