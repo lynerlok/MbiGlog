@@ -17,3 +17,7 @@ DjangoProjects/nohup.out
 # Ignore pycache
 
 *.pyc
+
+# Ignore Database
+
+DevDatabase.db
