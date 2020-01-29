@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker build -t glogserver:1.0 .
+docker build -t glogserver:2.0 .
