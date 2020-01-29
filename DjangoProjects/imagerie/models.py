@@ -16,6 +16,7 @@ from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D,
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
 
+
 class Label(models.Model):
     name = models.CharField(max_length=50)
 
@@ -146,7 +147,7 @@ class CNN(ImageClassifier):
 
     def train(self, training_data=None):
         # Respect GPU please :) 
-        gpus= tf.config.experimental.list_physical_devices('GPU')
+        gpus = tf.config.experimental.list_physical_devices('GPU')
         tf.config.experimental.set_memory_growth(gpus[0], True)
 
         self.split_images(training_data, test_fraction=0.2)
@@ -166,7 +167,7 @@ class CNN(ImageClassifier):
             self.load_model()
 
         # Respect GPU please :) 
-        gpus= tf.config.experimental.list_physical_devices('GPU')
+        gpus = tf.config.experimental.list_physical_devices('GPU')
         tf.config.experimental.set_memory_growth(gpus[0], True)
 
         images = request.submitted_images.all()
@@ -257,8 +258,7 @@ class Prediction(models.Model):
 class AlexNet(CNN):
 
     def set_tf_model(self):
-
-	# Instantiate an empty model
+        # Instantiate an empty model
         self.nn_model = Sequential()
 
         # 1st Convolutional Layer
@@ -309,7 +309,7 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        #self.nn_model.add(Dense(len(self.classes.all())))
+        # self.nn_model.add(Dense(len(self.classes.all())))
         self.nn_model.add(Dense(36))
         self.nn_model.add(Activation('softmax'))
 
