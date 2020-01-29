@@ -95,7 +95,7 @@ class Image(models.Model):
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
         img = imageio.imread(self.image.path, pilmode='RGB')
-        img = np.array(PImage.fromarray(img).resize((224, 224)))
+        img = np.array(PImage.fromarray(img).resize((224, 224))) / 255
         return img
 
 
