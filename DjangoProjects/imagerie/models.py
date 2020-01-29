@@ -15,6 +15,7 @@ from django.db.models import QuerySet, Count, Sum
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 class Label(models.Model):
@@ -94,7 +95,7 @@ class Image(models.Model):
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
         img = imageio.imread(self.image.path, pilmode='RGB')
-        img = np.array(PImage.fromarray(img).resize((224, 224))).astype(np.float32)
+        img = np.array(PImage.fromarray(img).resize((224, 224)))
         return img
 
 
@@ -153,7 +154,18 @@ class CNN(ImageClassifier):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
 
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
+        #self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
+
+        aug = ImageDataGenerator(rotation_range=20, zoom_range=0.15,
+                                 width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15,
+                                 horizontal_flip=True, fill_mode="nearest",
+                                 dtype = 'float32')
+        self.nn_model.fit_generator(aug.flow(self.train_images,
+                                             self.train_labels, batch_size=10),
+                                             validation_data=(self.test_images, self.test_labels),
+                                             steps_per_epoch=len(self.train_images) // 32,
+                                             epochs=50)
+
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = float(accuracy)
         print(self.accuracy)
