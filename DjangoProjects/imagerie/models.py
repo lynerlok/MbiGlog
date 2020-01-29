@@ -95,7 +95,7 @@ class Image(models.Model):
     def preprocess(self):
         """Preprocess of GoogLeNet for now"""
         img = imageio.imread(self.image.path, pilmode='RGB')
-        img = np.array(PImage.fromarray(img).resize((224, 224))) / 255
+        img = np.array(PImage.fromarray(img).resize((224, 224)))
         return img
 
 
@@ -156,7 +156,7 @@ class CNN(ImageClassifier):
 
         #self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
 
-        aug = ImageDataGenerator(dtype = 'float16')
+        aug = ImageDataGenerator(dtype = 'float32')
         self.nn_model.fit_generator(aug.flow(self.train_images,
                                              self.train_labels, batch_size=10),
                                              validation_data=(self.test_images, self.test_labels),
