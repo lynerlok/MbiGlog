@@ -16,4 +16,4 @@ DjangoProjects/nohup.out
 
 # Ignore pycache
 
-*/__pycache__/
+*.pyc
