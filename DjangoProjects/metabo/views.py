@@ -8,6 +8,6 @@ def home(request):
     for i in geneList:
         gene, _ = Gene.objects.get_or_create(id_gene=i)
         gene.get_or_create_pathways()
-        #enz = Enzyme()
-        #enz.get_or_create_enzyme(id_gene=gene.id_gene)
+        enz = Enzyme.objects.create()
+        enz.create_enzyme_metabolite()
     return render(request, "metabo/home.html", locals())

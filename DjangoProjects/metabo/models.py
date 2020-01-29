@@ -5,7 +5,6 @@ import io
 import re
 import json
 
-
 # Create your models here.
 
 
@@ -21,7 +20,6 @@ class Pathway(models.Model):
             for element in root.iter('Gene'):
                 if 'ID' in element.attrib:
                     gene, _ = Gene.objects.get_or_create(id_gene=element.attrib['frameid'])
-
                     if self not in gene.pathways.all():
                         gene.pathways.add(self)
 
@@ -35,23 +33,111 @@ class Gene(models.Model):
         responseBiocyc = requests.get('https://websvc.biocyc.org/apixml',
                                       {'fn': 'pathways-of-gene', 'id': 'ARA:' + self.id_gene})
         root = ET.fromstring(responseBiocyc.content)
-        enzyme = Enzyme.get_or_create_enzyme(id_gene=self.id_gene)
-        Reaction.get_or_create_metabo(id_gene=self.id_gene)
+        #enzyme = Enzyme.get_or_create_enzyme(id_gene=self.id_gene)
+       # met = Reaction.get_or_create_metabo(id_gene=self.id_gene)
         for pathwayElement in root.findall('Pathway'):
             pwy, _ = Pathway.objects.get_or_create(name=pathwayElement.attrib['frameid'])
             pwy.save()
             for reactionList in pathwayElement.findall('reaction-list'):
                 for reactionElement in reactionList.findall("Reaction"):
-                    reaction, _ = Reaction.objects.get_or_create(name=reactionElement.attrib['frameid'], enzyme=enzyme)
+                    reaction, _ = Reaction.objects.get_or_create(name=reactionElement.attrib['frameid'], enzyme=None)
                     reaction.save()
                     pwy.reactions.add(reaction)
             if self not in pwy.genes.all():
                 pwy.genes.add(self)
 
-
 class Enzyme(models.Model):
     name = models.TextField()
     gene = models.ForeignKey(Gene, related_name='enzymes', on_delete=models.CASCADE, null=True)
+
+    #print(Gene.objects.filter(pathways__name="PWY-82"))
+    #print(Reaction.objects.filter(pathway__name="PWY-82"))
+    def create_enzyme_metabolite(self):
+        for pwy in Pathway.objects.all():
+            #On parcourt les pwy
+            #Requete Uniprot
+            #Vérification du gène -> Vérification ID uniprot -> requête Uniprot -> association de l'enzyme au gène
+            #Vérification de la réaction -> association des métabolites à la réaction
+            name = pwy.name
+            #genes = Gene.objects.filter(pathways__name = name)
+            reactions = Reaction.objects.filter(pathway__name = name)
+            responseBiocyc = requests.get('https://websvc.biocyc.org/apixml',
+                                      {'fn': 'enzymes-of-pathway', 'id': 'ARA:' + name, 'detail':'full'})
+            root = ET.fromstring(responseBiocyc.content)
+            for protein in root.findall('Protein'):
+                newname = re.sub(r'\-[A-Z]*','',protein.attrib['frameid'])
+                goodGene = Gene.objects.filter(id_gene = newname)
+                print(goodGene.values())
+                for db in protein.findall('dblink'):
+                    for dbName in db.findall('dblink-db'):
+                        if dbName.text == 'UNIPROT':
+                            for entry in db.findall('dblink-oid'):
+                                response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',{'accession' : entry.text}, headers={"Accept": "application/json"})
+                                protein = json.loads(response.text)
+                                if 'recommendedName' not in protein[0]['protein']:
+                                    enzName = protein[0]['protein']['submittedName'][0]['fullName']['value']
+                                else:
+                                    enzName = protein[0]['protein']['recommendedName']['fullName']['value']
+                                enzyme = Enzyme(name=enzName)
+                                if enzyme not in Enzyme.objects.all():
+                                    enzyme.save()
+                                if enzyme not in goodGene.enzymes.all():
+                                    goodGene.enzymes.add(enzyme)
+                                '''
+                                if 'comments' not in protein[0]:
+                                    met = 'unknown'
+                                else:
+                                    met = protein[0]["comments"][1]["reaction"]['name']
+                                    met_without_equal = met.split("=")
+                                    react = met_without_equal[0].split(' + ')
+                                    prod = met_without_equal[1].split(' + ')
+                                metabolite, _ = Metabolite.objects.get_or_create(ensemble=met)
+                                if metabolite not in Metabolite.objects.all():
+                                    metabolite.save()
+                                if metabolite not in reactions[g].metaboList.all():
+                                    reactions[g].metaboList.add(metabolite)
+                                    '''
+
+
+
+                '''if newname in genes:
+                    """requette unirpot """
+            for enzymeElement in root.findall('Reaction'):
+                if enzymeElement.attrib['frameid'] in reactions:
+                    """ requete unirpot """'''
+
+            '''
+            for g in range(len(genes)):
+                response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
+                                        {'offset': '0', 'size': '1', 'gene': genes[g].id_gene, 'organism': 'Arabidopsis thaliana',
+                                         'taxid': '3702'}, headers={"Accept": "application/json"})
+                if response.status_code != 200:
+                    print('failed')
+                else:
+                    protein = json.loads(response.text)
+                    if 'recommendedName' not in protein[0]['protein']:
+                        enzName = protein[0]['protein']['submittedName'][0]['fullName']['value']
+                    else:
+                        enzName = protein[0]['protein']['recommendedName']['fullName']['value']
+                    enzyme = Enzyme(name=enzName)
+                    if enzyme not in Enzyme.objects.all():
+                        enzyme.save()
+                    if enzyme not in genes[g].enzymes.all():
+                        genes[g].enzymes.add(enzyme)
+                    if 'comments' not in protein[0]:
+                        met = 'unknown'
+                    else:
+                        met = protein[0]["comments"][1]["reaction"]['name']
+                        met_without_equal = met.split("=")
+                        react = met_without_equal[0].split(' + ')
+                        prod = met_without_equal[1].split(' + ')
+                    metabolite, _ = Metabolite.objects.get_or_create(ensemble=met)
+                    if metabolite not in Metabolite.objects.all():
+                        metabolite.save()
+                    if metabolite not in reactions[g].metaboList.all():
+                        reactions[g].metaboList.add(metabolite)
+                        '''
+
 
     # met_without_equal = met.split("=")
     # reactant = met_without_equal[0].split(' + ')
@@ -76,7 +162,7 @@ class Enzyme(models.Model):
         enzyme, _ = Enzyme.objects.get_or_create(name=enzName,
                                                  gene=Gene.objects.get(id_gene=id_gene))
         enzyme.save()
-        Component.searchComponent(enzName)
+        #Component.searchComponent(enzName)
         return enzyme
 
 
@@ -96,6 +182,7 @@ class Reaction(models.Model):
         react = met_without_equal[0].split(' + ')
         prod = met_without_equal[1].split(' + ')
         metabolite, _ = Metabolite.objects.get_or_create(ensemble=met, reaction=Reaction.name)
+        print(metabolite.ensemble)
         metabolite.save()
         # reaction = enzyme.reactions.values(name)
         # print(reaction)
