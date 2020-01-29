@@ -156,14 +156,11 @@ class CNN(ImageClassifier):
 
         #self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
 
-        aug = ImageDataGenerator(rotation_range=20, zoom_range=0.15,
-                                 width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15,
-                                 horizontal_flip=True, fill_mode="nearest",
-                                 dtype = 'float32')
+        aug = ImageDataGenerator(dtype = 'float16')
         self.nn_model.fit_generator(aug.flow(self.train_images,
                                              self.train_labels, batch_size=10),
                                              validation_data=(self.test_images, self.test_labels),
-                                             steps_per_epoch=len(self.train_images) // 32,
+                                             steps_per_epoch=len(self.train_images) // 10,
                                              epochs=50)
 
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
