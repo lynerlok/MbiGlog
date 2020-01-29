@@ -5,7 +5,6 @@ from typing import *
 from xml.etree import ElementTree
 
 import imageio
-import keras
 import numpy as np
 import requests
 import tensorflow as tf
@@ -13,11 +12,9 @@ from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
-from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
-from keras.models import Sequential
-from keras.utils import to_categorical
-
-
+from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.utils import to_categorical
 
 class Label(models.Model):
     name = models.CharField(max_length=50)
@@ -148,6 +145,10 @@ class CNN(ImageClassifier):
         pass
 
     def train(self, training_data=None):
+        # Respect GPU please :) 
+        gpus= tf.config.experimental.list_physical_devices('GPU')
+        tf.config.experimental.set_memory_growth(gpus[0], True)
+
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
 
@@ -163,6 +164,11 @@ class CNN(ImageClassifier):
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
+
+        # Respect GPU please :) 
+        gpus= tf.config.experimental.list_physical_devices('GPU')
+        tf.config.experimental.set_memory_growth(gpus[0], True)
+
         images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
@@ -254,7 +260,8 @@ class Prediction(models.Model):
 class AlexNet(CNN):
 
     def set_tf_model(self):
-        # Instantiate an empty model
+
+	# Instantiate an empty model
         self.nn_model = Sequential()
 
         # 1st Convolutional Layer
