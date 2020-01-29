@@ -153,7 +153,7 @@ class CNN(ImageClassifier):
 
         self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=20, verbose=2)
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
-        self.accuracy = accuracy
+        self.accuracy = float(accuracy)
         print(accuracy)
         self.available = True
         self.save_model()
@@ -210,10 +210,7 @@ class CNN(ImageClassifier):
                     test_labels.append(specie_to_pos[images[i].specie])
 
         self.train_images = np.array(train_images)
-
-
         self.train_labels = to_categorical(np.array(train_labels))
-
         self.test_images = np.array(test_images)
         self.test_labels = to_categorical(np.array(test_labels))
 
