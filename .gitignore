@@ -4,6 +4,16 @@
 # Ignore python virtual environment
 PythonVenv/
 venv
-DjangoProjects/glogServer/settings.py
+#DjangoProjects/glogServer/settings.py
 /DjangoProjects/db.sqlite3
 DjangoProjects/imagerie/migrations
+
+# Ignore nohup.out for the server
+nohup.out
+DjangoProjects/nohup.out
+
+# Ignore virtualenvwrapper files
+
+# Ignore pycache
+
+*.pyc
