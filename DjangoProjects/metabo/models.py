@@ -59,44 +59,64 @@ class Enzyme(models.Model):
             #Vérification du gène -> Vérification ID uniprot -> requête Uniprot -> association de l'enzyme au gène
             #Vérification de la réaction -> association des métabolites à la réaction
             name = pwy.name
-            #genes = Gene.objects.filter(pathways__name = name)
+            genes = Gene.objects.filter(pathways__name = name)
             reactions = Reaction.objects.filter(pathway__name = name)
             responseBiocyc = requests.get('https://websvc.biocyc.org/apixml',
                                       {'fn': 'enzymes-of-pathway', 'id': 'ARA:' + name, 'detail':'full'})
             root = ET.fromstring(responseBiocyc.content)
+
+
             for protein in root.findall('Protein'):
                 newname = re.sub(r'\-[A-Z]*','',protein.attrib['frameid'])
                 goodGene = Gene.objects.filter(id_gene = newname)
-                print(goodGene.values())
+
+
                 for db in protein.findall('dblink'):
                     for dbName in db.findall('dblink-db'):
                         if dbName.text == 'UNIPROT':
                             for entry in db.findall('dblink-oid'):
                                 response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',{'accession' : entry.text}, headers={"Accept": "application/json"})
                                 protein = json.loads(response.text)
-                                if 'recommendedName' not in protein[0]['protein']:
-                                    enzName = protein[0]['protein']['submittedName'][0]['fullName']['value']
-                                else:
-                                    enzName = protein[0]['protein']['recommendedName']['fullName']['value']
-                                enzyme = Enzyme(name=enzName)
-                                if enzyme not in Enzyme.objects.all():
-                                    enzyme.save()
-                                if enzyme not in goodGene.enzymes.all():
-                                    goodGene.enzymes.add(enzyme)
-                                '''
-                                if 'comments' not in protein[0]:
-                                    met = 'unknown'
-                                else:
-                                    met = protein[0]["comments"][1]["reaction"]['name']
-                                    met_without_equal = met.split("=")
-                                    react = met_without_equal[0].split(' + ')
-                                    prod = met_without_equal[1].split(' + ')
-                                metabolite, _ = Metabolite.objects.get_or_create(ensemble=met)
-                                if metabolite not in Metabolite.objects.all():
-                                    metabolite.save()
-                                if metabolite not in reactions[g].metaboList.all():
-                                    reactions[g].metaboList.add(metabolite)
-                                    '''
+                                if (len(protein) == 0):
+                                    enzName = "unknown"
+                                    met = "unknown"
+                                    loc = "unknown"
+                                elif(len(protein) != 0):
+                                    for i in range(len(protein[0]["dbReferences"])):
+                                        if ("properties" in protein[0]["dbReferences"][i]):
+                                            if ("term" in protein[0]['dbReferences'][i]["properties"]):
+                                                if(re.findall(r'C:[a-z]*\s*[a-z]*',protein[0]['dbReferences'][i]["properties"]["term"])):   ## works
+                                                    print(protein[0]['dbReferences'][i]["properties"]["term"])
+
+                                        else:
+                                            loc = "unknow"
+                                    if ('recommendedName' not in protein[0]['protein']):
+                                        enzName = protein[0]['protein']['submittedName'][0]['fullName']['value']
+                                    else:
+                                        enzName = protein[0]['protein']['recommendedName']['fullName']['value']
+                                    enzyme = Enzyme(name=enzName)
+                                    if (enzyme not in Enzyme.objects.all()):
+                                        enzyme.save()
+                                    for i in range(len(genes)):
+                                        if enzyme not in genes[i].enzymes.all():
+                                            genes[i].enzymes.add(enzyme)
+                                    if ('comments' not in protein[0]):
+                                        met = 'unknown'
+                                    else:
+                                        if ("reaction" not in protein[0]["comments"]):
+                                            met = "unknown"
+                                        else:
+                                            met = protein[0]["comments"][1]["reaction"]['name']
+                                            # met_without_equal = met.split("=")
+                                            # react = met_without_equal[0].split(' + ')
+                                            # prod = met_without_equal[1].split(' + ')
+                                        metabolite, _ = Metabolite.objects.get_or_create(ensemble=met,)
+                                        if metabolite not in Metabolite.objects.all():
+                                            metabolite.save()
+                                        for i in range(len(reactions)):
+                                            if metabolite not in reactions[i].metaboList.all():
+                                                reactions[i].metaboList.add(metabolite)
+
 
 
 
@@ -171,19 +191,19 @@ class Reaction(models.Model):
     pathway = models.ManyToManyField(Pathway, related_name='reactions')
     enzyme = models.ForeignKey(Enzyme, related_name='reactions', on_delete=models.CASCADE, null=True)
 
-    @staticmethod
-    def get_or_create_metabo(id_gene=''):
-        response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
-                                {'offset': '0', 'size': '1', 'gene': id_gene, 'organism': 'Arabidopsis thaliana',
-                                 'taxid': '3702'}, headers={"Accept": "application/json"})
-        protein = json.loads(response.text)
-        met = protein[0]["comments"][1]["reaction"]['name']
-        met_without_equal = met.split("=")
-        react = met_without_equal[0].split(' + ')
-        prod = met_without_equal[1].split(' + ')
-        metabolite, _ = Metabolite.objects.get_or_create(ensemble=met, reaction=Reaction.name)
-        print(metabolite.ensemble)
-        metabolite.save()
+    # @staticmethod
+    # def get_or_create_metabo(id_gene=''):
+    #     response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
+    #                             {'offset': '0', 'size': '1', 'gene': id_gene, 'organism': 'Arabidopsis thaliana',
+    #                              'taxid': '3702'}, headers={"Accept": "application/json"})
+    #     protein = json.loads(response.text)
+    #     met = protein[0]["comments"][1]["reaction"]['name']
+    #     met_without_equal = met.split("=")
+    #     react = met_without_equal[0].split(' + ')
+    #     prod = met_without_equal[1].split(' + ')
+    #     metabolite, _ = Metabolite.objects.get_or_create(ensemble=met, reaction=Reaction.name)
+    #     print(metabolite.ensemble)
+    #     metabolite.save()
         # reaction = enzyme.reactions.values(name)
         # print(reaction)
 
