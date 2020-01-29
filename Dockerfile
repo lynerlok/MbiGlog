@@ -11,5 +11,3 @@ RUN pip install -r requirements.txt
 RUN useradd -m user
 USER user
 
-#RUN pip install --upgrade pip
-#RUN pip install -r requirements.txt
