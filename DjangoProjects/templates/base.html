@@ -9,31 +9,26 @@
     {% endblock %}
 </head>
 <body>
-<header>
-    <h1><a href="{% url "home" %}">Génie Logiciel du Master de Bioinformatique</a></h1>
-    {% block nav %}
-        <nav>
-            <ul>
-                <li><a href="{% url "img_home" %}">Imagerie</a></li>
-                <li><a href="{% url "ngs_home" %}">NGS</a></li>
-                <li><a href="{% url "mtb_home" %}">Métabolomique</a></li>
-                <li><a href="{% url "prt_home" %}">Protéomique</a></li>
+    <header>
+        <h1><a href="{% url "home" %}">MABEV - Multiples Analyses Bioinformatiques d'Espèces Végétales</a></h1>
+    </header>
+    
+    <main>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
             </ul>
-        </nav>
-    {% endblock %}
-</header>
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% block content %}
-
-{% endblock %}
-<footer>{% comment %}TODO Footer {% endcomment %}</footer>
+        {% endif %}
+    
+        {% block content %}
+        {% endblock %}
+        
+        {% block nav %}
+        {% endblock %}
+    </main>
+        
+    <footer>Projet réalisé par les étudiants du Master de Bioinformatique de Bordeaux, au sein de l'UE Génie Logiciel</footer>
 </body>
 </html>
