@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from metabo.models import *
-
+import sys
 
 # Create your views here.
 def home(request):
