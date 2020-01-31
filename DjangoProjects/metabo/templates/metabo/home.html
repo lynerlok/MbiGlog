@@ -1,6 +1,22 @@
 {% extends "metabo/base.html" %}
 
+{% block title %}
+    cytoscape
+{% endblock %}
+
+
 {% block content %}
-    {{ responseBody|linebreaks }}
+{#    {{ responseBody|linebreaks }}#}
+
+    {% block nav %}
+        <nav>
+            <ul>
+                <li class="activated"><a href="{% url "mtb_graph" %}">Compute</a></li>
+            </ul>
+        </nav>
+
+    {% endblock %}
+
+
 
 {% endblock %}
