@@ -35,16 +35,21 @@ class Gene(models.Model):
         root = ET.fromstring(responseBiocyc.content)
         # enzyme = Enzyme.get_or_create_enzyme(id_gene=self.id_gene)
         # met = Reaction.get_or_create_metabo(id_gene=self.id_gene)
+
         for pathwayElement in root.findall('Pathway'):
             pwy, _ = Pathway.objects.get_or_create(name=pathwayElement.attrib['frameid'])
             pwy.save()
             for reactionList in pathwayElement.findall('reaction-list'):
                 for reactionElement in reactionList.findall("Reaction"):
-                    reaction, _ = Reaction.objects.get_or_create(name=reactionElement.attrib['frameid'], enzyme=None)
-                    reaction.save()
-                    pwy.reactions.add(reaction)
-            if self not in pwy.genes.all():
-                pwy.genes.add(self)
+                    enzymes = Enzyme.get_enzyme_names(Enzyme.objects.all())
+                    for enzym in enzymes:
+                        reaction, _ = Reaction.objects.get_or_create(name=reactionElement.attrib['frameid']
+                                                                     )
+                        # reaction = enzyme.set(enzym)
+                        reaction.save()
+                        pwy.reactions.add(reaction)
+                if self not in pwy.genes.all():
+                    pwy.genes.add(self)
 
     @staticmethod
     def gene_from_name(name, list):
@@ -103,14 +108,6 @@ class Enzyme(models.Model):
                                             loc = "unknown"
 
                                         elif (len(protein) != 0):
-                                            # for i in range(len(protein[0]["dbReferences"])):
-                                            # if "properties" in protein[0]["dbReferences"][i]:
-                                            # if "term" in protein[0]['dbReferences'][i]["properties"]:
-                                            # if re.findall(r'C:[a-z]*\s*[a-z]*',protein[0]['dbReferences'][i]["properties"]["term"]):   ## works
-                                            # print(protein[0]['dbReferences'][i]["properties"]["term"])
-
-                                            # else:
-                                            # loc = "unknow"
                                             if 'recommendedName' not in protein[0]['protein']:
                                                 enzName = protein[0]['protein']['submittedName'][0]['fullName']['value']
                                             else:
@@ -121,6 +118,20 @@ class Enzyme(models.Model):
                                                 enzyme.save()
                                                 if enzyme not in gene.enzymes.all():
                                                     gene.enzymes.add(enzyme)
+
+                                                for i in range(len(protein[0]["dbReferences"])):
+                                                    if "properties" in protein[0]["dbReferences"][i]:
+                                                        if "term" in protein[0]['dbReferences'][i]["properties"]:
+                                                            if re.findall(r'C:[a-z]*\s*[a-z]*',
+                                                                          protein[0]['dbReferences'][i]["properties"][
+                                                                              "term"]):  ## works
+                                                                location, _ = Component.objects.get_or_create(
+                                                                    name=protein[0]['dbReferences'][i]["properties"][
+                                                                        "term"])
+                                                                if location not in Component.objects.all():
+                                                                    location.save()
+                                                                if location not in enzyme.componentName.all():
+                                                                    enzyme.componentName.add(location)
 
                                             if 'comments' in protein[0]:
                                                 for comment in protein[0]["comments"]:
@@ -137,7 +148,7 @@ class Enzyme(models.Model):
 class Reaction(models.Model):
     name = models.TextField()
     pathway = models.ManyToManyField(Pathway, related_name='reactions')
-    enzyme = models.ForeignKey(Enzyme, related_name='reactions', on_delete=models.CASCADE, null=True)
+    enzyme = models.ManyToManyField(Enzyme, related_name='reactions')
 
 
 class Metabolite(models.Model):
@@ -149,8 +160,8 @@ class Metabolite(models.Model):
 
 class Component(models.Model):
     name = models.CharField(max_length=50)
-    pathways = models.ManyToManyField(Pathway, related_name='componentName')
-
+    # pathways = models.ManyToManyField(Pathway, related_name='componentName')
+    enzymes = models.ForeignKey(Enzyme, related_name='componentName', on_delete=models.CASCADE, null=True)
 
     # @staticmethod
     # def get_or_create_enzyme(id_gene=''):
@@ -170,37 +181,37 @@ class Component(models.Model):
     #             if enzymeElement.attrib['frameid'] in reactions:
     #                 """ requete unirpot """
 
-            #
-            # for g in range(len(genes)):
-            #     response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
-            #                             {'offset': '0', 'size': '1', 'gene': genes[g].id_gene, 'organism': 'Arabidopsis thaliana',
-            #                              'taxid': '3702'}, headers={"Accept": "application/json"})
-            #     if response.status_code != 200:
-            #         print('failed')
-            #     else:
-            #         protein = json.loads(response.text)
-            #         if 'recommendedName' not in protein[0]['protein']:
-            #             enzName = protein[0]['protein']['submittedName'][0]['fullName']['value']
-            #         else:
-            #             enzName = protein[0]['protein']['recommendedName']['fullName']['value']
-            #         enzyme = Enzyme(name=enzName)
-            #         if enzyme not in Enzyme.objects.all():
-            #             enzyme.save()
-            #         if enzyme not in genes[g].enzymes.all():
-            #             genes[g].enzymes.add(enzyme)
-            #         if 'comments' not in protein[0]:
-            #             met = 'unknown'
-            #         else:
-            #             met = protein[0]["comments"][1]["reaction"]['name']
-            #             met_without_equal = met.split("=")
-            #             react = met_without_equal[0].split(' + ')
-            #             prod = met_without_equal[1].split(' + ')
-            #         metabolite, _ = Metabolite.objects.get_or_create(ensemble=met)
-            #         if metabolite not in Metabolite.objects.all():
-            #             metabolite.save()
-            #         if metabolite not in reactions[g].metaboList.all():
-            #             reactions[g].metaboList.add(metabolite)
-            #
+    #
+    # for g in range(len(genes)):
+    #     response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
+    #                             {'offset': '0', 'size': '1', 'gene': genes[g].id_gene, 'organism': 'Arabidopsis thaliana',
+    #                              'taxid': '3702'}, headers={"Accept": "application/json"})
+    #     if response.status_code != 200:
+    #         print('failed')
+    #     else:
+    #         protein = json.loads(response.text)
+    #         if 'recommendedName' not in protein[0]['protein']:
+    #             enzName = protein[0]['protein']['submittedName'][0]['fullName']['value']
+    #         else:
+    #             enzName = protein[0]['protein']['recommendedName']['fullName']['value']
+    #         enzyme = Enzyme(name=enzName)
+    #         if enzyme not in Enzyme.objects.all():
+    #             enzyme.save()
+    #         if enzyme not in genes[g].enzymes.all():
+    #             genes[g].enzymes.add(enzyme)
+    #         if 'comments' not in protein[0]:
+    #             met = 'unknown'
+    #         else:
+    #             met = protein[0]["comments"][1]["reaction"]['name']
+    #             met_without_equal = met.split("=")
+    #             react = met_without_equal[0].split(' + ')
+    #             prod = met_without_equal[1].split(' + ')
+    #         metabolite, _ = Metabolite.objects.get_or_create(ensemble=met)
+    #         if metabolite not in Metabolite.objects.all():
+    #             metabolite.save()
+    #         if metabolite not in reactions[g].metaboList.all():
+    #             reactions[g].metaboList.add(metabolite)
+    #
 
     # met_without_equal = met.split("=")
     # reactant = met_without_equal[0].split(' + ')
@@ -247,8 +258,6 @@ class Component(models.Model):
     #                pathway.reactionName.add(self)
     #    super(Reaction, self).save(*args, **kwargs)
 
-
-
     # @staticmethod
     # def get_or_create_metabo(protein,name=''):
     #     met = protein[0]["comments"][1]["reaction"]['name']
@@ -262,8 +271,6 @@ class Component(models.Model):
     #     # reaction = enzyme.reactions.values(name)
     #     # print(reaction)
 
-
-
     # @staticmethod
     # def searchComponent(nameE=''):
     #     response = requests.get('https://www.ebi.ac.uk/proteins/api/proteins',
@@ -273,28 +280,28 @@ class Component(models.Model):
     #     comp = json.loads(response.text)
     #     loc = re.findall(r'C:[a-z]*\s*[a-z]*', comp[0]['dbReferences'])
     #     print('loc', loc)
-        # print(comp[0]['dbReferences'][32]['properties']['term'])  #### working
-        # print(len(comp[0]['dbReferences']))
-        # print(comp[0]['dbReferences'][32]['properties'])
-        # res = []
-        # for i in range(len(comp[0]['dbReferences'])):
-        #     if 'term' not in comp[0]['dbReferences'][i]['properties']:
-        #         print('nope')
-        #     if 'term' in comp[0]['dbReferences'][i]['properties']:
-        #         print('yes')
-        #         if len(comp[0]['dbReferences'][i]['properties']['term']) != 0:
-        #             res.append(comp[0]['dbReferences'][32]['properties']['term'])
-        # print(res)
+    # print(comp[0]['dbReferences'][32]['properties']['term'])  #### working
+    # print(len(comp[0]['dbReferences']))
+    # print(comp[0]['dbReferences'][32]['properties'])
+    # res = []
+    # for i in range(len(comp[0]['dbReferences'])):
+    #     if 'term' not in comp[0]['dbReferences'][i]['properties']:
+    #         print('nope')
+    #     if 'term' in comp[0]['dbReferences'][i]['properties']:
+    #         print('yes')
+    #         if len(comp[0]['dbReferences'][i]['properties']['term']) != 0:
+    #             res.append(comp[0]['dbReferences'][32]['properties']['term'])
+    # print(res)
 
-        # buf = io.StringIO(responseBody)
-        # line = buf.readline()
-        # loc = re.findall(r'C:[a-z]*\s*[a-z]*', line)
-        # location = []
-        # for x in loc:
-        #     if x not in location:
-        #         location = Component.objects.get_or_create(componentName=x)
-        #     if self not in location.componentName.all():
-        #         location.componentName.add(self)
+    # buf = io.StringIO(responseBody)
+    # line = buf.readline()
+    # loc = re.findall(r'C:[a-z]*\s*[a-z]*', line)
+    # location = []
+    # for x in loc:
+    #     if x not in location:
+    #         location = Component.objects.get_or_create(componentName=x)
+    #     if self not in location.componentName.all():
+    #         location.componentName.add(self)
 
 #
 # class CoFactor(models.Model):
