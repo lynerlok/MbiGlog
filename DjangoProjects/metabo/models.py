@@ -4,8 +4,8 @@ import requests
 import re
 import json
 
-
-# Create your models here.
+#
+# # Create your models here.
 
 
 class Pathway(models.Model):
@@ -118,6 +118,15 @@ class Enzyme(models.Model):
                                                 enzyme.save()
                                                 if enzyme not in gene.enzymes.all():
                                                     gene.enzymes.add(enzyme)
+                                                for r in root.iter('Reaction'):
+                                                    reaction = Reaction.objects.filter(name=r.attrib['frameid'])
+                                                    if len(reaction) == 0:
+                                                        reaction,_ = Reaction.objects.get_or_create(name=r.attrib['frameid'])
+                                                        reaction.save()
+                                                        enzyme.reactions.add(reaction)
+                                                    else:
+                                                        enzyme.reactions.add(reaction[0])
+                                                    break
 
                                                 for i in range(len(protein[0]["dbReferences"])):
                                                     if "properties" in protein[0]["dbReferences"][i]:
