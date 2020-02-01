@@ -13,8 +13,8 @@ from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.utils import to_categorical
 
 
 class Label(models.Model):
@@ -130,7 +130,7 @@ class Request(models.Model):
 
 
 class CNN(ImageClassifier):
-    h5_save_file = models.FilePathField(allow_folders=True, null=True)
+    checkpoint_dir = models.FilePathField(allow_folders=True, null=True)
     classes = models.ManyToManyField(Specie, through="Class", related_name='+')
     available = models.BooleanField(default=False)
     specialized_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT, null=True, default=None)
@@ -147,27 +147,33 @@ class CNN(ImageClassifier):
 
     def train(self, training_data=None):
         # Respect GPU please :) 
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        tf.config.experimental.set_memory_growth(gpus[0], True)
+        # gpus = tf.config.experimental.list_physical_devices('GPU')
+        # tf.config.experimental.set_memory_growth(gpus[0], True)
 
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
+
+        # Create a callback that saves the model's weights
+        checkpoint_dir = self.checkpoint_dir_path
+        checkpoint_path = os.path.join(checkpoint_dir, f'{self.name}_cp_{{epoch:04d}}.ckpt')
+        cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                         save_weights_only=False,
+                                                         verbose=1, period=5)
 
         # self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
 
         aug = ImageDataGenerator(dtype='float16')
         aug.fit(self.train_images)
-        self.nn_model.fit_generator(aug.flow(self.train_images,
-                                             self.train_labels, batch_size=10),
+        self.nn_model.save_weights(checkpoint_path.format(epoch=0))
+        self.nn_model.fit_generator(aug.flow(self.train_images, self.train_labels, batch_size=10),
                                     validation_data=(self.test_images, self.test_labels),
                                     steps_per_epoch=len(self.train_images) // 10,
-                                    epochs=50)
-
+                                    epochs=50, callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = float(accuracy)
         print(self.accuracy)
         self.available = True
-        self.save_model()
+        self.save()
 
     def classify(self, request: Request):
         if not self.available:
@@ -176,8 +182,8 @@ class CNN(ImageClassifier):
             self.load_model()
 
         # Respect GPU please :) 
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        tf.config.experimental.set_memory_growth(gpus[0], True)
+        # gpus = tf.config.experimental.list_physical_devices('GPU')
+        # tf.config.experimental.set_memory_growth(gpus[0], True)
 
         images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
@@ -248,17 +254,22 @@ class CNN(ImageClassifier):
             specie_counter[specie] = {'i': 0, 'n': species[i]['nb_image']}
         return specie_to_pos, specie_counter
 
-    def save_model(self):
+    @property
+    def checkpoint_dir_path(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
         if not os.path.isdir(path):
             os.mkdir(path)
-        path = os.path.join(path, f'{self.name}_{self.specialized_background.name}_{self.specialized_organ.name}.h5')
-        self.nn_model.save(path)
-        self.h5_save_file = path
-        self.save()
+        path = os.path.join(path, f'{self.name}_{self.specialized_background.name}_{self.specialized_organ.name}')
+        if not os.path.isdir(path):
+            os.mkdir(path)
+            self.checkpoint_dir = path
+            self.save()
+        return path
 
     def load_model(self):
-        self.nn_model = tf.keras.models.load_model(self.h5_save_file)
+        latest = tf.train.latest_checkpoint(self.checkpoint_dir)
+        self.set_tf_model()
+        self.nn_model.load_weights(latest)
 
 
 class Class(models.Model):
