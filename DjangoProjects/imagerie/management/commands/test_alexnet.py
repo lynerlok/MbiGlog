@@ -3,9 +3,6 @@ from django.core.management.base import BaseCommand
 from imagerie.models import *
 
 
-# from imagerie.tf_models.AlexNet import AlexNet
-
-
 class Command(BaseCommand):
     help = ''
 
