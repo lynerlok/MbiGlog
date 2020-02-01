@@ -1,6 +1,5 @@
 import os
 from abc import abstractmethod
-from random import shuffle
 from typing import *
 from xml.etree import ElementTree
 
@@ -131,7 +130,7 @@ class Request(models.Model):
 
 
 class CNN(ImageClassifier):
-    learning_data = models.FilePathField(allow_folders=True, null=True)
+    h5_save_file = models.FilePathField(allow_folders=True, null=True)
     classes = models.ManyToManyField(Specie, through="Class", related_name='+')
     available = models.BooleanField(default=False)
     specialized_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT, null=True, default=None)
@@ -154,14 +153,15 @@ class CNN(ImageClassifier):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
 
-        #self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
+        # self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
 
-        aug = ImageDataGenerator(dtype = 'float16')
+        aug = ImageDataGenerator(dtype='float16')
+        aug.fit(self.train_images)
         self.nn_model.fit_generator(aug.flow(self.train_images,
                                              self.train_labels, batch_size=10),
-                                             validation_data=(self.test_images, self.test_labels),
-                                             steps_per_epoch=len(self.train_images) // 10,
-                                             epochs=50)
+                                    validation_data=(self.test_images, self.test_labels),
+                                    steps_per_epoch=len(self.train_images) // 10,
+                                    epochs=50)
 
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = float(accuracy)
@@ -195,57 +195,70 @@ class CNN(ImageClassifier):
                 pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
-        if images is None:
-            images = GroundTruthImage.objects.all()
-        if self.specialized_organ:
-            images = images.filter(plant_organ=self.specialized_organ)
-        if self.specialized_background:
-            images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=100)
+        images = self.filter_images(images)
+        species = self.count_species(images)
+        specie_to_pos, specie_counter = self.create_classes(species)
 
-        for specie in species:
-            print(specie['specie__name'], specie['nb_image'])
         images = list(images)
-        print(len(images))
-        shuffle(images)
-        specie_to_pos = {}
-        self.save()  # allow to create ref to CNN in classes
-        for i in range(len(species)):
-            specie = Specie.objects.get(latin_name=species[i]['specie__name'])
-            Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
-            specie_to_pos[specie] = i
+        print("Nb of images : ", len(images))
+
         train_images, train_labels, test_images, test_labels = [], [], [], []
-        nb_images = len(images)
-        for i in range(nb_images):
-            if images[i].specie in specie_to_pos:
+        for image in images:
+            specie = image.specie
+            if specie in specie_to_pos:
+                counter = specie_counter[specie]
+                nb_images = counter['n']
+                i = counter['i']
+                counter['i'] += 1
                 if i < (1 - test_fraction) * nb_images:
-                    train_images.append(images[i].preprocess())
-                    train_labels.append(specie_to_pos[images[i].specie])
+                    train_images.append(image.preprocess())
+                    train_labels.append(specie_to_pos[specie])
                 else:
-                    test_images.append(images[i].preprocess())
-                    test_labels.append(specie_to_pos[images[i].specie])
+                    test_images.append(image.preprocess())
+                    test_labels.append(specie_to_pos[specie])
 
         self.train_images = np.array(train_images)
         self.train_labels = to_categorical(np.array(train_labels))
         self.test_images = np.array(test_images)
         self.test_labels = to_categorical(np.array(test_labels))
 
+    def filter_images(self, images: QuerySet = None) -> QuerySet:
+        if images is None:
+            images = GroundTruthImage.objects.all()
+        if self.specialized_organ:
+            images = images.filter(plant_organ=self.specialized_organ)
+        if self.specialized_background:
+            images = images.filter(background_type=self.specialized_background)
+        return images
+
+    def count_species(self, images: QuerySet, min_images=5):
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=min_images)
+        for specie in species:
+            print(specie['specie__name'], specie['nb_image'])
+        return species
+
+    def create_classes(self, species: QuerySet) -> Tuple[Dict, Dict]:
+        self.save()  # allow to create ref to CNN in classes
+        specie_to_pos = {}
+        specie_counter = {}
+        for i in range(len(species)):
+            specie = Specie.objects.get(latin_name=species[i]['specie__name'])
+            Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
+            specie_to_pos[specie] = i
+            specie_counter[specie] = {'i': 0, 'n': species[i]['nb_image']}
+        return specie_to_pos, specie_counter
+
     def save_model(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
         if not os.path.isdir(path):
             os.mkdir(path)
-        path = os.path.join(path, f'{self.name}_'
-                                  f'{self.date.year}_'
-                                  f'{self.date.month}_'
-                                  f'{self.date.day}_'
-                                  f'{self.date.hour}.h5')
-
+        path = os.path.join(path, f'{self.name}_{self.specialized_background.name}_{self.specialized_organ.name}.h5')
         self.nn_model.save(path)
-        self.learning_data = path
+        self.h5_save_file = path
         self.save()
 
     def load_model(self):
-        self.nn_model = tf.keras.models.load_model(self.learning_data)
+        self.nn_model = tf.keras.models.load_model(self.h5_save_file)
 
 
 class Class(models.Model):
