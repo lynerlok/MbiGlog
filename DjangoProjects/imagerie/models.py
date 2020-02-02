@@ -175,7 +175,7 @@ class CNN(ImageClassifier):
         self.available = True
         self.save()
 
-    def classify(self, request: Request):
+    def classify(self, images: List[Image]):
         if not self.available:
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
@@ -185,7 +185,7 @@ class CNN(ImageClassifier):
         # gpus = tf.config.experimental.list_physical_devices('GPU')
         # tf.config.experimental.set_memory_growth(gpus[0], True)
 
-        images = request.submitted_images.all()
+        # images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
         original_index_sorted = np.argsort(-predictions, axis=1)

@@ -1,7 +1,12 @@
 {% extends "imagerie/base.html" %}
 {% block title %}Ma page d'accueil{% endblock %}
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static "imagerie/imagerie.css" %}">
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "imagerie/imagerie.css" %}">
+    <script src="{% static "imagerie/import_image_form.js" %}"></script>
+{% endblock %}
+
 {% block content %}
     <div id="rectangle_background">
         <h2>Import photography</h2>
@@ -13,6 +18,20 @@
             <button type="submit">Upload</button>
         </form>
 
+        <table style="display:none">
+            <tbody id="empty_form">
+            <tr id="tr-id_form-__prefix__">
+                {% for field in formset.empty_form %}
+                    <td>
+                        <label for="{{ field.id_for_label }}"></label> {{ field }}
+                    </td>
+                {% endfor %}
+                <td>
+                    <button id="remove-id_form-__prefix__" type="button" class="remove_btn">Remove</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 {% endblock %}

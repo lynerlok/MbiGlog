@@ -5,6 +5,7 @@ from PIL import Image
 from django.http import HttpResponse
 
 
+
 # Create your views here.
 def home(request):
     messages.debug(request, "debug")

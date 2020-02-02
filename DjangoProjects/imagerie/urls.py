@@ -3,8 +3,8 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('', views.import_image, name="img_home"),
-    path('import_image/', views.import_image, name="img_import"),
+    path('', views.home, name="img_home"),
+    path('request/', views.import_image, name="img_import"),
 
 
 ]
