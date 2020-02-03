@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image', models.ImageField(upload_to='images/')),
                 ('date', models.DateTimeField(auto_now_add=True)),
-                ('content', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='imagerie.PlantOrgan')),
+                ('content', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='imagerie.ContentImage')),
             ],
         ),
         migrations.CreateModel(
@@ -100,7 +100,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='image',
             name='type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='imagerie.BackgroundType'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='imagerie.TypeImage'),
         ),
         migrations.CreateModel(
             name='CNNArchitecture',
@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=30)),
                 ('model_code', models.FileField(upload_to='models_scripts')),
-                ('loss', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='imagerie.LossFunction')),
+                ('loss', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='imagerie.Loss')),
                 ('optimizer', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='imagerie.Optimizer')),
             ],
         ),
