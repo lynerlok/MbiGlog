@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<ptools-xml ptools-version="23.5" xml:base="http://BioCyc.org/apixml?fn=genes-of-pathway%26id=ARA:PWY-82%26detail=LOW">
+  <metadata>
+    <url>http://BioCyc.org/</url>
+    <service_name>apixml</service_name>
+    <query>fn=genes-of-pathway&amp;id=ARA:PWY-82&amp;detail=LOW</query>
+    <num_results>3</num_results>
+    <PGDB orgid="ARA" version="23.5">
+      <species datatype="string">Arabidopsis thaliana</species>
+      <strain datatype="string">col</strain>
+    </PGDB>
+  </metadata>
+  <Gene ID="ARA:AT5G52560" orgid="ARA" frameid="AT5G52560" detail="low">
+    <parent>
+      <Gene resource="getxml?ARA:Unclassified-Genes" orgid="ARA" frameid="Unclassified-Genes" class="true"/>
+    </parent>
+    <replicon>
+      <Genetic-Element resource="getxml?ARA:CHROMOSOME-5" orgid="ARA" frameid="CHROMOSOME-5"/>
+    </replicon>
+    <product>
+      <Protein resource="getxml?ARA:AT5G52560-MONOMER" orgid="ARA" frameid="AT5G52560-MONOMER"/>
+    </product>
+    <common-name datatype="string">AT5G52560.1</common-name>
+    <synonym datatype="string">USP</synonym>
+  </Gene>
+  <Gene ID="ARA:AT4G16130" orgid="ARA" frameid="AT4G16130" detail="low">
+    <parent>
+      <Gene resource="getxml?ARA:Unclassified-Genes" orgid="ARA" frameid="Unclassified-Genes" class="true"/>
+    </parent>
+    <replicon>
+      <Genetic-Element resource="getxml?ARA:CHROMOSOME-4" orgid="ARA" frameid="CHROMOSOME-4"/>
+    </replicon>
+    <product>
+      <Protein resource="getxml?ARA:AT4G16130-MONOMER" orgid="ARA" frameid="AT4G16130-MONOMER"/>
+    </product>
+    <common-name datatype="string">ARA1</common-name>
+    <synonym datatype="string">At4g16130</synonym>
+    <synonym datatype="string">ISA1</synonym>
+  </Gene>
+  <Gene ID="ARA:GQT-5255" orgid="ARA" frameid="GQT-5255" detail="low">
+    <parent>
+      <Gene resource="getxml?ARA:ORFs" orgid="ARA" frameid="ORFs" class="true"/>
+    </parent>
+    <product>
+      <Protein resource="getxml?ARA:GQT-5255-MONOMER" orgid="ARA" frameid="GQT-5255-MONOMER"/>
+    </product>
+    <common-name datatype="string">AT3G42850.2</common-name>
+  </Gene>
+</ptools-xml>
