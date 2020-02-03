@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name="ngs_home"),
-    # path('fastqc/', views.fastqc, name="ngs_fastqc_button"),
+    path('pipeline/',views.pipeline,name="ngs pipeline home"),
+    path('pipeline/fastqc-<int:id_request>/', views.fastqc, name="ngs_fastqc"),
 ]
