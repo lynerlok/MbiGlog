@@ -32,7 +32,6 @@ function lunch_visualisation(){
 function main(){
   activer_onglet();
   lunch_visualisation();
-  console.log("coucou");
 }
 
 window.onload=main;

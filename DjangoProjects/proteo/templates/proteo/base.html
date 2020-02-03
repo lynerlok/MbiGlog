@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block style %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "proteo/proteo.css" %}">
 {% endblock %}
-
 {% block nav %}
     <nav>
         <ul>

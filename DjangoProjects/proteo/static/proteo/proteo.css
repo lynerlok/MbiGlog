@@ -1,0 +1,26 @@
+h2.toclick {
+  display: inline-block;
+  border:solid white 2px;
+  background-color: #262626;
+  width:250px;
+  text-align: center;
+  color:white;
+}
+
+div.subdiv {
+  margin-right: 15%;
+  margin-left: 15%;
+  margin-top:5%;
+  background-color: #ff7465;
+  text-align: center;
+  border:solid 2px white;
+}
+
+div.inputdiv {
+  display: inline-block;
+  background-color: #262626;
+  width: 200px;
+  text-align: center;
+  color:white;
+  border:solid 2px white;
+}
