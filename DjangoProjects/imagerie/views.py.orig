@@ -1,3 +1,18 @@
+<<<<<<< HEAD
+from django.shortcuts import render
+from django.contrib import messages
+
+
+# Create your views here.
+def home(request):
+    a = 5
+    messages.debug(request, "debug")
+    messages.info(request, 'a value is {}'.format(a))
+    messages.success(request, "success")
+    messages.warning(request, "WARNING")
+    messages.error(request, "ERROR")
+    return render(request, "imagerie/home.html", locals())
+=======
 from django.contrib import messages
 from django.forms import formset_factory
 from django.http import HttpResponse
@@ -42,3 +57,4 @@ def import_image(request):
 
 def success(request):
     return HttpResponse('successfully uploaded')
+>>>>>>> 0b4c77e9bfca895f8e9c7d7527851c6a8653a241

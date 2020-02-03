@@ -1,3 +1,43 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "home/base.css" %}">
+    {% block style %}
+    {% endblock %}
+</head>
+<body>
+<header>
+    <h1><a href="{% url "home" %}">Génie Logiciel du Master de Bioinformatique</a></h1>
+    {% block nav %}
+        <nav>
+            <ul>
+                <li><a href="{% url "img_home" %}">Imagerie</a></li>
+                <li><a href="{% url "ngs_home" %}">NGS</a></li>
+                <li><a href="{% url "mtb_home" %}">Métabolomique</a></li>
+                <li><a href="{% url "prt_home" %}">Protéomique</a></li>
+            </ul>
+        </nav>
+    {% endblock %}
+</header>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% block content %}
+
+{% endblock %}
+<footer>{% comment %}TODO Footer {% endcomment %}</footer>
+</body>
+=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,4 +79,5 @@
 {% endblock %}
 <footer>{% comment %}TODO Footer {% endcomment %}</footer>
 </body>
+>>>>>>> 0b4c77e9bfca895f8e9c7d7527851c6a8653a241
 </html>

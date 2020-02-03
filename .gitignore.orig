@@ -1,3 +1,18 @@
+<<<<<<< HEAD
+# JetBrain project
+.idea/
+
+# Ignore python virtual environment
+PythonVenv/
+venv
+
+# Ignore nohup.out for the server
+nohup.out
+DjangoProjects/nohup.out
+
+# Ignore virtualenvwrapper files
+
+=======
 # JetBrain project
 .idea/
 
@@ -22,3 +37,4 @@ DjangoProjects/nohup.out
 
 DevDatabase.db
 
+>>>>>>> 0b4c77e9bfca895f8e9c7d7527851c6a8653a241

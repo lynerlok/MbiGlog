@@ -1,5 +1,5 @@
-from pathlib import Path
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
@@ -34,8 +34,8 @@ class Command(BaseCommand):
 
                 xml = ET.parse(annot_path)
                 root = xml.getroot()
-                typeImage, _ = TypeImage.objects.get_or_create(name=root.find('Type').text)
-                content, _ = ContentImage.objects.get_or_create(name=root.find('Content').text)
+                background_type, _ = BackgroundType.objects.get_or_create(name=root.find('Type').text)
+                plant_organ, _ = PlantOrgan.objects.get_or_create(name=root.find('Content').text)
                 taxons = root.find('Taxon')
                 genus = self._get_or_create_taxon(taxons, pos=0, previous=None)
                 specie, _ = Specie.objects.get_or_create(rank=self.taxon_ranks[7], name=root.find('ClassId').text,
@@ -43,8 +43,8 @@ class Command(BaseCommand):
                                                          vernacular_name=root.find('VernacularNames').text,
                                                          latin_name=root.find('ClassId').text)
 
-                gtimage, _ = GroundTruthImage.objects.get_or_create(specie=specie, content=content, type=typeImage,
-                                                                    image=image_path)
+                gtimage, _ = GroundTruthImage.objects.get_or_create(specie=specie, plant_organ=plant_organ,
+                                                                    background_type=background_type, image=image_path)
                 print(image, 'saved')
 
     def handle(self, *args, **options):
