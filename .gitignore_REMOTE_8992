@@ -1,0 +1,36 @@
+# JetBrain project
+.idea/
+
+# Ignore python virtual environment
+PythonVenv/
+venv
+
+# Ignore Django settings.py
+
+DjangoProjects/glogServer/settings.py
+
+# Ignore migrations from django
+
+DjangoProjects/home/migrations/
+DjangoProjects/imagerie/migrations/
+DjangoProjects/metabo/migrations/
+DjangoProjects/ngs/migrations/
+DjangoProjects/proteo/migrations/
+
+# Ignore nohup.out for the server
+*.out
+
+# Ignore virtualenvwrapper files
+
+# Ignore pycache
+
+*.pyc
+
+# Ignore Databases
+
+*.db
+*.sqlite3
+
+# Ignore merge artifacts
+
+*.orig

@@ -44,4 +44,25 @@ html {
 
 }
 
+#forms-table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
 
+#forms-table td, #forms-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#forms-table tr:nth-child(even){background-color: #f2f2f2;}
+
+#forms-table tr:hover {background-color: #ddd;}
+
+#forms-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
