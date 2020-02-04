@@ -5,4 +5,9 @@
      {% csrf_token %}
     <button type='submit' name="expression">Try expression genetic pipeline</button>
     </form>
+
+    <form action="" method='post'>
+    {%  csrf_token %}
+    <button type='submit' name="phylogenie">Try phylogenetic pipeline</button>
+    </form>
 {% endblock %}

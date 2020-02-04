@@ -16,6 +16,8 @@ from django.shortcuts import render_to_response
 def home(request):
     if 'expression' in request.POST:
         return HttpResponseRedirect(reverse("ngs pipeline home"))
+    if 'phylogenie' in request.POST:
+        return HttpResponseRedirect(reverse('phylogenic pipeline hub'))
     return render(request, "ngs/home.html", locals())
 
 
@@ -50,3 +52,7 @@ def fastqc(request, id_request):
     print(fastqcs)
     htmlfastqc = get_html()
     return render(request, "ngs/pipeline/fastqc.html", locals())
+
+
+def phylo(request):
+    return render(request, "ngs/phylo.html", locals())
