@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+{% extends "imagerie/base.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+=======
 {% extends "imagerie/base.html" %}
 
 {% block title %}
@@ -13,3 +24,4 @@
 
 
 
+>>>>>>> 0b4c77e9bfca895f8e9c7d7527851c6a8653a241

@@ -1,0 +1,19 @@
+<<<<<<< HEAD
+from django.contrib import admin
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name="img_home"),
+=======
+from django.contrib import admin
+from django.urls import path, include
+from . import views
+
+urlpatterns = [
+    path('', views.home, name="img_home"),
+    path('request/', views.import_image, name="img_import"),
+
+
+>>>>>>> 0b4c77e9bfca895f8e9c7d7527851c6a8653a241
+]
