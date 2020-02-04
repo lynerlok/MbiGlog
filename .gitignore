@@ -11,7 +11,7 @@ DjangoProjects/glogServer/settings.py
 
 # Ignore migrations from django
 
-DjangoProjects/homr/migrations/
+DjangoProjects/home/migrations/
 DjangoProjects/imagerie/migrations/
 DjangoProjects/metabo/migrations/
 DjangoProjects/ngs/migrations/
