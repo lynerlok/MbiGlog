@@ -15,13 +15,15 @@ import os
 ## Configure get_env_var to set env var for database
 
 from django.core.exceptions import ImproperlyConfigured
- 
+
+
 def get_env_variable(var_name):
     try:
         return os.environ[var_name]
     except KeyError:
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,9 +32,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_variable('SECRET_KEY')
+# SECRET_KEY = get_env_variable('SECRET_KEY')
+SECRET_KEY = 'aaa'
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 MESSAGE_LEVEL = 0
 
@@ -88,17 +92,22 @@ WSGI_APPLICATION = 'glogServer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': get_env_variable('DATABASE_NAME'),
+#         'USER': get_env_variable('DATABASE_USER'),
+#         'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
+# 	'HOST': '127.0.0.1',
+# 	'PORT': '5432',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_env_variable('DATABASE_NAME'),
-        'USER': get_env_variable('DATABASE_USER'),
-        'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
-	'HOST': '127.0.0.1',
-	'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -138,4 +147,3 @@ MEDIA_URL = "/media/"
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'statics/'
-
