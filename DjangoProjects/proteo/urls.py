@@ -8,4 +8,5 @@ urlpatterns = [
     path('2D/', views.Twodimension, name="two_dimension"),
     path('Pred3D/', views.Pred3Ddimension, name="Predthree_dimension"),
     path('3D/', views.Threedimension, name="three_dimension"),
+    path('view3D/', views.ViewThree, name="view_three"),
 ]

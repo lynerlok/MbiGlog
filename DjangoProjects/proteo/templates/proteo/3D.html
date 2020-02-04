@@ -6,15 +6,15 @@
   {% load static %}
   <div class="subdiv">
     <div style="text-align: left;margin:5%;">
-      <h2 id="button_file" class="toclick"> File </h2>
-      <h2 id="button_PDB" class="toclick"> View with PDB ID only </h2>
-      <div id="FILE" style="display:none;">
-        <h4> Choose an input possibility : </h4>
-        <div id="PDB" class="inputdiv">
-          <p> Use a PDB ID </p>
-        </div>
-        <div id="PDBMMCIF" class="inputdiv">
-          <p> Use a PDB or mmCIF file</p>
+      <div id="PDBMMCIF" class="inputdiv">
+        <h2 id="button_file" class="toclick"> File </h2>
+        <h2 id="button_PDB" class="toclick"><a class="ref" href="{% url "view_three" %}"> View with PDB ID only </a></h2>
+        <div id="FILE" style="display:none;text-align:left;">
+          <h4> Choose your file : </h4>
+          <p> Format accepted : PDB, mmCIF or FASTA</p>
+          <p> For the FASTA format a blast will be done on your sequence to find the best match to chow you in 3D.</p>
+          <input type="file" id="thefile" name="myFile" accept=".pdb,.cif,.fasta">
+          <button id="upload"> Upload the file </button>
         </div>
       </div>
     </div>

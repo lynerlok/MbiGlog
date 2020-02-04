@@ -17,3 +17,6 @@ def Pred3Ddimension(request):
 
 def Threedimension(request):
     return render(request,'proteo/3D.html',locals())
+
+def ViewThree(request):
+    return render(request,'proteo/visu3D.html',locals())
