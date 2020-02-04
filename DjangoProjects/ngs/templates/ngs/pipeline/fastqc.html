@@ -1,9 +1,9 @@
 {% extends "ngs/base.html" %}
 
-{#{% block content %}#}
-{#    {% for html in fastqcs %}#}
-{#        <div>#}
-{#            {{ html|safe }}#}
-{#        <div>#}
-{#    {% endfor %}#}
-{#{% endblock %}#}
+{% block content %}
+    {% for fastqc in fastqcs %}
+        <div>
+         The FastQC HTML file associated with {{fastqc.fastq.archive }} is located at : {{ fastqc.file.url }}
+        <div>
+    {% endfor %}
+{% endblock %}

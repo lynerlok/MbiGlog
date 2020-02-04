@@ -18,5 +18,5 @@ def go_fastqc(fastq):
     if rc==0:
         return rc
 
-def get_html():
-    html=subprocess.Popen("ls")
+# def get_html():
+#     html=subprocess.Popen("ls")

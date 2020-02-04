@@ -20,7 +20,6 @@ def home(request):
         return HttpResponseRedirect(reverse('phylogenic pipeline hub'))
     return render(request, "ngs/home.html", locals())
 
-
 def pipeline(request):
     FastQFormSet = formset_factory(FastQForm)
 
@@ -35,22 +34,20 @@ def pipeline(request):
                 fast_q.save()
             for file in r.fastq_set.all():
                 file.generate_fastqc()
-            print(r.pk)
             return redirect('ngs fastqc', r.pk)
     else:
         formset = FastQFormSet()
     return render(request, 'ngs/pipeline/formset_fastq.html', locals())
 
 def fastqc(request, id_request):
-    print("caca")
     fastqcs = []
     r = Request.objects.get(pk=id_request)
     for fastq in r.fastq_set.all():
         for fastqc in fastq.fastqc_set.all():
-            with open(fastqc.file.path) as html:
-                fastqcs.append(html.read())
-    print(fastqcs)
-    htmlfastqc = get_html()
+            fastqcs.append(fastqc)
+            # with open(fastqc.file.path) as html:
+            #     fastqcs.append(html.read())
+    # htmlfastqc = get_html()
     return render(request, "ngs/pipeline/fastqc.html", locals())
 
 
