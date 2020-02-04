@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_variable('SECRET_KEY')
+SECRET_KEY = 'aaa'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -88,23 +88,13 @@ WSGI_APPLICATION = 'glogServer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': 'db.sqlite3',
-#     }
-# }
-#
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_env_variable('DATABASE_NAME'),
-        'USER': get_env_variable('DATABASE_USER'),
-        'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
+
 
 #DATABASES = {
 #    'default': {
