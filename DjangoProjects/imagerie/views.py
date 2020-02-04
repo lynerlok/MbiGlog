@@ -37,6 +37,7 @@ def import_image(request):
             envoi = True
     else:
         formset = ImageFormSet()
+    row_name = "image to guess"
     return render(request, "imagerie/import_image.html", locals())
 
 

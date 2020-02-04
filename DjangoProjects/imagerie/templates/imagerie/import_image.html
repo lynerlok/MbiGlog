@@ -18,9 +18,10 @@
             <table id="forms-table">
                 <thead>
                 <tr>
-                    <th>Image</th>
-                    <th>Plant Organ</th>
-                    <th>Background Type</th>
+                    {% for field in formset.empty_form %}
+                        <th>{{ field.label }}</th>
+                    {% endfor %}
+
                     <th>Remove</th>
                 </tr>
                 </thead>
@@ -40,7 +41,7 @@
                 </tbody>
             </table>
             <button type="submit" value="Submit">Upload</button>
-            <input type="button" value="Add More" id="add_more">
+            <input type="button" value="Add {{ row_name }}" id="add_more">
         </form>
 
         <table style="display:none">
