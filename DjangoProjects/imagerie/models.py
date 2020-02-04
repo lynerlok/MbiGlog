@@ -160,15 +160,15 @@ class CNN(ImageClassifier):
                                                          save_weights_only=False,
                                                          verbose=1, period=5)
 
-        # self.nn_model.fit(self.train_images, self.train_labels, batch_size=5, epochs=50, verbose=2)
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=50, verbose=2)
 
         aug = ImageDataGenerator(dtype='float16')
         aug.fit(self.train_images)
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit_generator(aug.flow(self.train_images, self.train_labels, batch_size=10),
-                                    validation_data=(self.test_images, self.test_labels),
-                                    steps_per_epoch=len(self.train_images) // 10,
-                                    epochs=50, callbacks=[cp_callback])
+        # self.nn_model.fit_generator(aug.flow(self.train_images, self.train_labels, batch_size=10),
+        #                             validation_data=(self.test_images, self.test_labels),
+        #                             steps_per_epoch=len(self.train_images) // 10,
+        #                             epochs=50, callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = float(accuracy)
         print(self.accuracy)
