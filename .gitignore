@@ -4,13 +4,21 @@
 # Ignore python virtual environment
 PythonVenv/
 venv
+
+# Ignore Django settings.py
+
 DjangoProjects/glogServer/settings.py
-/DjangoProjects/db.sqlite3
-DjangoProjects/imagerie/migrations
+
+# Ignore migrations from django
+
+DjangoProjects/homr/migrations/
+DjangoProjects/imagerie/migrations/
+DjangoProjects/metabo/migrations/
+DjangoProjects/ngs/migrations/
+DjangoProjects/proteo/migrations/
 
 # Ignore nohup.out for the server
-nohup.out
-DjangoProjects/nohup.out
+*.out
 
 # Ignore virtualenvwrapper files
 
@@ -18,7 +26,11 @@ DjangoProjects/nohup.out
 
 *.pyc
 
-# Ignore Database
+# Ignore Databases
 
-DevDatabase.db
+*.db
+*.sqlite3
 
+# Ignore merge artifacts
+
+*.orig
