@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .pipeline import *
@@ -10,6 +10,7 @@ from django.views.generic.edit import FormView
 from .forms import *
 from django.forms import formset_factory
 import subprocess
+import itolapi
 
 from django.shortcuts import render_to_response
 
@@ -54,7 +55,6 @@ def fastqc(request, id_request):
 
 
 def phylo_align(request):
-    correct = False
     align_request = AlignFieldForm(request.POST or None, request.FILES)
 
     if align_request.is_valid():
@@ -62,21 +62,19 @@ def phylo_align(request):
         align.mail = align_request.cleaned_data['your_email']
         align.file = align_request.cleaned_data['file_field']
         align.save()
-        correct = True
         print(settings.BASE_DIR)
         script = settings.BASE_DIR+'/ngs/clustalo.py'
         output = settings.BASE_DIR+'/media/ngs/align_result'
         tool = subprocess.Popen(['python', script,'--email',align.mail,'--outfile','AlignedData', '--stype', 'rna',align.file.path, ], close_fds=True , cwd=output)
         tool.communicate()
-        return phylo_tree(request)
+        tool.communicate()
+        return HttpResponseRedirect(reverse("phylogenic compute tree"))
 
 
     return render(request, "ngs/phylo.html", {'align':align_request}, locals())
 
 def phylo_tree(request):
-    correct = False
     tree_request = TreeForm(request.POST or None, request.FILES)
-
     if tree_request.is_valid():
         tree = Alignement()
         tree.mail = tree_request.cleaned_data['your_email']
@@ -84,6 +82,21 @@ def phylo_tree(request):
         tree.save()
         script = settings.BASE_DIR+'/ngs/simple_phylogeny.py'
         output = settings.MEDIA_ROOT+'/ngs/tree_result'
-        tool = subprocess.Popen(['python', script, '--email', tree.mail, '--stype', 'rna', tree.file.path, ], close_fds=True, cwd=output)
+        tool = subprocess.Popen(['python', script, '--email', tree.mail,'--outfile','tree', tree.file.path], close_fds=True, cwd=output)
+        tool.communicate()
+        tool.communicate()
+        return HttpResponseRedirect(reverse("phylogenic visualization"))
+
     return render(request, "ngs/phylo_tree.html",{'tree': tree_request},locals())
+
+
+def phylo_visu(request):
+    tree = settings.MEDIA_ROOT + '/ngs/tree_result/tree.tree.ph'
+    itool = itolapi.Itol()
+    itool.add_file(tree)
+    itool.params['treeName'] = 'test_tree'
+    status = itool.upload()
+    assert status != False
+    tree_link = itool.get_webpage()
+    return render(request, "ngs/phylo_visu.html", {"tree": tree_link}, locals())
 
