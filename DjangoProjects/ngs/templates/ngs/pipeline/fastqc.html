@@ -7,3 +7,85 @@
         <div>
     {% endfor %}
 {% endblock %}
+
+
+{% block style %}
+    {% load static %}
+    <script src="{% static "ngs/import_trimo.js" %}"></script>
+{% endblock %}
+
+{% block nav %}
+    <form method="post" enctype="multipart/form-data" action="{% url "ngs pipeline home" %}">
+        {% csrf_token %}
+        <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <div class="container">
+        <h2> Trimmomatic treatments</h2>
+        <p>Select parameters of Trimmomatic </p> <br>
+
+     <div class="Leading">
+    <select>
+      <option value="" disabled selected></option>
+      <option value="0">0</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+    <label>Leading</label>
+  </div>
+        <div class="Trailing">
+    <select>
+      <option value="" disabled selected></option>
+      <option value="0">0</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+    <label>Trailing</label>
+  </div>
+          <div class="AVGQUAL">
+    <select>
+      <option value="" disabled selected></option>
+      <option value="0">0</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+    <label>AVGQUAL</label>
+  </div>
+
+        <div class="Silding Window">
+    <select>
+      <option value="" disabled selected></option>
+      <option value="0">0</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+    <label>Silding Window</label>
+  </div>
+        <div class="Minlen">
+    <select>
+      <option value="" disabled selected></option>
+      <option value="0">0</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+    <label>Minlen</label>
+  </div>
+
+
+    <button type="submit" value="Submit">Run Trimmomatic</button>
+</div>
+     </form>
+{% endblock %}
