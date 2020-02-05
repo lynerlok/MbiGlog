@@ -2,5 +2,14 @@
 
 
 {% block content %}
-    zhiofZGFGZIFZGFSIG
+    <form enctype="multipart/form-data" action="" method="post">
+        {%  csrf_token %}
+        {{ align.as_p }}
+        <input type="submit" name="align" value="Align these ARN">
+    </form>
+
+    {%  if correct  %}
+        <p> Alignment ready to be processed </p>
+    {% endif %}
+
 {% endblock %}
