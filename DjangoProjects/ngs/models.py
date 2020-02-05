@@ -51,3 +51,23 @@ class Alignement(models.Model):
 
     def __str__(self):
         return self.file.name
+
+class Sequence_fasta(models.Model):
+    nomGene = models.CharField(max_length=255)
+    sequence = models.TextField()
+    nomEspece = models.CharField(max_length=255)
+
+class User(models.Model):
+    mail = models.EmailField().unique
+
+class Alignement_result(models.Model):
+    value = models.TextField()
+    algo = models.CharField(max_length=255)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    Sequences = models.ManyToManyField(Sequence_fasta, related_name="Alignements", blank=True)
+
+
+
+class Arbre(models.Model):
+    newick = models.TextField()
+    alignement = models.OneToOneField(Alignement_result,on_delete=models.CASCADE)
