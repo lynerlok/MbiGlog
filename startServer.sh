@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Think run before run script : 
+# Think run before run scripts :
 source /usr/local/bin/virtualenvwrapper.sh
 workon PythonVenv
 
