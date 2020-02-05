@@ -35,3 +35,19 @@ class FastQC(models.Model):
     dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'fastqc/'
     fastq = models.ForeignKey(FastQ, on_delete=models.CASCADE)
     file = models.FileField(upload_to='ngs/fastqc/')
+
+
+class Sequence(models.Model):
+    file = models.FileField(upload_to='ngs/fasta')
+    mail = models.EmailField(max_length=255)
+
+    def __str__(self):
+        return self.file.name
+
+
+class Alignement(models.Model):
+    file = models.FileField(upload_to='ngs/tree')
+    mail = models.EmailField(max_length=255)
+
+    def __str__(self):
+        return self.file.name
