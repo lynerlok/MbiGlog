@@ -71,3 +71,14 @@ h4{
   color: white;
 }
 
+#menu_1D {
+	position : relative;
+	top : 50px;
+}
+
+#whatif {
+	position : relative;
+	top : 30px;
+	right : 140px;
+}
+
