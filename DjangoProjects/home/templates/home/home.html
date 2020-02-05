@@ -1,13 +1,16 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-    MABEV - Home
+    PB - Home
 {% endblock %}
 
 {% block content %}
     <section class='section_content'>
         <div class='content'>
-            Welcome ! You have reached the home page of <b>Plants Bioinformatics</b>. This site presents the results of a 6 months-long project aiming to create an ensemble of four webservices : <b>Imaging</b>, <b>NGS</b>, <b>Metabolomics</b> and <b>Proteomics</b>. Those webservices aim respectively to apply different types of bioinformatics analysis on plant species.  
+            Welcome ! You have reached the home page of <b>Plant Bioinformatics</b>. <br><br>
+            This site presents the results of a 6 months-long project aiming to create an ensemble of four webservices : <b>Imaging</b>, <b>NGS</b>, <b>Metabolomics</b> and <b>Proteomics</b>. <br><br>
+            Those webservices aim respectively to apply different types of bioinformatics analysis on plant species.  
         </div>
     </section>
 {% endblock %}
@@ -15,12 +18,24 @@
 {% block nav %}
     <nav> <!--container-->
         <ul>  <!--topnav-->
-            <li><a href="{% url "img_home" %}">Imaging</a></li>
-            <li><a href="{% url "mtb_home" %}">Metabolomics</a></li>
+            <li><a href="{% url "img_home" %}">
+                <img src="{% static "home/camera.png" %}"><br>
+                Imaging
+            </a></li>
+            <li><a href="{% url "mtb_home" %}">
+                <img src="{% static "home/metabo.png" %}"><br>
+                Metabolomics
+            </a></li>
         </ul>
         <ul>
-            <li><a href="{% url "ngs_home" %}">NGS</a></li>
-            <li><a href="{% url "prt_home" %}">Proteomics</a></li>
+            <li><a href="{% url "ngs_home" %}">
+                <img src="{% static "home/ngs.png" %}"><br>
+                NGS
+            </a></li>
+            <li><a href="{% url "prt_home" %}">
+                <img src="{% static "home/proteo.png" %}"><br>
+                Proteomics
+            </a></li>
         </ul>
     </nav>
 {% endblock %}
