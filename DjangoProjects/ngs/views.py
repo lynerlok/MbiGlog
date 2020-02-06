@@ -23,6 +23,7 @@ def home(request):
         return HttpResponseRedirect(reverse('phylogenic pipeline hub'))
     return render(request, "ngs/home.html", locals())
 
+
 def pipeline(request):
     FastQFormSet = formset_factory(FastQForm)
 
@@ -42,6 +43,7 @@ def pipeline(request):
         formset = FastQFormSet()
     return render(request, 'ngs/pipeline/formset_fastq.html', locals())
 
+
 def fastqc(request, id_request):
     fastqcs = []
     r = Request.objects.get(pk=id_request)
@@ -52,18 +54,20 @@ def fastqc(request, id_request):
         return redirect('hisat2')
     return render(request, "ngs/pipeline/fastqc.html", locals())
 
+
 def hisat(request):
     if os.path.isdir(Genome.dir.as_posix()) == False:
         process = subprocess.Popen("mkdir " + Genome.dir.as_posix(), shell=True)
         process.communicate()
-    if os.path.isdir(Annotation.dir.as_posix()) == False:
-        process = subprocess.Popen("mkdir " + Annotation.dir.as_posix(), shell=True)
-        process.communicate()
 
-    genome_annotations_request = GenomeAnnotationsForm(request.POST or None, request.FILES)
+    genome_annotations_request = GenomeAnnotationsForm(request.POST or None, request.FILES, prefix='ga')
 
-    if request.method=='POST':
-        if genome_annotations_request.is_valid():
+    FastQFormSet = formset_factory(SelectFastQForm)
+
+    if request.method == 'POST':
+        formset = FastQFormSet(request.POST, files=request.FILES, prefix='fast_q_name')
+
+        if genome_annotations_request.is_valid() and formset.is_valid():
             r = Request()
             r.save()
             genome = Genome()
@@ -74,11 +78,19 @@ def hisat(request):
             annotations.request = r
             annotations.file = genome_annotations_request.cleaned_data['annotations_file']
             annotations.save()
+            for form in formset:
+                fastq = form.cleaned_data['fastq']
+                fastq.generate_hisat()
             return redirect('R analysis')
-    return render(request, "ngs/pipeline/hisat.html",locals())
+    else:
+        formset = FastQFormSet(prefix='fast_q_name')
+
+    return render(request, "ngs/pipeline/hisat.html", locals())
+
 
 def ranalysis(request):
-    return render(request, "ngs/pipeline/R_analysis.html",locals())
+    return render(request, "ngs/pipeline/R_analysis.html", locals())
+
 
 def phylo_align(request):
     align_request = AlignFieldForm(request.POST or None, request.FILES)
@@ -89,15 +101,17 @@ def phylo_align(request):
         align.file = align_request.cleaned_data['file_field']
         align.save()
         print(settings.BASE_DIR)
-        script = settings.BASE_DIR+'/ngs/clustalo.py'
-        output = settings.BASE_DIR+'/media/ngs/align_result'
-        tool = subprocess.Popen(['python', script,'--email',align.mail,'--outfile','AlignedData', '--stype', 'rna',align.file.path, ], close_fds=True , cwd=output)
+        script = settings.BASE_DIR + '/ngs/clustalo.py'
+        output = settings.BASE_DIR + '/media/ngs/align_result'
+        tool = subprocess.Popen(
+            ['python', script, '--email', align.mail, '--outfile', 'AlignedData', '--stype', 'rna', align.file.path, ],
+            close_fds=True, cwd=output)
         tool.communicate()
         tool.communicate()
         return HttpResponseRedirect(reverse("phylogenic compute tree"))
 
+    return render(request, "ngs/phylo.html", {'align': align_request}, locals())
 
-    return render(request, "ngs/phylo.html", {'align':align_request}, locals())
 
 def phylo_tree(request):
     tree_request = TreeForm(request.POST or None, request.FILES)
@@ -106,14 +120,15 @@ def phylo_tree(request):
         tree.mail = tree_request.cleaned_data['your_email']
         tree.file = tree_request.cleaned_data['file_field']
         tree.save()
-        script = settings.BASE_DIR+'/ngs/simple_phylogeny.py'
-        output = settings.MEDIA_ROOT+'/ngs/tree_result'
-        tool = subprocess.Popen(['python', script, '--email', tree.mail,'--outfile','tree', tree.file.path], close_fds=True, cwd=output)
+        script = settings.BASE_DIR + '/ngs/simple_phylogeny.py'
+        output = settings.MEDIA_ROOT + '/ngs/tree_result'
+        tool = subprocess.Popen(['python', script, '--email', tree.mail, '--outfile', 'tree', tree.file.path],
+                                close_fds=True, cwd=output)
         tool.communicate()
         tool.communicate()
         return HttpResponseRedirect(reverse("phylogenic visualization"))
 
-    return render(request, "ngs/phylo_tree.html",{'tree': tree_request},locals())
+    return render(request, "ngs/phylo_tree.html", {'tree': tree_request}, locals())
 
 
 def phylo_visu(request):
@@ -125,4 +140,3 @@ def phylo_visu(request):
     assert status != False
     tree_link = itool.get_webpage()
     return render(request, "ngs/phylo_visu.html", {"tree": tree_link}, locals())
-

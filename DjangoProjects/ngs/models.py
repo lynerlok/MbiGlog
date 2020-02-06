@@ -12,17 +12,17 @@ class Request(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 class Genome(models.Model):
-    dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'genome/'
+    dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'genome_annotations/'
     request = models.ForeignKey(Request, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='ngs/genome')
+    file = models.FileField(upload_to='ngs/genome_annotations')
 
     def __str__(self):
         return self.file.name
 
 class Annotation(models.Model):
-    dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'annotations/'
+    dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'genome_annotations/'
     request = models.ForeignKey(Request, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='ngs/annotations')
+    file = models.FileField(upload_to='ngs/genome_annotations')
 
 class FastQ(models.Model):
     archive = models.FileField(upload_to='ngs/fastq/')
@@ -42,12 +42,34 @@ class FastQ(models.Model):
         fastqc.save()
         return fastqc
 
+    def generate_hisat(self):
+        rc = 1
+        while (rc != 0):
+            if os.path.isdir(Hisat.dir.as_posix()) == False:
+                process = subprocess.Popen("mkdir " + Hisat.dir.as_posix(), shell=True)
+                process.communicate()
+            print()
+            # hisat_process = subprocess.Popen("hisat2-build "+ Genome.file.path+" "+ Annotation.file.path)
+            # hisatstream = hisat_process.communicate()[0]
+            # rc = hisat_process.returncode
+        # sam_name = Path(self.archive.path) + '.sam'
+        # sam = Hisat(fastq=self, file=(Hisat.dir / sam_name).as_posix())
+        # sam.save()
+        # return sam
+
+    def __str__(self):
+        return Path(self.archive.path).name.split('.')[0]
+
 
 class FastQC(models.Model):
     dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'fastqc/'
     fastq = models.ForeignKey(FastQ, on_delete=models.CASCADE)
     file = models.FileField(upload_to='ngs/fastqc/')
 
+class Hisat(models.Model):
+    dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'samfile/'
+    fastq = models.ForeignKey(FastQ, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='ngs/samfile')
 
 class Sequence(models.Model):
     file = models.FileField(upload_to='ngs/fasta')

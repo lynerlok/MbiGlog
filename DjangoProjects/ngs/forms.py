@@ -10,6 +10,16 @@ class GenomeAnnotationsForm(forms.Form):
     genome_file = forms.FileField(label= 'Genome file')
     annotations_file = forms.FileField(label='Annotations file')
 
+    # file_field = forms.CharField(label='Fastq name', max_length=200)
+    #
+    # def __init__(self, *args, **kwargs):
+    #     super(GenomeAnnotationsForm, self).__init__(*args, **kwargs)
+    #     for field in self.fields:
+    #         self.fields[field].widget.attrs.update({'required': 'True'})
+
+
+
+
 class AlignFieldForm(forms.Form):
     file_field = forms.FileField(label= 'Fasta containing ARN18s')
     your_email = forms.EmailField(label='your email', max_length=200)
@@ -29,3 +39,10 @@ class FastQForm(forms.ModelForm):
         super(FastQForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'required': 'True'})
+
+class SelectFastQForm(forms.Form):
+    fastq = forms.ModelChoiceField(
+        queryset=FastQ.objects.all(),
+        widget=forms.Select(attrs={'class': 'fastq', 'required': 'True'})
+    )
+
