@@ -31,7 +31,7 @@ def import_image(request):
                 else:
                     cnns[submitted.plant_organ, submitted.background_type].append(submitted)
             for plant_organ, background_type in cnns:
-                alex = AlexNet.objects.get(specialized_organ=plant_organ, specialized_background=background_type)
+                alex = AlexNet.objects.filter(specialized_organ=plant_organ, specialized_background=background_type).order_by('-date').first()
                 alex.classify(cnns[plant_organ, background_type])
             envoi = True
             return redirect('img_view_predictions', r.pk)
