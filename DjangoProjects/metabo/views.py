@@ -5,7 +5,7 @@ from .forms import NGSForm
 from django.conf import settings
 from pathlib import Path
 from .scripts import correlation as co
-
+import json
 
 # Create your views here.
 def home(request):
@@ -23,16 +23,17 @@ def upload_file(request):
         form = NGSForm(request.POST, request.FILES)
         if form.is_valid():
             file = form.cleaned_data['NGS_data']
-            handle_uploaded_file(file)
+            path = handle_uploaded_file(file)
 
             ###Traitement via le script python
-            data = open("media/tmp.txt","r",errors="ignore")
+            data = co.reader(path.as_posix())
             dic = co.strToFloat(data)
             result_correlation = co.corrPearson(dic)
             correlDict = co.translateMatrix(result_correlation)
             output = co.meltDict(correlDict, 0.9)
-            co.saveResult(output, "static/tempNGS.txt")
-            return redirect('mtb_graph')
+            # return redirect('mtb_graph')
+            output = json.dumps(output)
+            return render(request, 'metabo/graph.html', locals())
     else:
         form = NGSForm()
     return render(request, 'metabo/ngs.html', {'form': form})
@@ -43,6 +44,7 @@ def handle_uploaded_file(f):
     with tmp.open('wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+    return tmp
 
 
 def graph(request):
