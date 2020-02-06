@@ -1,11 +1,22 @@
 {% extends "ngs/base.html" %}
 
 {% block content %}
+
     {% for fastqc in fastqcs %}
         <div>
          The FastQC HTML file associated with {{fastqc.fastq.archive }} is located at : {{ fastqc.file.url }}
-        <div>
+        </div>
     {% endfor %}
+
+    <form enctype="multipart/form-data" action="" method="post">
+        <div class="container">
+        <h2> Trimmomatic treatments</h2>
+        <p>Select parameters of Trimmomatic </p> <br>
+    {% csrf_token %}
+    {{ trim.as_p }}
+     <input type="submit" name="trimo" value="Set Trimmomatic Paramater">
+    </form>
+
 
     <form action="" method='post'>
     {%  csrf_token %}
@@ -13,12 +24,7 @@
     </form>
 {% endblock %}
 
-
-{% block style %}
-    {% load static %}
-    <script src="{% static "ngs/import_trimo.js" %}"></script>
-{% endblock %}
-
+{% comment %}
 {% block nav %}
     <form method="post" enctype="multipart/form-data" action="{% url "ngs pipeline home" %}">
         {% csrf_token %}
@@ -93,4 +99,4 @@
     <button type="submit" value="Submit">Run Trimmomatic</button>
 </div>
      </form>
-{% endblock %}
+{% endblock %}{% endcomment %}

@@ -27,6 +27,7 @@ class Annotation(models.Model):
 class FastQ(models.Model):
     archive = models.FileField(upload_to='ngs/fastq/')
     request = models.ForeignKey(Request, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
 
     def generate_fastqc(self):
         rc = 1
@@ -61,6 +62,7 @@ class FastQ(models.Model):
         return Path(self.archive.path).name.split('.')[0]
 
 
+
 class FastQC(models.Model):
     dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'fastqc/'
     fastq = models.ForeignKey(FastQ, on_delete=models.CASCADE)
@@ -85,6 +87,7 @@ class Alignement(models.Model):
 
     def __str__(self):
         return self.file.name
+
 
 class Sequence_fasta(models.Model):
     nomGene = models.CharField(max_length=255)

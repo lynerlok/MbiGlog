@@ -9,6 +9,7 @@ from .models import *
 from django.views.generic.edit import FormView
 from .forms import *
 from django.forms import formset_factory
+from django.core.files import File
 import subprocess
 import itolapi
 
@@ -45,16 +46,35 @@ def pipeline(request):
 
 
 def fastqc(request, id_request):
+    all_fastqc =  FastQ.objects.all()
+    trim_form = TrimOptionsForm(request.POST or None)
     fastqcs = []
+    if trim_form.is_valid():
+        for fastq in all_fastqc:
+            if trim_form.cleaned_data["name_field"] == Path(fastq.archive.path).name.split('.')[0]:
+                trimo_path =  settings.BASE_DIR+"/ngs/Trimmomatic-0.36/trimmomatic-0.36.jar"
+                trim_name = Path(fastq.archive.path).name
+                trim_filename = Path(fastq.archive.path).name+".trim.fil.gz"
+                leading = "LEADING:"+ trim_form.cleaned_data["leading_field"]
+                trailing ="TRAILING:"+ trim_form.cleaned_data["trailing_field"]
+                avgqual = "AVGQUAL:"+ trim_form.cleaned_data["avgqual_field"]
+                slid_wind ="SLIDINGWINDOW:"+ trim_form.cleaned_data["slid_wind_field"]+":30"
+                minlen = "MINLEN:"+ trim_form.cleaned_data["minlen_field"]
+                output = settings.MEDIA_ROOT+"ngs/fastq"
+                trimo = subprocess.Popen(["java", "-jar", trimo_path, "SE",trim_name, trim_filename,leading,trailing,avgqual,slid_wind,minlen], close_fds=True, cwd=output)
+                trimo.communicate()
+                f = open(output+'/'+trim_filename)
+                myFile =File(f)
+                fastq.archive = myFile
+                return redirect('ngs fastqc', id_request)
+
     r = Request.objects.get(pk=id_request)
     for fastq in r.fastq_set.all():
         for fastqc in fastq.fastqc_set.all():
             fastqcs.append(fastqc)
     if 'hisat' in request.POST:
         return redirect('hisat2')
-    return render(request, "ngs/pipeline/fastqc.html", locals())
-
-
+    return render(request, "ngs/pipeline/fastqc.html", {"trim": trim_form}, locals())
 def hisat(request):
     if os.path.isdir(Genome.dir.as_posix()) == False:
         process = subprocess.Popen("mkdir " + Genome.dir.as_posix(), shell=True)
@@ -101,17 +121,15 @@ def phylo_align(request):
         align.file = align_request.cleaned_data['file_field']
         align.save()
         print(settings.BASE_DIR)
-        script = settings.BASE_DIR + '/ngs/clustalo.py'
-        output = settings.BASE_DIR + '/media/ngs/align_result'
-        tool = subprocess.Popen(
-            ['python', script, '--email', align.mail, '--outfile', 'AlignedData', '--stype', 'rna', align.file.path, ],
-            close_fds=True, cwd=output)
+        script = settings.BASE_DIR+'/ngs/clustalo.py'
+        output = settings.BASE_DIR+'/media/ngs/align_result'
+        tool = subprocess.Popen(['python', script,'--email',align.mail,'--outfile','AlignedData', '--stype', 'rna',align.file.path, ], close_fds=True , cwd=output)
         tool.communicate()
         tool.communicate()
         return HttpResponseRedirect(reverse("phylogenic compute tree"))
 
-    return render(request, "ngs/phylo.html", {'align': align_request}, locals())
 
+    return render(request, "ngs/phylo.html", {'align':align_request}, locals())
 
 def phylo_tree(request):
     tree_request = TreeForm(request.POST or None, request.FILES)
@@ -120,15 +138,14 @@ def phylo_tree(request):
         tree.mail = tree_request.cleaned_data['your_email']
         tree.file = tree_request.cleaned_data['file_field']
         tree.save()
-        script = settings.BASE_DIR + '/ngs/simple_phylogeny.py'
-        output = settings.MEDIA_ROOT + '/ngs/tree_result'
-        tool = subprocess.Popen(['python', script, '--email', tree.mail, '--outfile', 'tree', tree.file.path],
-                                close_fds=True, cwd=output)
+        script = settings.BASE_DIR+'/ngs/simple_phylogeny.py'
+        output = settings.MEDIA_ROOT+'/ngs/tree_result'
+        tool = subprocess.Popen(['python', script, '--email', tree.mail,'--outfile','tree', tree.file.path], close_fds=True, cwd=output)
         tool.communicate()
         tool.communicate()
         return HttpResponseRedirect(reverse("phylogenic visualization"))
 
-    return render(request, "ngs/phylo_tree.html", {'tree': tree_request}, locals())
+    return render(request, "ngs/phylo_tree.html",{'tree': tree_request},locals())
 
 
 def phylo_visu(request):

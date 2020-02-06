@@ -29,6 +29,55 @@ class TreeForm(forms.Form):
     your_email = forms.EmailField(label='your email', max_length=200)
 
 
+TRIM_LEADING=(
+    ("0","0"),
+    ("5", "5"),
+    ("10", "10"),
+    ("15", "15"),
+    ("20", "20")
+)
+
+TRIM_TRAILING =(
+    ("0", "0"),
+    ("5", "5"),
+    ("10", "10"),
+    ("15", "15"),
+    ("20", "20")
+)
+
+TRIM_AVGQUAL=(
+    ("0","0"),
+    ("5", "5"),
+    ("10", "10"),
+    ("15", "15"),
+    ("20", "20")
+)
+
+TRIM_SLIDING_WINDOWS = (
+    ("0","0"),
+    ("5", "5"),
+    ("10", "10"),
+    ("15", "15"),
+    ("20", "20")
+)
+
+TRIM_MINLEN = (
+    ("0","0"),
+    ("5", "5"),
+    ("10", "10"),
+    ("15", "15"),
+    ("20", "20")
+)
+
+class TrimOptionsForm(forms.Form):
+    leading_field = forms.ChoiceField(label="Leading",choices=TRIM_LEADING)
+    trailing_field = forms.ChoiceField(label="Trailing", choices=TRIM_TRAILING)
+    avgqual_field = forms.ChoiceField(label="AVGQUAL", choices=TRIM_AVGQUAL)
+    slid_wind_field = forms.ChoiceField(label="Sliding Windows", choices=TRIM_SLIDING_WINDOWS)
+    minlen_field = forms.ChoiceField(label="Minlen", choices=TRIM_MINLEN)
+    name_field = forms.CharField(label="Name of the Fastq", max_length=200)
+
+
 class FastQForm(forms.ModelForm):
     class Meta:
         file_field = forms.FileField(label='genome')
