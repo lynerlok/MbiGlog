@@ -155,8 +155,8 @@ class CNN(ImageClassifier):
                                                          save_weights_only=False,
                                                          verbose=1, period=5)
 
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=80, epochs=50, verbose=2, callbacks=[cp_callback])
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=80, epochs=50, verbose=2, callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
@@ -232,7 +232,7 @@ class CNN(ImageClassifier):
         return path
 
     def load_model(self):
-        latest = tf.train.latest_checkpoint(self.checkpoint_dir)
+        latest = tf.train.latest_checkpoint(self.checkpoint_dir_path)
         self.set_tf_model()
         self.nn_model.load_weights(latest)
 
