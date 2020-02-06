@@ -164,8 +164,8 @@ class CNN(ImageClassifier):
         self.save()
 
     def classify(self, images: List):
-        if not self.available:
-            raise Exception('The CNN is not available yet')
+        # if not self.available:
+        #     raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
         processed_images = np.array([image.preprocess() for image in images])
