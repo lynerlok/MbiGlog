@@ -183,6 +183,7 @@ class CNN(ImageClassifier):
                 pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
+        self.classes.all().delete()
         if images is None:
             images = GroundTruthImage.objects.all()
         if self.specialized_organ:
