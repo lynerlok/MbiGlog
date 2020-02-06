@@ -5,6 +5,7 @@ from imagerie.models import *
 
 class Command(BaseCommand):
     help = ''
+    args = '<directory_of_images_and_annotation_path>'
 
     def add_arguments(self, parser):
         pass
@@ -15,7 +16,7 @@ class Command(BaseCommand):
     def test(self):
         background = BackgroundType.objects.get(name='SheetAsBackground')
         organ = PlantOrgan.objects.get(name='Leaf')
-        a, _ = AlexNet.objects.get_or_create(name="BASE", specialized_background=background, specialized_organ=organ)
+        a, _ = AlexNet.objects.get_or_create(name="SheetLeaf", specialized_background=background, specialized_organ=organ)
         a.train()
         background = BackgroundType.objects.get(name='NaturalBackground')
         # for organ in PlantOrgan.objects.all():
