@@ -25,4 +25,6 @@ urlpatterns = [
                   path('metabolomics/', include("metabo.urls")),
                   path('ngs/', include("ngs.urls")),
                   path('proteomics/', include("proteo.urls")),
-              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+                  static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+                  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ]

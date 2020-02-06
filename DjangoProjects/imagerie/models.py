@@ -18,7 +18,6 @@ from keras.models import Sequential
 from keras.utils import to_categorical
 
 
-
 class Label(models.Model):
     name = models.CharField(max_length=50)
 
@@ -164,12 +163,11 @@ class CNN(ImageClassifier):
         self.available = True
         self.save()
 
-    def classify(self, request: Request):
+    def classify(self, images: List):
         if not self.available:
             raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
-        images = request.submitted_images.all()
         processed_images = np.array([image.preprocess() for image in images])
         predictions = self.nn_model.predict(processed_images)
         original_index_sorted = np.argsort(-predictions, axis=1)
@@ -181,7 +179,7 @@ class CNN(ImageClassifier):
                     pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
                 except Prediction.DoesNotExist:
                     pred = Prediction(cnn=self, image=images[i], specie=specie)
-                pred.confidence = float(predictions[i, original_index_sorted[i, j]])
+                pred.confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
                 pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
@@ -216,12 +214,10 @@ class CNN(ImageClassifier):
                     test_labels.append(specie_to_pos[images[i].specie])
 
         self.train_images = np.array(train_images)
-        print(self.train_images.shape)
-
         self.train_labels = to_categorical(np.array(train_labels))
-
         self.test_images = np.array(test_images)
         self.test_labels = to_categorical(np.array(test_labels))
+        print(self.train_images.shape)
 
     @property
     def checkpoint_dir_path(self):
@@ -254,7 +250,7 @@ class Prediction(models.Model):
     confidence = models.DecimalField(max_digits=4, decimal_places=3)
 
     def __str__(self):
-        return "{} guessed {} ({}%) on {} ".format(self.cnn.name, self.specie.name, self.confidence, self.image)
+        return "{} ({}%)".format(self.cnn.name, self.specie.name, self.confidence, self.image)
 
 
 class AlexNet(CNN):

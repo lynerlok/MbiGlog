@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.forms import formset_factory
 from django.http import HttpResponse
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
 from .forms import ImportImageForm
 from .models import Request, AlexNet
 
@@ -35,11 +34,17 @@ def import_image(request):
                 alex = AlexNet.objects.get(specialized_organ=plant_organ, specialized_background=background_type)
                 alex.classify(cnns[plant_organ, background_type])
             envoi = True
+            return redirect('img_view_predictions', r.pk)
     else:
         formset = ImageFormSet()
-    row_name = "image to guess"
     return render(request, "imagerie/import_image.html", locals())
 
 
 def success(request):
     return HttpResponse('successfully uploaded')
+
+
+def view_predictions(request, id_request):
+    r = Request.objects.get(pk=id_request)
+    return render(request, "imagerie/view_predictions.html", locals())
+
