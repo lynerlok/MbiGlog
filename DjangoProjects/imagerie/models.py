@@ -150,13 +150,19 @@ class CNN(ImageClassifier):
     def train(self, training_data=None):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
+        checkpoint_dir = self.checkpoint_dir_path
+        checkpoint_path = os.path.join(checkpoint_dir, f'{self.name}_cp_{{epoch:04d}}.ckpt')
+        cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                         save_weights_only=False,
+                                                         verbose=1, period=5)
 
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=80, epochs=30, verbose=2)
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=80, epochs=50, verbose=2, callbacks=[cp_callback])
+        self.nn_model.save_weights(checkpoint_path.format(epoch=0))
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
         self.available = True
-        self.save_model()
+        self.save()
 
     def classify(self, request: Request):
         if not self.available:
@@ -190,7 +196,7 @@ class CNN(ImageClassifier):
         for specie in species:
             print(specie['specie__name'], specie['nb_image'])
         images = list(images)
-        print(len(images))
+
         shuffle(images)
         specie_to_pos = {}
         self.save()  # allow to create ref to CNN in classes
@@ -210,29 +216,29 @@ class CNN(ImageClassifier):
                     test_labels.append(specie_to_pos[images[i].specie])
 
         self.train_images = np.array(train_images)
-
+        print(self.train_images.shape)
 
         self.train_labels = to_categorical(np.array(train_labels))
 
         self.test_images = np.array(test_images)
         self.test_labels = to_categorical(np.array(test_labels))
 
-    def save_model(self):
+    @property
+    def checkpoint_dir_path(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
         if not os.path.isdir(path):
             os.mkdir(path)
-        path = os.path.join(path, f'{self.name}_'
-                                  f'{self.date.year}_'
-                                  f'{self.date.month}_'
-                                  f'{self.date.day}_'
-                                  f'{self.date.hour}.h5')
-
-        self.nn_model.save(path)
-        self.learning_data = path
-        self.save()
+        path = os.path.join(path, f'{self.name}_{self.specialized_background.name}_{self.specialized_organ.name}')
+        if not os.path.isdir(path):
+            os.mkdir(path)
+            self.checkpoint_dir = path
+            self.save()
+        return path
 
     def load_model(self):
-        self.nn_model = tf.keras.models.load_model(self.learning_data)
+        latest = tf.train.latest_checkpoint(self.checkpoint_dir)
+        self.set_tf_model()
+        self.nn_model.load_weights(latest)
 
 
 class Class(models.Model):
