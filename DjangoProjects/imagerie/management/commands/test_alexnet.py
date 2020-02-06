@@ -1,11 +1,15 @@
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 
 from imagerie.models import *
 
 
+# from imagerie.tf_models.AlexNet import AlexNet
+
+
 class Command(BaseCommand):
-    help = ''
     args = '<directory_of_images_and_annotation_path>'
+    help = 'our help string comes here'
 
     def add_arguments(self, parser):
         pass
@@ -14,12 +18,9 @@ class Command(BaseCommand):
         self.test()
 
     def test(self):
-        background = BackgroundType.objects.get(name='SheetAsBackground')
-        organ = PlantOrgan.objects.get(name='Leaf')
-        a, _ = AlexNet.objects.get_or_create(name="SheetLeaf", specialized_background=background, specialized_organ=organ)
+        natural = BackgroundType.objects.get(name='SheetAsBackground')
+        leaf = PlantOrgan.objects.get(name='Leaf')
+        a, _ = AlexNet.objects.get_or_create(name="Base", specialized_background=natural, specialized_organ=leaf)
+        images = GroundTruthImage.objects.filter(
+            Q(specie__name='Olea europaea') | Q(specie__name='Phillyrea angustifolia'))
         a.train()
-        background = BackgroundType.objects.get(name='NaturalBackground')
-        # for organ in PlantOrgan.objects.all():
-        #     a, _ = AlexNet.objects.get_or_create(name=f"N{organ.name}", specialized_background=background,
-        #                                          specialized_organ=organ)
-        #     a.train()
