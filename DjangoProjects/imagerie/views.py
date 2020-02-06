@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+
 from .forms import ImportImageForm
 from .models import Request, AlexNet
 
@@ -31,7 +32,8 @@ def import_image(request):
                 else:
                     cnns[submitted.plant_organ, submitted.background_type].append(submitted)
             for plant_organ, background_type in cnns:
-                alex = AlexNet.objects.filter(specialized_organ=plant_organ, specialized_background=background_type).order_by('-date').first()
+                alex = AlexNet.objects.filter(specialized_organ=plant_organ, specialized_background=background_type,
+                                              available=True).order_by('-date').first()
                 alex.classify(cnns[plant_organ, background_type])
             envoi = True
             return redirect('img_view_predictions', r.pk)
@@ -47,4 +49,3 @@ def success(request):
 def view_predictions(request, id_request):
     r = Request.objects.get(pk=id_request)
     return render(request, "imagerie/view_predictions.html", locals())
-
