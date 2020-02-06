@@ -48,11 +48,37 @@ def fastqc(request, id_request):
     for fastq in r.fastq_set.all():
         for fastqc in fastq.fastqc_set.all():
             fastqcs.append(fastqc)
-            # with open(fastqc.file.path) as html:
-            #     fastqcs.append(html.read())
-    # htmlfastqc = get_html()
+    if 'hisat' in request.POST:
+        return redirect('hisat2')
     return render(request, "ngs/pipeline/fastqc.html", locals())
 
+def hisat(request):
+    if os.path.isdir(Genome.dir.as_posix()) == False:
+        process = subprocess.Popen("mkdir " + Genome.dir.as_posix(), shell=True)
+        process.communicate()
+    if os.path.isdir(Annotation.dir.as_posix()) == False:
+        process = subprocess.Popen("mkdir " + Annotation.dir.as_posix(), shell=True)
+        process.communicate()
+
+    genome_annotations_request = GenomeAnnotationsForm(request.POST or None, request.FILES)
+
+    if request.method=='POST':
+        if genome_annotations_request.is_valid():
+            r = Request()
+            r.save()
+            genome = Genome()
+            genome.request = r
+            genome.file = genome_annotations_request.cleaned_data['genome_file']
+            genome.save()
+            annotations = Annotation()
+            annotations.request = r
+            annotations.file = genome_annotations_request.cleaned_data['annotations_file']
+            annotations.save()
+            return redirect('R analysis')
+    return render(request, "ngs/pipeline/hisat.html",locals())
+
+def ranalysis(request):
+    return render(request, "ngs/pipeline/R_analysis.html",locals())
 
 def phylo_align(request):
     align_request = AlignFieldForm(request.POST or None, request.FILES)

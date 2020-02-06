@@ -6,6 +6,9 @@ class FileFieldForm(forms.Form):
     file_field = forms.FileField()
 
 
+class GenomeAnnotationsForm(forms.Form):
+    genome_file = forms.FileField(label= 'Genome file')
+    annotations_file = forms.FileField(label='Annotations file')
 
 class AlignFieldForm(forms.Form):
     file_field = forms.FileField(label= 'Fasta containing ARN18s')
@@ -18,6 +21,7 @@ class TreeForm(forms.Form):
 
 class FastQForm(forms.ModelForm):
     class Meta:
+        file_field = forms.FileField(label='genome')
         model = FastQ
         fields = ['archive']
 

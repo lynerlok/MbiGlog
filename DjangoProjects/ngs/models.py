@@ -11,6 +11,18 @@ import os.path
 class Request(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
+class Genome(models.Model):
+    dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'genome/'
+    request = models.ForeignKey(Request, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='ngs/genome')
+
+    def __str__(self):
+        return self.file.name
+
+class Annotation(models.Model):
+    dir = Path(settings.MEDIA_ROOT) / 'ngs' / 'annotations/'
+    request = models.ForeignKey(Request, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='ngs/annotations')
 
 class FastQ(models.Model):
     archive = models.FileField(upload_to='ngs/fastq/')

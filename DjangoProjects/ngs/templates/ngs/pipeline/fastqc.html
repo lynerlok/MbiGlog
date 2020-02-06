@@ -6,6 +6,11 @@
          The FastQC HTML file associated with {{fastqc.fastq.archive }} is located at : {{ fastqc.file.url }}
         <div>
     {% endfor %}
+
+    <form action="" method='post'>
+    {%  csrf_token %}
+    <button type='submit' name="hisat">Go Hisat</button>
+    </form>
 {% endblock %}
 
 
