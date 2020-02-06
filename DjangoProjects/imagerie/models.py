@@ -151,7 +151,7 @@ class CNN(ImageClassifier):
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
 
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=30, verbose=2)
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=50, epochs=20, verbose=2)
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
@@ -185,7 +185,7 @@ class CNN(ImageClassifier):
             images = images.filter(plant_organ=self.specialized_organ)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=10)
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=100)
 
         for specie in species:
             print(specie['specie__name'], specie['nb_image'])
@@ -305,8 +305,8 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        self.nn_model.add(Dense(len(self.classes.all())))
-        #self.nn_model.add(Dense(36))
+        #self.nn_model.add(Dense(len(self.classes.all())))
+        self.nn_model.add(Dense(36))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
