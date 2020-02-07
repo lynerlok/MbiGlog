@@ -32,7 +32,7 @@
                     </thead>
                     <tbody id="forms">
                     {% for form in formset %}
-                        {% if forloop.counter0 == -1 %}
+                        {% if forloop.last %}
                             <tr id="tr-id_form-{{ forloop.counter0 }}">
                                 {% for field in form %}
                                     {% if forloop.counter0 == 0 %}
