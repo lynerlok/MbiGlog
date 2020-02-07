@@ -209,13 +209,14 @@ class CNN(ImageClassifier):
         nb_images = len(images)
         for i in range(nb_images):
             if images[i].specie in specie_to_pos:
-                data_images.append(images[i].preprocess())
-                data_labels.append(specie_to_pos[images[i].specie])
+                if images[i].size != 0:
+                    data_images.append(images[i].preprocess())
+                    data_labels.append(specie_to_pos[images[i].specie])
 
-        data_images_np=np.array(data_images)
+        data_images_np = np.array(data_images)
         data_labels_np = np.array(data_labels)
         shufflesplit = StratifiedShuffleSplit(n_splits=2, test_size=0.2)
-        train_index,test_index = shufflesplit.split(data_images_np, data_labels_np)
+        train_index, test_index = shufflesplit.split(data_images_np, data_labels_np)
         self.train_images, self.test_images = data_images_np[train_index], data_images_np[test_index]
         self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(data_labels_np[test_index])
         print(self.train_images.shape)
