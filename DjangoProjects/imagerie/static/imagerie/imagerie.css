@@ -4,7 +4,7 @@
     margin-right: auto;
     background: #ebece9;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.4);
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 #forms-table {
@@ -42,5 +42,19 @@
     transform: translateY(-50%);
     text-align: center;
     position: absolute;
+}
 
+.buttons input, .buttons button {
+    background-color:#d48e48;
+    font-size: 18px;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 30px;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.3);
+}
+
+.buttons input:hover, .buttons button:hover {
+    background-color: #b54936;
+    transition: transform .1s ease;
 }

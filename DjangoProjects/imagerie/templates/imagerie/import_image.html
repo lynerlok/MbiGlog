@@ -20,10 +20,13 @@
                     <thead>
                     <tr>
                         {% for field in formset.empty_form %}
-                            <th>{{ field.label }}</th>
+                            {% if forloop.counter0 == 0 %}
+                                <th id="first-head">{{ field.label }}</th>
+                            {% else %}
+                                <th>{{ field.label }}</th>
+                            {% endif %}
                         {% endfor %}
-
-                        <th>Remove</th>
+                        <th id="last-head">Remove</th>
                     </tr>
                     </thead>
                     <tbody id="forms">
