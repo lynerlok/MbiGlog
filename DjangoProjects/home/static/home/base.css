@@ -5,25 +5,28 @@ html {
 
 body {
     margin: 0;
-    position: relative;
-    min-height: 100%;
 }
 
 main {
     background-color: #fff;
-    background-image: url(multi-plants.jpg);
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 30%;
-    position: relative;
-    min-height: 800px;
+    background-image: url(multi-plants_left.jpg), url(multi-plants_right.jpg);
+    background-attachment: fixed, fixed;
+    background-position: center left, center right;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 20%, 20%;
+    min-height: 100vh;
 }
 
 header h1 {
     background-color: #7ab64a;
     padding: 14px;
     margin: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    height: 40px;
+    z-index: 20;
 }
 
 header h1 a {
@@ -31,38 +34,92 @@ header h1 a {
     color: #111111;
     text-decoration: none;
 }
+    
+.menu {
+    position: fixed;
+    left: 50%;
+    vertical-align: top;
+    transform: translate(-50%);
+    padding: 68px;
+    margin: 0;
+    text-align: center; 
+    width: 200px;
+    z-index: 10;
+    display: none;
+}
 
-nav ul {
-    float:left;
-    margin:0;
-    padding:0;
-    position:relative;
-    left:50%;
-    text-align:center;
+.menu li {
+    background-color: #333;
+    display: flex;
+}
+
+.menu li a {
+    display: block;
+    color: #7ab64a;
+    padding: 10px;
+    text-decoration: none;
+    width: 100%;
 }
 
 nav li {
-    display:flex;
-    position:relative;
-    right:100%;
-} 
+    width: 300px;
+    display: flex;
+    background-color: #333;
+    position: absolute;
+}
+
+.imaging {
+    left:30%;
+    top: 40%; 
+    position: absolute;
+}
+
+.ngs {
+    left:55%;
+    top: 40%; 
+    position: absolute;
+}
+
+.metabo {
+    left:30%;
+    top: 65%; 
+    position: absolute;
+}
+
+.proteo {
+    left:55%;
+    top: 65%; 
+    position: absolute;
+}
 
 nav li a {
     color: white;
-    background-color: #333;
     display: block;
+    text-align:center;
     padding: 14px 16px;
-    margin: 50px;
     text-decoration: none;
-    width: 300px;
+    width: 100%;
+}
+
+.text-on-hover {
+    display: none;
 }
 
 footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    left: 0;
-    right: 0;
+    left: 25%;
+    text-align: center;
 }
+
+/* Contents */
+
+.content {
+    width:50%;
+    left: 25%;
+    text-align: center;
+    position: absolute;
+    top: 20%; }
 
 /* Change the link color to #111 (black) on hover */
 header nav li a:hover {
@@ -108,19 +165,33 @@ ul.messages li.error {
 }
 
 
-/* Contents */
+/* Bigger icon for each webservice on hover */
 
-.section_content {
-    background-color: #ffffff8a;
-    min-height: 200px;
-    position:relative;
-    width:50%;
-    left: 25%;
+nav li:hover {
+    transform: scale(1.5);
+    transition: transform .5s ease;
+    z-index: 10;
 }
 
-.content {
-    text-align: center;
-    position: absolute;
-    top: 50%; 
-    transform: translateY(-50%); 
+nav li a:hover {
+    background-color: #111;
+}
+
+nav li:hover .text {
+    display: none;
+}
+
+nav li:hover .text-on-hover {
+    display: block;
+}
+
+/* Display menu */
+
+header:hover .menu {
+    display: block;
+    transition: transform .5s ease;
+}
+
+.menu li:hover {
+    background-color: #111;
 }

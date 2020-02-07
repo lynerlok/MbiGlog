@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
+    <title>PB - {% block title %}{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static "home/base.css" %}">
     {% block style %}
@@ -10,7 +10,17 @@
 </head>
 <body>
     <header>
-        <h1><a href="{% url "home" %}">MABEV - Multiples Analyses Bioinformatiques d'Espèces Végétales</a></h1>
+        <div  class="hover-menu">
+            <h1><a href="{% url "home" %}">Plant Bioinformatics</a></h1>
+        </div>
+        {% block menu %}
+        <ul class="menu">
+            <li><a href="{% url "img_home" %}">Imaging</a>
+            <li><a href="{% url "ngs_home" %}">NGS</a>
+            <li><a href="{% url "mtb_home" %}">Metabolomics</a>
+            <li><a href="{% url "prt_home" %}">Proteomics</a>
+        {% endblock %}
+        </ul>
     </header>
     
     <main>
@@ -29,6 +39,6 @@
         {% endblock %}
     </main>
         
-    <footer>Projet réalisé par les étudiants du Master de Bioinformatique de Bordeaux, au sein de l'UE Génie Logiciel</footer>
+    <footer>Project realised by students from Bordeaux's Master of Bioinformatics, within the Software Engineering course</footer>
 </body>
 </html>
