@@ -205,6 +205,7 @@ class CNN(ImageClassifier):
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
         train_images, train_labels, test_images, test_labels = [], [], [], []
+        print(species)
         data_images, data_labels = [], []
         nb_images = len(images)
         print(len(images))
