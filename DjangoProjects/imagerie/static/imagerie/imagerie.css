@@ -1,45 +1,13 @@
-html {
-    font-family: "Roboto", sans-serif;
-
-}
-
-
-#import_button {
-
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 21px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    text-decoration: none;
+#rectangle_background {
+    position: relative;
+    width: 80vw;
+    height: auto;
     margin-left: auto;
     margin-right: auto;
-
-    color: #FFFFFF;
-
-    position: absolute;
-    width: 203.21px;
-    height: 31px;
-    left: 198.79px;
-    top: 447px;
-
-    background: #22869C;
-    border-radius: 15.5px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-
-#rectangle_background {
-    position: absolute;
-    width: 1101px;
-    height: 684px;
-    left: 180px;
-    top: 218px;
-
-    background: #F5ECEC;
-    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.4);
+    top: 50vh;
+    transform: translateY(-50%);
+    background: #ebece9;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.4);
     border-radius: 32px;
 
 }
@@ -51,7 +19,7 @@ html {
 }
 
 #forms-table td, #forms-table th {
-  border: 1px solid #ddd;
+  border: 1px solid #d1e0b3;
   padding: 8px;
 }
 
@@ -63,6 +31,6 @@ html {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #4CAF50;
+  background-color: #7ab64a;
   color: white;
 }
