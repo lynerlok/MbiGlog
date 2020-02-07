@@ -41,6 +41,10 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                <div class="buttons">
+                    <button type="submit" value="Submit">Upload</button>
+                    <input type="button" value="Add {{ row_name }}" id="add_more">
+                </div>
             </form>
             <table style="display:none">
                 <tbody id="empty_form">
@@ -56,10 +60,6 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
-        <div class="buttons">
-            <button type="submit" value="Submit">Upload</button>
-            <input type="button" value="Add {{ row_name }}" id="add_more">
         </div>
 
     </div>
