@@ -1,5 +1,6 @@
 {% extends "imagerie/base.html" %}
 {% block title %}Imaging{% endblock %}
+{% block title-page %} - Imaging{% endblock %}
 
 {% block style %}
     {% load static %}
@@ -20,10 +21,13 @@
                     <thead>
                     <tr>
                         {% for field in formset.empty_form %}
-                            <th>{{ field.label }}</th>
+                            {% if forloop.counter0 == 0 %}
+                                <th id="first-head">{{ field.label }}</th>
+                            {% else %}
+                                <th>{{ field.label }}</th>
+                            {% endif %}
                         {% endfor %}
-
-                        <th>Remove</th>
+                        <th id="last-head">Remove</th>
                     </tr>
                     </thead>
                     <tbody id="forms">
@@ -41,10 +45,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                <button type="submit" value="Submit">Upload</button>
-                <input type="button" value="Add {{ row_name }}" id="add_more">
             </form>
-
             <table style="display:none">
                 <tbody id="empty_form">
                 <tr id="tr-id_form-__prefix__">
@@ -60,6 +61,11 @@
                 </tbody>
             </table>
         </div>
+        <div class="buttons">
+            <button type="submit" value="Submit">Upload</button>
+            <input type="button" value="Add {{ row_name }}" id="add_more">
+        </div>
+
     </div>
 
 {% endblock %}

@@ -14,7 +14,7 @@
 <body>
     <header>
         <div  class="hover-menu">
-            <h1><a href="{% url "home" %}">Plant Bioinformatics</a></h1>
+            <h1><a href="{% url "home" %}">Plant Bioinformatics{% block title-page %}{% endblock %}</a></h1>
         </div>
         {% block menu %}
         <ul class="menu">
