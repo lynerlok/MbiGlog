@@ -16,6 +16,7 @@ from django.db.models import QuerySet, Count, Sum
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
 from keras.utils import to_categorical
+from sklearn.model_selection import StratifiedShuffleSplit
 
 
 class Label(models.Model):
@@ -156,7 +157,7 @@ class CNN(ImageClassifier):
                                                          verbose=1, period=5)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=80, epochs=50, verbose=2, callbacks=[cp_callback])
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=64, epochs=50, verbose=2, callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
@@ -204,20 +205,19 @@ class CNN(ImageClassifier):
             Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
             specie_to_pos[specie] = i
         train_images, train_labels, test_images, test_labels = [], [], [], []
+        data_images, data_labels = [], []
         nb_images = len(images)
         for i in range(nb_images):
             if images[i].specie in specie_to_pos:
-                if i < (1 - test_fraction) * nb_images:
-                    train_images.append(images[i].preprocess())
-                    train_labels.append(specie_to_pos[images[i].specie])
-                else:
-                    test_images.append(images[i].preprocess())
-                    test_labels.append(specie_to_pos[images[i].specie])
+                data_images.append(images[i].preprocess())
+                data_labels.append(specie_to_pos[images[i].specie])
 
-        self.train_images = np.array(train_images)
-        self.train_labels = to_categorical(np.array(train_labels))
-        self.test_images = np.array(test_images)
-        self.test_labels = to_categorical(np.array(test_labels))
+        data_images_np=np.array(data_images)
+        data_labels_np = np.array(data_labels)
+        shufflesplit = StratifiedShuffleSplit(n_splits=2, test_size=0.2)
+        train_index,test_index = shufflesplit.split(data_images_np, data_labels_np)
+        self.train_images, self.test_images = data_images_np[train_index], data_images_np[test_index]
+        self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(data_labels_np[test_index])
         print(self.train_images.shape)
 
     @property
