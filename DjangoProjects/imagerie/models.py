@@ -202,7 +202,11 @@ class CNN(ImageClassifier):
         self.save()  # allow to create ref to CNN in classes
         for i in range(len(species)):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
-            Class.objects.get_or_create(cnn=self, specie=specie, pos=i)
+            try:
+                class_m = Class.objects.get(cnn=self, specie=specie)
+            except Class.DoesNotExist:
+                class_m = Class(cnn=self, specie=specie)
+            class_m.pos = i
             specie_to_pos[specie] = i
         train_images, train_labels, test_images, test_labels = [], [], [], []
         print(species)
