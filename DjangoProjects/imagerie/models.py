@@ -109,7 +109,7 @@ class SubmittedImage(Image):
 
 
 class GroundTruthImage(Image):
-    specie = models.ForeignKey('Specie', on_delete=models.SET_NULL, null=True)
+    specie = models.ForeignKey('Specie', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.specie.name
@@ -157,7 +157,8 @@ class CNN(ImageClassifier):
                                                          verbose=1, period=5)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=64, epochs=50, verbose=2, callbacks=[cp_callback])
+        self.nn_model.fit(self.train_images, self.train_labels, batch_size=64, epochs=50, verbose=2,
+                          callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
@@ -211,7 +212,6 @@ class CNN(ImageClassifier):
         print(len(images))
         for i in range(nb_images):
             if images[i].specie in specie_to_pos:
-
                 data_images.append(images[i].preprocess())
                 data_labels.append(specie_to_pos[images[i].specie])
 
@@ -220,7 +220,8 @@ class CNN(ImageClassifier):
         shufflesplit = StratifiedShuffleSplit(n_splits=2, test_size=0.2)
         train_index, test_index = shufflesplit.split(data_images_np, data_labels_np)
         self.train_images, self.test_images = data_images_np[train_index], data_images_np[test_index]
-        self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(data_labels_np[test_index])
+        self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(
+            data_labels_np[test_index])
         print(self.train_images.shape)
 
     @property
