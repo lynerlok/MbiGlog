@@ -1,18 +1,9 @@
-from django.contrib import messages
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from .forms import ImportImageForm
 from .models import Request, AlexNet
-
-
-# Create your views here.
-def home(request):
-    messages.debug(request, "debug")
-    messages.success(request, "You successfully came here")
-    messages.warning(request, "WARNING")
-    return render(request, "imagerie/home.html", locals())
 
 
 def import_image(request):

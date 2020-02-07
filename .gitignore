@@ -21,4 +21,4 @@ DjangoProjects/nohup.out
 # Ignore Database
 
 DevDatabase.db
-
+startServer.sh

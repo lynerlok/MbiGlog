@@ -1,5 +1,5 @@
 {% extends "imagerie/base.html" %}
-{% block title %}Ma page d'accueil{% endblock %}
+{% block title %}Imaging{% endblock %}
 
 {% block style %}
     {% load static %}
@@ -12,7 +12,7 @@
         <h2>Import photography</h2>
         {% if envoi %}Votre image a bien été envoyé !{% endif %}
 
-        <form method="post" enctype="multipart/form-data" action="{% url "img_import" %}">
+        <form method="post" enctype="multipart/form-data" action="{% url "img-home" %}">
             {% csrf_token %}
             {{ formset.management_form }}
             <table id="forms-table">
