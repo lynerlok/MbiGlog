@@ -12,7 +12,8 @@ urlpatterns = [
 
     path('proteo/fasta',views.proteo, name='Proteo fasta'),
 
-    path('phylo/', views.phylo_align, name="phylogenic pipeline hub"),
-    path('phylo/tree', views.phylo_tree, name="phylogenic compute tree"),
-    path('phylo/visu', views.phylo_visu, name="phylogenic visualization")
+    path('phylo_hub/align', views.phylo_align, name="phylogenic pipeline align"),
+    path('phylo_hub',views.phylo_hub, name="phylogenic hub"),
+    path('phylo_hub/tree', views.phylo_tree, name="phylogenic compute tree"),
+    path('phylo_hub/visu', views.phylo_visu, name="phylogenic visualization")
 ]

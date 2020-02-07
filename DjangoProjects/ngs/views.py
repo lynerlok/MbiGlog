@@ -24,7 +24,7 @@ def home(request):
     if 'expression' in request.POST:
         return HttpResponseRedirect(reverse("ngs pipeline home"))
     if 'phylogenie' in request.POST:
-        return HttpResponseRedirect(reverse('phylogenic pipeline hub'))
+        return HttpResponseRedirect(reverse('phylogenic hub'))
     if 'proteomique' in request.POST:
         return  HttpResponseRedirect(reverse('Proteo fasta'))
     return render(request, "ngs/home.html", locals())
@@ -142,6 +142,78 @@ def ranalysis(request):
     return render(request, "ngs/pipeline/R_analysis.html", locals())
 
 
+def phylo_hub(request):
+    rna_list_request = RNAFileFieldForm(request.POST or None, request.FILES)
+
+    if rna_list_request.is_valid():
+        rna_list = Species_List()
+        rna_list.file = rna_list_request.cleaned_data['file_field']
+        email = rna_list_request.cleaned_data['email_field']
+        rna_list.save()
+        rna_list_path = settings.MEDIA_ROOT + 'ngs/tree/test.txt'
+        rna_list = open(rna_list_path)
+        script = settings.BASE_DIR + '/ngs/getSeq.py'
+        output = settings.MEDIA_ROOT + 'ngs/fasta'
+
+        #Step 1 - Get Fasta
+        RNA_filepath = settings.MEDIA_ROOT+"ngs/RNA_request.txt"
+        RNA_file = open(RNA_filepath,"a")
+        for specie in rna_list:
+            if os.path.isdir(output) == False:
+                dir = settings.MEDIA_ROOT + 'ngs'
+                process = subprocess.Popen(["mkdir", "fasta"], cwd=dir)
+                process.communicate()
+            tool = subprocess.Popen(["python", script, specie], cwd=output)
+            tool.communicate()
+            fasta_filename = specie+".fasta"
+            fasta = open(output + '/' + fasta_filename)
+            for line in fasta:
+                RNA_file.write(line)
+            RNA_file.write("\n")
+            fasta.close()
+        RNA_file.close()
+
+        #Step 2 - Perform Align
+        script = settings.BASE_DIR + '/ngs/clustalo.py'
+        output = settings.BASE_DIR + '/media/ngs/align_result'
+        if os.path.isdir(output) == False:
+            dir = settings.MEDIA_ROOT + 'ngs'
+            process = subprocess.Popen(["mkdir", "align_result"], cwd=dir)
+            process.communicate()
+        tool = subprocess.Popen(['python', script,'--email',email,'--outfile','AlignedData', '--stype', 'rna',RNA_filepath ], close_fds=True , cwd=output)
+        tool.communicate()
+        tool.communicate()
+
+
+        #Step 3 - Compute the tree
+        align_filename = settings.MEDIA_ROOT +"ngs/align_result/AlignedData.aln-clustal_num.clustal_num"
+        script = settings.BASE_DIR + '/ngs/simple_phylogeny.py'
+        output = settings.MEDIA_ROOT + 'ngs/tree_result'
+        if os.path.isdir(output) == False:
+            dir = settings.MEDIA_ROOT + 'ngs'
+            process = subprocess.Popen(["mkdir", "tree_result"], cwd=dir)
+            process.communicate()
+        print(align_filename)
+        print(output)
+        tool = subprocess.Popen(['python', script, '--email', email, '--outfile', 'tree', align_filename], close_fds=True, cwd=output)
+        tool.communicate()
+        tool.communicate()
+        return HttpResponseRedirect(reverse("phylogenic visualization"))
+
+
+
+
+
+    if 'align' in request.POST:
+        return HttpResponseRedirect(reverse("phylogenic pipeline align"))
+
+    if 'tree' in request.POST:
+        return HttpResponseRedirect(reverse("phylogenic compute tree"))
+
+
+    return render(request, "ngs/phylo_hub.html", {"rna": rna_list_request}, locals())
+
+
 def phylo_align(request):
     align_request = AlignFieldForm(request.POST or None, request.FILES)
 
@@ -179,7 +251,7 @@ def phylo_tree(request):
 
 
 def phylo_visu(request):
-    tree = settings.MEDIA_ROOT + '/ngs/tree_result/tree.tree.ph'
+    tree = settings.MEDIA_ROOT + 'ngs/tree_result/tree.tree.ph'
     itool = itolapi.Itol()
     itool.add_file(tree)
     itool.params['treeName'] = 'test_tree'

@@ -21,6 +21,12 @@ class GenomeAnnotationsForm(forms.Form):
 class IDProteoForm(forms.Form):
     id_field = forms.CharField(label="ID GenBank", max_length=50)
 
+
+class RNAFileFieldForm(forms.Form):
+    file_field = forms.FileField(label = 'File containing species name')
+    email_field = forms.EmailField(label='your email', max_length=200)
+
+
 class AlignFieldForm(forms.Form):
     file_field = forms.FileField(label= 'Fasta containing ARN18s')
     your_email = forms.EmailField(label='your email', max_length=200)

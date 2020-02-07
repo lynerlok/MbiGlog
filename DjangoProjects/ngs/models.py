@@ -81,6 +81,10 @@ class Sequence(models.Model):
         return self.file.name
 
 
+class Species_List(models.Model):
+    file = models.FileField(upload_to='ngs/tree')
+
+
 class Alignement(models.Model):
     file = models.FileField(upload_to='ngs/tree')
     mail = models.EmailField(max_length=255)
