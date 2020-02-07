@@ -49,13 +49,13 @@ header h1 a {
 }
 
 .menu li {
-    background-color: #333;
+    background-color: #ebece9;
     display: flex;
 }
 
 .menu li a {
     display: block;
-    color: #7ab64a;
+    color: #338935;
     padding: 10px;
     text-decoration: none;
     width: 100%;
@@ -70,25 +70,25 @@ nav li {
 
 .imaging {
     left:30%;
-    top: 40%; 
+    top: 40%;
     position: absolute;
 }
 
 .ngs {
     left:55%;
-    top: 40%; 
+    top: 40%;
     position: absolute;
 }
 
 .metabo {
     left:30%;
-    top: 65%; 
+    top: 65%;
     position: absolute;
 }
 
 .proteo {
     left:55%;
-    top: 65%; 
+    top: 65%;
     position: absolute;
 }
 
@@ -193,5 +193,5 @@ header:hover .menu {
 }
 
 .menu li:hover {
-    background-color: #111;
+    background-color: #d1e0b3;
 }
