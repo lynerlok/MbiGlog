@@ -1,0 +1,26 @@
+{% extends 'imagerie/base.html' %}
+
+{% block content %}
+    <table>
+        <thead>
+        <tr>
+            <th>Images</th>
+            <th>Prediction</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for image in r.submitted_images.all %}
+            <tr>
+                <td><img src="{{ image.image.url }}" alt="{{ image.image.path }}"></td>
+                <td>
+                    <table>
+                        {% for prediction in image.prediction_set %}
+                            <tr>{{ prediction }}</tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
