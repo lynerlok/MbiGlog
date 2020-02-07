@@ -191,7 +191,7 @@ class CNN(ImageClassifier):
             images = images.filter(plant_organ=self.specialized_organ)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=10)
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=50)
 
         for specie in species:
             print(specie['specie__name'], specie['nb_image'])

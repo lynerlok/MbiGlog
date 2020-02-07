@@ -21,4 +21,7 @@ class Command(BaseCommand):
         for organ in PlantOrgan.objects.all():
             a, _ = AlexNet.objects.get_or_create(name=f"N{organ.name}", specialized_background=background,
                                                  specialized_organ=organ)
-            a.train()
+            try:
+                a.train()
+            except:
+                pass
