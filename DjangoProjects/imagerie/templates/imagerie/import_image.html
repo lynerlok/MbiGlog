@@ -32,16 +32,35 @@
                     </thead>
                     <tbody id="forms">
                     {% for form in formset %}
-                        <tr id="tr-id_form-{{ forloop.counter0 }}">
-                            {% for field in form %}
+                        {% if forloop.revcounter0 == 0 %}
+                            <tr id="tr-id_form-{{ forloop.counter0 }}">
+                                {% for field in form %}
+                                    {% if forloop.counter0 == 0 %}
+                                        <td id="first-bottom">
+                                            <label for="{{ field.id_for_label }}"></label> {{ field }}
+                                        </td>
+                                    {% else %}
+                                        <td id="last-bottom">
+                                            <label for="{{ field.id_for_label }}"></label> {{ field }}
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
                                 <td>
-                                    <label for="{{ field.id_for_label }}"></label> {{ field }}
+                                    <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
                                 </td>
-                            {% endfor %}
-                            <td>
-                                <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
-                            </td>
-                        </tr>
+                            </tr>
+                        {% else %}
+                            <tr id="tr-id_form-{{ forloop.counter0 }}">
+                                {% for field in form %}
+                                    <td id>
+                                        <label for="{{ field.id_for_label }}"></label> {{ field }}
+                                    </td>
+                                {% endfor %}
+                                <td>
+                                    <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>
