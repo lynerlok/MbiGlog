@@ -217,7 +217,7 @@ class CNN(ImageClassifier):
         data_images_np = np.array(data_images)
         data_labels_np = np.array(data_labels)
         shufflesplit = StratifiedShuffleSplit(n_splits=2, test_size=0.2)
-        train_index, test_index = shufflesplit.split(data_images_np, data_labels_np)
+        train_index, test_index = list(shufflesplit.split(data_images_np, data_labels_np))[0]
         self.train_images, self.test_images = data_images_np[train_index], data_images_np[test_index]
         self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(
             data_labels_np[test_index])
