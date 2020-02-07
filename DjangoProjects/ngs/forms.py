@@ -18,7 +18,8 @@ class GenomeAnnotationsForm(forms.Form):
     #         self.fields[field].widget.attrs.update({'required': 'True'})
 
 
-
+class IDProteoForm(forms.Form):
+    id_field = forms.CharField(label="ID GenBank", max_length=50)
 
 class AlignFieldForm(forms.Form):
     file_field = forms.FileField(label= 'Fasta containing ARN18s')

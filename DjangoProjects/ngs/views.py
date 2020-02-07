@@ -13,7 +13,10 @@ from django.core.files import File
 import subprocess
 import itolapi
 
+
 from django.shortcuts import render_to_response
+
+
 
 
 # Create your views here.
@@ -22,7 +25,32 @@ def home(request):
         return HttpResponseRedirect(reverse("ngs pipeline home"))
     if 'phylogenie' in request.POST:
         return HttpResponseRedirect(reverse('phylogenic pipeline hub'))
+    if 'proteomique' in request.POST:
+        return  HttpResponseRedirect(reverse('Proteo fasta'))
     return render(request, "ngs/home.html", locals())
+
+
+def proteo(request):
+    id_gen = IDProteoForm(request.GET or None)
+    if id_gen.is_valid():
+        id = id_gen.cleaned_data["id_field"]
+        script = settings.BASE_DIR +'/ngs/getSeq.py'
+        output = settings.MEDIA_ROOT + 'ngs/fasta_proteo'
+        if os.path.isdir(output) == False:
+            dir = settings.MEDIA_ROOT + 'ngs'
+            process = subprocess.Popen(["mkdir","fasta_proteo"], cwd=dir)
+            process.communicate()
+            tool = subprocess.Popen(["python", script, id], cwd=output)
+            tool.communicate()
+        else:
+            tool = subprocess.Popen(["python", script,id], cwd=output)
+            tool.communicate()
+        return render(request, "ngs/proteo.html",{"id": id_gen}, locals())
+
+
+    return render(request, "ngs/proteo.html",{"id": id_gen}, locals())
+
+
 
 
 def pipeline(request):
@@ -75,6 +103,8 @@ def fastqc(request, id_request):
     if 'hisat' in request.POST:
         return redirect('hisat2')
     return render(request, "ngs/pipeline/fastqc.html", {"trim": trim_form}, locals())
+
+
 def hisat(request):
     if os.path.isdir(Genome.dir.as_posix()) == False:
         process = subprocess.Popen("mkdir " + Genome.dir.as_posix(), shell=True)
