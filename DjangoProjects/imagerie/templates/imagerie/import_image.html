@@ -32,7 +32,7 @@
                     </thead>
                     <tbody id="forms">
                     {% for form in formset %}
-                        {% if forloop.revcounter0 == 0 %}
+                        {% if forloop.counter0 == -1 %}
                             <tr id="tr-id_form-{{ forloop.counter0 }}">
                                 {% for field in form %}
                                     {% if forloop.counter0 == 0 %}
@@ -40,12 +40,12 @@
                                             <label for="{{ field.id_for_label }}"></label> {{ field }}
                                         </td>
                                     {% else %}
-                                        <td id="last-bottom">
+                                        <td>
                                             <label for="{{ field.id_for_label }}"></label> {{ field }}
                                         </td>
                                     {% endif %}
                                 {% endfor %}
-                                <td>
+                                <td id="last-bottom">
                                     <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
                                 </td>
                             </tr>
