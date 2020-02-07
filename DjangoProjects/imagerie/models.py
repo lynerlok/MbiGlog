@@ -207,6 +207,7 @@ class CNN(ImageClassifier):
         train_images, train_labels, test_images, test_labels = [], [], [], []
         data_images, data_labels = [], []
         nb_images = len(images)
+        print(len(images))
         for i in range(nb_images):
             if images[i].specie in specie_to_pos:
                 data_images.append(images[i].preprocess())
