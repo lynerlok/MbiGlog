@@ -21,46 +21,23 @@
                     <thead>
                     <tr>
                         {% for field in formset.empty_form %}
-                            {% if forloop.counter0 == 0 %}
-                                <th id="first-head">{{ field.label }}</th>
-                            {% else %}
-                                <th>{{ field.label }}</th>
-                            {% endif %}
+                            <th{% if forloop.counter0 == 0 %} id="first-head"{% endif %}>{{ field.label }}</th>
                         {% endfor %}
                         <th id="last-head">Remove</th>
                     </tr>
                     </thead>
                     <tbody id="forms">
                     {% for form in formset %}
-                        {% if forloop.last %}
-                            <tr id="tr-id_form-{{ forloop.counter0 }}">
-                                {% for field in form %}
-                                    {% if forloop.counter0 == 0 %}
-                                        <td id="first-bottom">
-                                            <label for="{{ field.id_for_label }}"></label> {{ field }}
-                                        </td>
-                                    {% else %}
-                                        <td>
-                                            <label for="{{ field.id_for_label }}"></label> {{ field }}
-                                        </td>
-                                    {% endif %}
-                                {% endfor %}
-                                <td id="last-bottom">
-                                    <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
+                        <tr id="tr-id_form-{{ forloop.counter0 }}">
+                            {% for field in form %}
+                                <td{% if forloop.counter0 == 0 %} id="first-bottom"{% endif %}>
+                                    <label for="{{ field.id_for_label }}"></label> {{ field }}
                                 </td>
-                            </tr>
-                        {% else %}
-                            <tr id="tr-id_form-{{ forloop.counter0 }}">
-                                {% for field in form %}
-                                    <td id>
-                                        <label for="{{ field.id_for_label }}"></label> {{ field }}
-                                    </td>
-                                {% endfor %}
-                                <td>
-                                    <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
-                                </td>
-                            </tr>
-                        {% endif %}
+                            {% endfor %}
+                            <td id="last-bottom">
+                                <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
+                            </td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>
