@@ -233,7 +233,8 @@ class CNN(ImageClassifier):
                 except Prediction.DoesNotExist:
                     pred = Prediction(cnn=self, image=images[i], specie=specie)
                 confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
-                pred.save(confidence=confidence)
+                pred.confidence = confidence
+                pred.save()
 
     @property
     def checkpoint_dir_path(self):
