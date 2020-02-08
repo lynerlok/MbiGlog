@@ -326,7 +326,7 @@ class AlexNet(CNN):
 
         # Output Layer
         if self.classes:
-            nb_classes = len(self.classes)
+            nb_classes = len(self.classes.all())
         else:
             nb_classes = 250
         self.nn_model.add(Dense(nb_classes))
