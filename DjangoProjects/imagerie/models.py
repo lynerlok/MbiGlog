@@ -273,7 +273,7 @@ class Prediction(models.Model):
 
 class AlexNet(CNN):
 
-    def set_tf_model(self, nb_classes=250):
+    def set_tf_model(self):
         # Instantiate an empty model
         self.nn_model = Sequential()
 
@@ -325,7 +325,11 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        self.nn_model.add(Dense(self.nb_classes))
+        if self.classes:
+            nb_classes = len(self.classes)
+        else:
+            nb_classes = 250
+        self.nn_model.add(Dense(nb_classes))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
