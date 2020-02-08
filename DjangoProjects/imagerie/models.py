@@ -147,6 +147,7 @@ class CNN(ImageClassifier):
     train_labels = None
     test_images = None
     test_labels = None
+    nb_classes = None
 
     @abstractmethod
     def set_tf_model(self):
@@ -154,7 +155,7 @@ class CNN(ImageClassifier):
 
     def train(self, training_data=None):
         self.split_images(training_data, test_fraction=0.2)
-        self.set_tf_model()
+        self.set_tf_model(self.nb_classes)
         checkpoint_dir = self.checkpoint_dir_path
         checkpoint_path = os.path.join(checkpoint_dir, f'{self.name}_cp_{{epoch:04d}}.ckpt')
         cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
@@ -212,8 +213,10 @@ class CNN(ImageClassifier):
             except Class.DoesNotExist:
                 class_m = Class(cnn=self, specie=specie)
             class_m.pos = i
+            class_m.save()
             specie_to_pos[specie] = i
-        train_images, train_labels, test_images, test_labels = [], [], [], []
+
+        self.nb_classes = len(species)
         print(species)
         data_images, data_labels = [], []
         nb_images = len(images)
@@ -268,7 +271,7 @@ class Prediction(models.Model):
 
 class AlexNet(CNN):
 
-    def set_tf_model(self):
+    def set_tf_model(self, nb_classes=250):
         # Instantiate an empty model
         self.nn_model = Sequential()
 
@@ -320,7 +323,7 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        self.nn_model.add(Dense(len(self.classes.all())))
+        self.nn_model.add(Dense(nb_classes))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
