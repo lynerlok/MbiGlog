@@ -232,7 +232,7 @@ class CNN(ImageClassifier):
                     pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
                 except Prediction.DoesNotExist:
                     pred = Prediction(cnn=self, image=images[i], specie=specie)
-                confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
+                confidence = round(float(predictions[i, original_index_sorted[i, j]] * 100),2)
                 pred.confidence = confidence
                 pred.save()
 
