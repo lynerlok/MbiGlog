@@ -14,15 +14,15 @@
                 <tr>
                     <td><img src="{{ image.image.url }}" alt="{{ image.image.path }}"></td>
                     <td>
-                        <table>
+                        <ul>
                             {% for prediction in image.prediction_set.all %}
-                                <tr>
+                                <li>
                                     <a href="{% url 'img-specie-detail'  prediction.specie.slug %}">{{ prediction.specie }}</a>
                                     :
-                                    <em>{{ prediction.confidence }}</em>
-                                </tr>
+                                    <em>{{ prediction.confidence }} %</em>
+                                </li>
                             {% endfor %}
-                        </table>
+                        </ul>
                     </td>
                 </tr>
             {% endfor %}
