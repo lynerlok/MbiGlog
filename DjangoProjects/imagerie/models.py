@@ -1,23 +1,22 @@
 import os
+import shutil
 from abc import abstractmethod
-from random import shuffle
 from typing import *
 from xml.etree import ElementTree
 
-import shutil
 import imageio
 import numpy as np
 import requests
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.utils import to_categorical
 from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from django.utils.text import slugify
 from sklearn.model_selection import StratifiedShuffleSplit
+from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.utils import to_categorical
 
 
 class Label(models.Model):
@@ -147,7 +146,6 @@ class CNN(ImageClassifier):
     train_labels = None
     test_images = None
     test_labels = None
-    nb_classes = 250
 
     @abstractmethod
     def set_tf_model(self):
@@ -180,14 +178,12 @@ class CNN(ImageClassifier):
             images = images.filter(background_type=self.specialized_background)
         species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=50)
 
-        for specie in species:
+        for specie in species.iterator():
             print(specie['specie__name'], specie['nb_image'])
-        images = list(images)
 
-        shuffle(images)
         specie_to_pos = {}
         self.save()  # allow to create ref to CNN in classes
-        for i in range(len(species)):
+        for i in range(species.count()):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             try:
                 class_m = Class.objects.get(cnn=self, specie=specie)
@@ -197,15 +193,12 @@ class CNN(ImageClassifier):
             class_m.save()
             specie_to_pos[specie] = i
 
-        self.nb_classes = len(species)
-        print(species)
         data_images, data_labels = [], []
-        nb_images = len(images)
-        print(len(images))
-        for i in range(nb_images):
-            if images[i].specie in specie_to_pos:
-                data_images.append(images[i].preprocess())
-                data_labels.append(specie_to_pos[images[i].specie])
+
+        for image in images:
+            if image.specie in specie_to_pos:
+                data_images.append(images.preprocess())
+                data_labels.append(specie_to_pos[images.specie])
 
         data_images_np = np.array(data_images)
         data_labels_np = np.array(data_labels)
@@ -325,7 +318,7 @@ class AlexNet(CNN):
 
         # Output Layer
         if self.classes:
-            nb_classes = len(self.classes.all())
+            nb_classes = self.classes.count()
         else:
             nb_classes = 250
         self.nn_model.add(Dense(nb_classes))
