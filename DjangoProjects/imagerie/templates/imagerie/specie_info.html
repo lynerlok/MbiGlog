@@ -1,0 +1,18 @@
+{% extends 'imagerie/base.html' %}
+
+{% block content %}
+    <h1>{{ specie.latin_name }}</h1>
+    <em>{{ specie.vernacular_name }}</em>
+    <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ specie.tax_id }}"> N° NCBI
+        : {{ specie.tax_id }}</a>
+    <div id="taxons">
+        {% for taxon in taxons %}
+            <div id="{{ taxon.rank.name }}">
+                {{ taxon.name }}
+                {% if taxon.tax_id %}
+                    <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ taxon.tax_id }}"> {{ taxon.tax_id }}</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,9 +1,8 @@
 from django.forms import formset_factory
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import ImportImageForm
-from .models import Request, AlexNet
+from .models import Request, AlexNet, Specie
 
 
 def import_image(request):
@@ -33,10 +32,17 @@ def import_image(request):
     return render(request, "imagerie/import_image.html", locals())
 
 
-def success(request):
-    return HttpResponse('successfully uploaded')
-
-
 def view_predictions(request, id_request):
     r = Request.objects.get(pk=id_request)
     return render(request, "imagerie/view_predictions.html", locals())
+
+
+def specie_detail(request, specie_slug):
+    specie = get_object_or_404(Specie, slug=specie_slug)
+    taxons = [specie]
+    taxon = specie
+    while taxon.sup_taxon:
+        taxons.append(taxon.sup_taxon)
+        taxon = taxon.sup_taxon
+    taxons.reverse()
+    return render(request, "imagerie/specie_info.html", locals())

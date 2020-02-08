@@ -5,7 +5,6 @@ from typing import *
 from xml.etree import ElementTree
 
 import imageio
-import keras
 import numpy as np
 import requests
 import tensorflow as tf
@@ -13,6 +12,7 @@ from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
+from django.utils.text import slugify
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
 from keras.utils import to_categorical
@@ -72,9 +72,14 @@ class Taxon(models.Model):
 class Specie(Taxon):
     latin_name = models.CharField(max_length=50)
     vernacular_name = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.latin_name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.latin_name)
+        super(Specie, self).save(*args, **kwargs)
 
 
 class PlantOrgan(Label):
@@ -240,8 +245,8 @@ class CNN(ImageClassifier):
         return path
 
     def load_model(self):
-        latest = tf.train.latest_checkpoint(self.checkpoint_dir_path)
         self.set_tf_model()
+        latest = tf.train.latest_checkpoint(self.checkpoint_dir_path)
         self.nn_model.load_weights(latest)
 
 

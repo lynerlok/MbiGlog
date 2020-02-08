@@ -13,8 +13,8 @@
         <h2>Import photography</h2>
         {% if envoi %}Your image has been uploaded !{% endif %}
 
-        <div id="rectangle_background">
-            <form method="post" enctype="multipart/form-data" action="{% url "img-home" %}">
+        <form method="post" enctype="multipart/form-data" action="{% url "img-home" %}">
+            <div id="rectangle_background">
                 {% csrf_token %}
                 {{ formset.management_form }}
                 <table id="forms-table">
@@ -41,26 +41,27 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                <div class="buttons">
-                    <button type="submit" value="Submit">Upload</button>
-                    <input type="button" value="Add {{ row_name }}" id="add_more">
-                </div>
-            </form>
-            <table style="display:none">
-                <tbody id="empty_form">
-                <tr id="tr-id_form-__prefix__">
-                    {% for field in formset.empty_form %}
-                        <td>
-                            <label for="{{ field.id_for_label }}"></label> {{ field }}
-                        </td>
-                    {% endfor %}
+            </div>
+
+            <div class="buttons">
+                <button type="submit" value="Submit">Upload</button>
+                <input type="button" value="Add {{ row_name }}" id="add_more">
+            </div>
+        </form>
+        <table style="display:none">
+            <tbody id="empty_form">
+            <tr id="tr-id_form-__prefix__">
+                {% for field in formset.empty_form %}
                     <td>
-                        <button id="remove-id_form-__prefix__" type="button" class="remove_btn">Remove</button>
+                        <label for="{{ field.id_for_label }}"></label> {{ field }}
                     </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                {% endfor %}
+                <td>
+                    <button id="remove-id_form-__prefix__" type="button" class="remove_btn">Remove</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
 

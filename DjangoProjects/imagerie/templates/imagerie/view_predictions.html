@@ -15,7 +15,11 @@
                 <td>
                     <table>
                         {% for prediction in image.prediction_set %}
-                            <tr>{{ prediction }}</tr>
+                            <tr>
+                                <a href="{% url 'img-specie-detail'  prediction.specie.slug %}">{{ prediction.specie }}</a>
+                                :
+                                <em>{{ prediction.confidence }}</em>
+                            </tr>
                         {% endfor %}
                     </table>
                 </td>
