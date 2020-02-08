@@ -1,0 +1,11 @@
+{% extends "ngs/base.html" %}
+
+
+{% block content %}
+    <form enctype="multipart/form-data" action="" method="post">
+        {%  csrf_token %}
+        {{ tree.as_p }}
+        <input type="submit" name="align" value="Compute the tree">
+    </form>
+
+{% endblock %}

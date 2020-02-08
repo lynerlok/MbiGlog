@@ -1,0 +1,12 @@
+{% extends "ngs/base.html" %}
+
+
+{% block content %}
+    <form enctype="multipart/form-data" action="" method="post">
+        {%  csrf_token %}
+        {{ align.as_p }}
+        <input type="submit" name="align" value="Align these ARN">
+    </form>
+
+
+{% endblock %}
