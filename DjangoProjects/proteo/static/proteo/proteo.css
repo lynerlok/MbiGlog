@@ -18,6 +18,7 @@ div.subdiv {
   background-color: #ff7465;
   text-align: center;
   border:solid 2px white;
+  padding-bottom: 5%;
 }
 
 div.inputdiv {
@@ -51,7 +52,8 @@ h4{
 }
 
 .vertical-menu {
-  width: 200px; /* Set a width if you like */
+  width: 100%; /* Set a width if you like */
+  margin: auto;
 }
 
 .vertical-menu a {
@@ -63,22 +65,51 @@ h4{
 }
 
 .vertical-menu a:hover {
-  background-color: #ccc; /* Dark grey background on mouse-over */
+  background-color: #ff7465; /* Dark grey background on mouse-over */
+  color:black;
 }
 
 .vertical-menu a.active {
-  background-color: #ff7465; /* Add a green color to the "active/current" link */
-  color: white;
+  background-color: white; /* Add a green color to the "active/current" link */
+  color: black;
+  border : solid 2px #262626;
 }
 
 #menu_1D {
-	position : relative;
 	top : 50px;
 }
 
 #whatif {
-	position : relative;
 	top : 30px;
 	right : 140px;
+  color: #262626;
 }
 
+div.div_canvas{
+  background-color:#262626;
+  border: 2px solid white;
+  height: 200px;
+  width: 99%;
+  margin:auto;
+}
+
+a.vert-menu{
+  background-color: #262626;
+  color: white;
+  border:solid 2px white;
+  padding: 2%;
+  width:75%;
+  margin:auto;
+}
+
+p.pourcentage{
+  text-align: center;
+}
+
+label{
+  color: #262626;
+}
+
+body{
+  background-color: black;
+}

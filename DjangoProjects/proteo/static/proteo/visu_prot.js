@@ -27,7 +27,7 @@ function aaPercent(prot) {
 	var aa_percent = {};
 	for (var i = 0; i < aa.length; i++) {
 		aa_percent[aa[i]] = 0;
-	} 
+	}
 	for (var i = 0; i < prot.length; i++) {
 		aa_percent[prot[i]]++;
 	}
@@ -53,7 +53,7 @@ function translate_(x,y,distance,theta){
 }
 
 function drawBound(x,y,boundLength,theta){
- 
+
   let point_ = translate_(x,y,boundLength,theta);
   let x2 = point_[0]; let y2 = point_[1];
   point_ = translate_(x,y,boundLength*2,theta-Math.PI/2)
@@ -80,7 +80,7 @@ function parseFasta(text) {
 				itr++;
 			}
 			fastaDict[key] = seq;
-		} 
+		}
 	}
 	return fastaDict;
 }
@@ -103,15 +103,17 @@ function getContents(ev) {
 
 function createElementHtml(href, name, seq, x0, y0, diameter, boundLength, colors) {
 	var body = document.getElementsByClassName("vertical-menu");
-    var newA = document.createElement("a");
+  var newA = document.createElement("a");
 	newA.href = href;
 	newA.textContent = name;
-	newA.style.color = "white";
-	newA.onclick = function () {setup(seq, x0, y0, diameter, boundLength, colors)};
+	newA.classList.add("vert-menu");
+	newA.onclick = function () {
+    this.classList.add("active");
+    setup(seq, x0, y0, diameter, boundLength, colors)};
 	body[0].appendChild(newA);
 	var newP =  document.createElement("p");
 	var highValue = aaPercent(seq);
-	newP.style.fontSize = "80%";
+	newP.classList.add("pourcentage");
 	newP.textContent = highValue[0] + " " + highValue[1]  + "%";
 	body[0].appendChild(newP);
 }
@@ -122,7 +124,7 @@ function drawSeq(seq,x0,y0,diameter,boundLength,colors,period){
   let point_, x1, y1, x2, y2;
   for (let atom_index = 0; atom_index<seq.length; atom_index++){
     drawAa(x0,y0,diameter,charToAa(seq[atom_index],colors));
-    if (atom_index+1 < seq.length){    
+    if (atom_index+1 < seq.length){
       point_ = translate_(x0,y0,radius,theta);
       x1 = point_[0]; y1 = point_[1];
       point_ = drawBound(x1,y1,boundLength,theta);
@@ -135,19 +137,28 @@ function drawSeq(seq,x0,y0,diameter,boundLength,colors,period){
 }
 
 function setup(seq, x0, y0, diameter, boundLength, colors) {
+  let div_cvn = document.getElementById("canvas");
+  console.log(div_cvn.offsetWidth);
 	if (seq != undefined) {
-		var cnv  = createCanvas(20000, 400);
-		cnv.position(300, 100);
+		var cnv  = createCanvas(div_cvn.offsetWidth, div_cvn.offsetHeight);
+		cnv.position(0, 0);
 		drawSeq(seq, x0, height/2, diameter, boundLength, colors, 7);
 	}
+  let canvas=document.getElementById("defaultCanvas0");
+  let div = document.getElementById("canvas");
+  canvas.style["position"]="inherit";
+  canvas.style["text-align"]="center";
+  canvas.style["margin"]="auto";
+  canvas.classList.add("canvas");
+  div.appendChild(canvas);
 }
 
 function addProteinDisplay(fasta) {
 	let aa = "GPAVLIMCFYWHKRQNEDST";
 	let colors = defAaColor(aa);
-	let aaDiameter = 30; 
+	let aaDiameter = 30;
 	let boundLength = 10;
-	let x0 = 100; 
+	let x0 = 100;
 	let y0 = 100; // centre du premier aa
 	for (var key in fasta) {
 		createElementHtml("#", key, fasta[key], x0, y0, aaDiameter, boundLength, colors) ;
@@ -160,6 +171,3 @@ function addProteinDisplay(fasta) {
 //Add Event Listener
 let whatifBrowse = document.querySelector('#whatif');
 whatifBrowse.addEventListener('change',getContents);
-
-
-

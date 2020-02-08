@@ -2,19 +2,24 @@
 
 
 {% block content %}
-<body>
+<body style="background-color: #262626;">
 	{% load static %}
-	<script src="{% static "proteo/p5.js" %}"></script>
-  <script type="text/javascript">
-  let one=document.getElementById("one");
-  one.classList.add("activated");
-  </script>
-  <label for="whatif">Protein fasta file:</label>
+	<div class="subdiv">
+		<label class="label" for="whatif"><h2 style="text-align: left;margin-left: 5%;">Protein fasta file:</h2></label>
 		<input type="file" id="whatif">
 		<div class="vertical-menu" id="menu_1D">
-			<a href="#" class="active">Home</a>
+		</div>
+		<div  class="div_canvas" id="canvas">
 		</div>
 		<p id="demo"></p>
-  <script src="{% static "proteo/visu_prot.js" %}"> </script>
+	</div>
+	<script src="{% static "proteo/p5.js" %}"></script>
+	<script src="{% static "proteo/visu_prot.js" %}"> </script>
+	<script type="text/javascript">
+		let one=document.getElementById("one");
+		one.classList.add("activated");
+		let canvas=document.getElementById("defaultCanvas0");
+		console.log(canvas);
+	</script>
 </body>
 {% endblock %}
