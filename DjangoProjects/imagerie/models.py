@@ -4,6 +4,7 @@ from random import shuffle
 from typing import *
 from xml.etree import ElementTree
 
+import shutil
 import imageio
 import numpy as np
 import requests
@@ -147,7 +148,7 @@ class CNN(ImageClassifier):
     train_labels = None
     test_images = None
     test_labels = None
-    nb_classes = None
+    nb_classes = 250
 
     @abstractmethod
     def set_tf_model(self):
@@ -155,12 +156,12 @@ class CNN(ImageClassifier):
 
     def train(self, training_data=None):
         self.split_images(training_data, test_fraction=0.2)
-        self.set_tf_model(self.nb_classes)
+        self.set_tf_model()
         checkpoint_dir = self.checkpoint_dir_path
         checkpoint_path = os.path.join(checkpoint_dir, f'{self.name}_cp_{{epoch:04d}}.ckpt')
         cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                          save_weights_only=False,
-                                                         verbose=1, period=5)
+                                                         verbose=1, period=2)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
         self.nn_model.fit(self.train_images, self.train_labels, batch_size=64, epochs=50, verbose=2,
@@ -170,25 +171,6 @@ class CNN(ImageClassifier):
         print(accuracy)
         self.available = True
         self.save()
-
-    def classify(self, images: List):
-        # if not self.available:
-        #     raise Exception('The CNN is not available yet')
-        if self.nn_model is None:
-            self.load_model()
-        processed_images = np.array([image.preprocess() for image in images])
-        predictions = self.nn_model.predict(processed_images)
-        original_index_sorted = np.argsort(-predictions, axis=1)
-
-        for i in range(len(images)):
-            for j in range(5):
-                specie = self.class_set.get(pos=original_index_sorted[i, j]).specie
-                try:
-                    pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
-                except Prediction.DoesNotExist:
-                    pred = Prediction(cnn=self, image=images[i], specie=specie)
-                pred.confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
-                pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
@@ -235,21 +217,41 @@ class CNN(ImageClassifier):
             data_labels_np[test_index])
         print(self.train_images.shape)
 
+    def classify(self, images: List):
+        # if not self.available:
+        #     raise Exception('The CNN is not available yet')
+        if self.nn_model is None:
+            self.load_model()
+        processed_images = np.array([image.preprocess() for image in images])
+        predictions = self.nn_model.predict(processed_images)
+        original_index_sorted = np.argsort(-predictions, axis=1)
+
+        for i in range(len(images)):
+            for j in range(5):
+                specie = self.class_set.get(pos=original_index_sorted[i, j]).specie
+                try:
+                    pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
+                except Prediction.DoesNotExist:
+                    pred = Prediction(cnn=self, image=images[i], specie=specie)
+                pred.confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
+                pred.save()
+
     @property
     def checkpoint_dir_path(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
         if not os.path.isdir(path):
             os.mkdir(path)
         path = os.path.join(path, f'{self.name}_{self.specialized_background.name}_{self.specialized_organ.name}')
-        if not os.path.isdir(path):
-            os.mkdir(path)
-            self.checkpoint_dir = path
-            self.save()
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        os.mkdir(path)
+        self.checkpoint_dir = path
+        self.save()
         return path
 
     def load_model(self):
         self.set_tf_model()
-        latest = tf.train.latest_checkpoint(self.checkpoint_dir_path)
+        latest = tf.train.latest_checkpoint(self.checkpoint_dir)
         self.nn_model.load_weights(latest)
 
 
@@ -323,7 +325,7 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        self.nn_model.add(Dense(nb_classes))
+        self.nn_model.add(Dense(self.nb_classes))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model
