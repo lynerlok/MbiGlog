@@ -13,6 +13,7 @@ from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from django.utils.text import slugify
+from django.dispatch import receiver
 from sklearn.model_selection import StratifiedShuffleSplit
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
@@ -195,7 +196,7 @@ class CNN(ImageClassifier):
 
         data_images, data_labels = [], []
 
-        for image in images:
+        for image in images.iterator():
             if image.specie in specie_to_pos:
                 data_images.append(images.preprocess())
                 data_labels.append(specie_to_pos[images.specie])
@@ -329,3 +330,14 @@ class AlexNet(CNN):
         self.nn_model.compile(loss="categorical_crossentropy",
                               optimizer="adam",
                               metrics=["accuracy"])
+
+
+@receiver(models.signals.post_delete, sender=SubmittedImage)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `MediaFile` object is deleted.
+    """
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
