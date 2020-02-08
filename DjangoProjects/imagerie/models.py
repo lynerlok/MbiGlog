@@ -232,7 +232,7 @@ class CNN(ImageClassifier):
                     pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
                 except Prediction.DoesNotExist:
                     pred = Prediction(cnn=self, image=images[i], specie=specie)
-                pred.confidence = float(predictions[i, original_index_sorted[i, j]])
+                pred.confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
                 pred.save()
 
     @property
@@ -264,7 +264,7 @@ class Prediction(models.Model):
     cnn = models.ForeignKey(CNN, on_delete=models.CASCADE)
     image = models.ForeignKey(SubmittedImage, on_delete=models.CASCADE)
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
-    confidence = models.DecimalField(max_digits=4, decimal_places=3)
+    confidence = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return "{} ({}%)".format(self.cnn.name, self.specie.name, self.confidence, self.image)
