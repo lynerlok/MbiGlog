@@ -5,6 +5,8 @@
     <em>{{ specie.vernacular_name }}</em>
     <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ specie.tax_id }}"> N° NCBI
         : {{ specie.tax_id }}</a>
+
+    <img src="{{ image.image.url }}" alt="{{ image }}">
     <div id="taxons">
         {% for taxon in taxons %}
             <div id="{{ taxon.rank.name }}">

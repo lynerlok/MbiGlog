@@ -4,18 +4,19 @@ from random import shuffle
 from typing import *
 from xml.etree import ElementTree
 
+import shutil
 import imageio
 import numpy as np
 import requests
 import tensorflow as tf
+from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.utils import to_categorical
 from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from django.utils.text import slugify
-from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
-from keras.models import Sequential
-from keras.utils import to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
@@ -99,9 +100,8 @@ class Image(models.Model):
         return self.image.name
 
     def preprocess(self):
-        """Preprocess of GoogLeNet for now"""
         img = imageio.imread(self.image.path, pilmode='RGB')
-        img = np.array(PImage.fromarray(img).resize((224, 224)))
+        img = np.array(PImage.fromarray(img).resize((224, 224)), dtype=np.float_)
         return img
 
 
@@ -147,6 +147,7 @@ class CNN(ImageClassifier):
     train_labels = None
     test_images = None
     test_labels = None
+    nb_classes = 250
 
     @abstractmethod
     def set_tf_model(self):
@@ -159,7 +160,7 @@ class CNN(ImageClassifier):
         checkpoint_path = os.path.join(checkpoint_dir, f'{self.name}_cp_{{epoch:04d}}.ckpt')
         cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                          save_weights_only=False,
-                                                         verbose=1, period=5)
+                                                         verbose=1, period=2)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
         self.nn_model.fit(self.train_images, self.train_labels, batch_size=64, epochs=50, verbose=2,
@@ -169,25 +170,6 @@ class CNN(ImageClassifier):
         print(accuracy)
         self.available = True
         self.save()
-
-    def classify(self, images: List):
-        # if not self.available:
-        #     raise Exception('The CNN is not available yet')
-        if self.nn_model is None:
-            self.load_model()
-        processed_images = np.array([image.preprocess() for image in images])
-        predictions = self.nn_model.predict(processed_images)
-        original_index_sorted = np.argsort(-predictions, axis=1)
-
-        for i in range(len(images)):
-            for j in range(5):
-                specie = self.class_set.get(pos=original_index_sorted[i, j]).specie
-                try:
-                    pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
-                except Prediction.DoesNotExist:
-                    pred = Prediction(cnn=self, image=images[i], specie=specie)
-                pred.confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
-                pred.save()
 
     def split_images(self, images: QuerySet = None, test_fraction: float = 0.2):
         if images is None:
@@ -212,8 +194,10 @@ class CNN(ImageClassifier):
             except Class.DoesNotExist:
                 class_m = Class(cnn=self, specie=specie)
             class_m.pos = i
+            class_m.save()
             specie_to_pos[specie] = i
-        train_images, train_labels, test_images, test_labels = [], [], [], []
+
+        self.nb_classes = len(species)
         print(species)
         data_images, data_labels = [], []
         nb_images = len(images)
@@ -232,21 +216,41 @@ class CNN(ImageClassifier):
             data_labels_np[test_index])
         print(self.train_images.shape)
 
+    def classify(self, images: List):
+        # if not self.available:
+        #     raise Exception('The CNN is not available yet')
+        if self.nn_model is None:
+            self.load_model()
+        processed_images = np.array([image.preprocess() for image in images])
+        predictions = self.nn_model.predict(processed_images)
+        original_index_sorted = np.argsort(-predictions, axis=1)
+
+        for i in range(len(images)):
+            for j in range(5):
+                specie = self.class_set.get(pos=original_index_sorted[i, j]).specie
+                try:
+                    pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
+                except Prediction.DoesNotExist:
+                    pred = Prediction(cnn=self, image=images[i], specie=specie)
+                pred.confidence = float(predictions[i, original_index_sorted[i, j]]) * 100
+                pred.save()
+
     @property
     def checkpoint_dir_path(self):
         path = os.path.join(st.MEDIA_ROOT, 'training_datas')
         if not os.path.isdir(path):
             os.mkdir(path)
         path = os.path.join(path, f'{self.name}_{self.specialized_background.name}_{self.specialized_organ.name}')
-        if not os.path.isdir(path):
-            os.mkdir(path)
-            self.checkpoint_dir = path
-            self.save()
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        os.mkdir(path)
+        self.checkpoint_dir = path
+        self.save()
         return path
 
     def load_model(self):
         self.set_tf_model()
-        latest = tf.train.latest_checkpoint(self.checkpoint_dir_path)
+        latest = tf.train.latest_checkpoint(self.checkpoint_dir)
         self.nn_model.load_weights(latest)
 
 
@@ -260,7 +264,7 @@ class Prediction(models.Model):
     cnn = models.ForeignKey(CNN, on_delete=models.CASCADE)
     image = models.ForeignKey(SubmittedImage, on_delete=models.CASCADE)
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
-    confidence = models.DecimalField(max_digits=4, decimal_places=3)
+    confidence = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return "{} ({}%)".format(self.cnn.name, self.specie.name, self.confidence, self.image)
@@ -320,7 +324,11 @@ class AlexNet(CNN):
         self.nn_model.add(Dropout(0.4))
 
         # Output Layer
-        self.nn_model.add(Dense(len(self.classes.all())))
+        if self.classes:
+            nb_classes = len(self.classes.all())
+        else:
+            nb_classes = 250
+        self.nn_model.add(Dense(nb_classes))
         self.nn_model.add(Activation('softmax'))
 
         # Compile the self.nn_model

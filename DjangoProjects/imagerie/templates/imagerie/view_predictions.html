@@ -1,32 +1,30 @@
 {% extends 'imagerie/base.html' %}
 
 {% block content %}
-    <div class="main-text">
-        <table>
-            <thead>
+    <table>
+        <thead>
+        <tr>
+            <th>Images</th>
+            <th>Prediction</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for image in r.submitted_images.all %}
             <tr>
-                <th>Images</th>
-                <th>Prediction</th>
+                <td><img src="{{ image.image.url }}" alt="{{ image.image.path }}"></td>
+                <td>
+                    <table>
+                        {% for prediction in image.prediction_set.all %}
+                            <tr>
+                                <a href="{% url 'img-specie-detail'  prediction.specie.slug %}">{{ prediction.specie }}</a>
+                                :
+                                <em>{{ prediction.confidence }}</em>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
             </tr>
-            </thead>
-            <tbody>
-            {% for image in r.submitted_images.all %}
-                <tr>
-                    <td><img src="{{ image.image.url }}" alt="{{ image.image.path }}"></td>
-                    <td>
-                        <table>
-                            {% for prediction in image.prediction_set %}
-                                <tr>
-                                    <a href="{% url 'img-specie-detail'  prediction.specie.slug %}">{{ prediction.specie }}</a>
-                                    :
-                                    <em>{{ prediction.confidence }}</em>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
