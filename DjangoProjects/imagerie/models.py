@@ -8,14 +8,14 @@ import imageio
 import numpy as np
 import requests
 import tensorflow as tf
+from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.utils import to_categorical
 from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from django.utils.text import slugify
-from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
-from keras.models import Sequential
-from keras.utils import to_categorical
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
