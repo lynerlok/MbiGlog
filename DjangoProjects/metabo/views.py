@@ -22,6 +22,7 @@ def upload_ngs_file(request):
             result_correlation = co.corrPearson(dic)
             correlDict = co.translateMatrix(result_correlation)
             output = co.meltDict(correlDict, 0.9)
+            co.saveResult(output, "media/geneTMP.txt")
             output = json.dumps(output)
             return render(request, 'metabo/cytoscape.html', locals())
     else:
@@ -34,7 +35,6 @@ def upload_ngs_file(request):
         if gene_data_form.is_valid():
             file = gene_data_form.cleaned_data['Gene_data']
             res = file.split(" ")
-            print(res)
             return render(request, 'metabo/cytoscape.html', locals())
     else:
         gene_data_form = GeneForm()
