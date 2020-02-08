@@ -1,0 +1,38 @@
+{% extends "ngs/base.html" %}
+
+{% block style %}
+    {% load static %}
+    <script src="{% static "ngs/import_fastq_form.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+
+
+
+    <form method="post" enctype="multipart/form-data" action="{% url "ngs pipeline home" %}">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div id="forms">
+            {% for form in formset %}
+                <p  id="p-id_form-{{ forloop.counter0 }}">
+                    {% for field in form %}
+                        {{ field.errors }} {{ field.label_tag }} {{ field }}
+                    {% endfor %}
+
+                    <button id="remove-id_form-{{ forloop.counter0 }}" type="button" class="remove_btn">Remove</button>
+                </p>
+            {% endfor %}
+        </div>
+        <button type="submit" value="Submit">Upload fastq and run FastQC</button>
+        <input type="button" value="Add More" id="add_more">
+    </form>
+    <div id="empty_form" style="display:none">
+        <p id="p-id_form-__prefix__">
+            {% for field in formset.empty_form %}
+                {{ field.errors }} {{ field.label_tag }} {{ field }}
+            {% endfor %}
+
+            <button id="remove-id_form-__prefix__" type="button" class="remove_btn">Remove</button>
+        </p>
+    </div>
+{% endblock %}

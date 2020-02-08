@@ -1,0 +1,15 @@
+{% extends "ngs/base.html" %}
+
+
+{% block content %}
+
+    <h1>
+        La Pipeline de Protéomique
+    </h1>
+    <form>
+    {%  csrf_token %}
+        {{ id }}
+    <button type='submit' name="proteo">Get Fasta</button>
+    </form>
+
+{% endblock %}

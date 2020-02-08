@@ -1,0 +1,25 @@
+{% extends "ngs/base.html" %}
+
+
+{% block content %}
+    <form enctype="multipart/form-data" action="" method="post">
+        {%  csrf_token %}
+        {{ rna }}
+        <input type="submit" name="all" value="Launch the pipeline">
+    </form>
+
+
+
+    <form action="" method='post'>
+     {% csrf_token %}
+    <button type='submit' name="align">Step 1 - Alignment</button>
+    </form>
+
+    <form action="" method='post'>
+    {%  csrf_token %}
+    <button type='submit' name="tree">Step 2 - Tree Creator</button>
+    </form>
+
+
+
+{% endblock %}
