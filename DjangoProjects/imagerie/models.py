@@ -12,8 +12,8 @@ from PIL import Image as PImage
 from django.conf import settings as st
 from django.db import models
 from django.db.models import QuerySet, Count, Sum
-from django.utils.text import slugify
 from django.dispatch import receiver
+from django.utils.text import slugify
 from sklearn.model_selection import StratifiedShuffleSplit
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
@@ -334,10 +334,6 @@ class AlexNet(CNN):
 
 @receiver(models.signals.post_delete, sender=SubmittedImage)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
-    """
-    Deletes file from filesystem
-    when corresponding `MediaFile` object is deleted.
-    """
     if instance.image:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
