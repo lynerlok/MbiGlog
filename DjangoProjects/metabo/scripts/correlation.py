@@ -36,8 +36,8 @@ def meltDict(dict, seuil):
     output = []
     for geneA in dict.keys():
         for geneB, value in dict[geneA].items():
-            if geneA != geneB and abs(value) >= seuil and (geneB, geneA, value) not in output:
-                output.append([geneA, geneB, value, "correlation pair"])
+            if geneA != geneB and abs(value) >= seuil and (geneB, geneA) not in output:
+                output.append([geneA, geneB, "correlation pair"])
     return output
 
 

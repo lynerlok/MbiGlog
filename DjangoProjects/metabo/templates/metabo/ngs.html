@@ -1,9 +1,0 @@
-{% extends 'metabo/base.html' %}
-
-{% block content %}
-    <form action="{% url 'mtb_ngs' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
-{% endblock %}
