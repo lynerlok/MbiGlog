@@ -22,8 +22,8 @@
             <li><a href="{% url "ngs_home" %}">NGS</a>
             <li><a href="{% url "mtb_home" %}">Metabolomics</a>
             <li><a href="{% url "prt_home" %}">Proteomics</a>
+            </ul>
         {% endblock %}
-        </ul>
     </header>
 
     <main>
@@ -34,12 +34,12 @@
                 {% endfor %}
             </ul>
         {% endif %}
+        {% block nav %}
+        {% endblock %}
 
         {% block content %}
         {% endblock %}
 
-        {% block nav %}
-        {% endblock %}
     </main>
 
     <footer>Project realised by students from Bordeaux's Master of Bioinformatics, within the Software Engineering course</footer>

@@ -1,3 +1,21 @@
+div.head{
+  margin:auto;
+  background-color: #7ab64a;
+  text-align: center;
+  margin-top: 5%;
+  width: 100%;
+  border:solid 2px white;
+}
+
+div.visualisation{
+  background-color: black;
+  margin-left: 22%;
+  margin-right: 22%;
+  margin-top: 1%;
+  padding-top: 1px;
+  border: solid 3px #7ab64a;
+}
+
 h2.toclick {
   display: inline-block;
   border:solid white 2px;
@@ -8,16 +26,16 @@ h2.toclick {
 }
 
 h2.toclick:hover{
-  color:#ff7465;
+  color:#7ab64a;
 }
 
 div.subdiv {
-  margin-right: 15%;
-  margin-left: 15%;
+  margin-right: 22%;
+  margin-left: 22%;
   margin-top:5%;
-  background-color: #ff7465;
+  background-color: #7ab64a;
   text-align: center;
-  border:solid 2px white;
+  border:solid 2px black;
   padding-bottom: 5%;
 }
 
@@ -38,7 +56,7 @@ a.ref {
 }
 
 a.ref:hover{
-  color: #ff7465;
+  color: #7ab64a;
 }
 
 p{
@@ -64,15 +82,29 @@ h4{
   text-decoration: none; /* Remove underline from links */
 }
 
+.vertical-menu div.element {
+  background-color: #111; /* Grey background color */
+  color: white; /* Black text color */
+  display: block; /* Make the links appear below each other */
+  padding: 12px; /* Add some padding */
+  text-decoration: none; /* Remove underline from links */
+  margin: 5%;
+  border: solid 2px white;
+}
+
 .vertical-menu a:hover {
-  background-color: #ff7465; /* Dark grey background on mouse-over */
+  background-color: #7ab64a; /* Dark grey background on mouse-over */
   color:black;
 }
 
-.vertical-menu a.active {
+.vertical-menu div.active {
   background-color: white; /* Add a green color to the "active/current" link */
   color: black;
   border : solid 2px #262626;
+}
+.vertical-menu div a.active {
+  background-color: white; /* Add a green color to the "active/current" link */
+  color: black;
 }
 
 #menu_1D {
@@ -112,4 +144,33 @@ label{
 
 body{
   background-color: black;
+}
+
+nav {
+  background-color: #333;
+  width: 100%;
+}
+nav li{
+  position: inherit;
+  display: inline-block;
+  margin-top:4%;
+  width: 22%;
+}
+
+nav li a:hover{
+  background-color: #7ab64a;
+  color: black;
+  border: solid 2px black;
+}
+
+div.file{
+  background: #262626;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1%;
+  border: solid 2px white;
+  width: 99%;
+  padding-top: 1%;
+  padding-bottom: 1%;
 }

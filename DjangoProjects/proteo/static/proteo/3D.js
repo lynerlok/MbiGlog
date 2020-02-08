@@ -1,3 +1,7 @@
+function activer_onglet(){
+  let three=document.getElementById("three");
+  three.classList.add("activated");
+}
 
 function getfile(){
   input = document.getElementById("link");
@@ -13,8 +17,6 @@ function getfile(){
     parent.appendChild(link);
   }
 }
-
-
 
 function showit(show,hide){
   show = document.getElementById(show);
@@ -32,6 +34,7 @@ function add_interaction(){
 
 
 function main(){
+  activer_onglet();
   add_interaction();
 }
 

@@ -103,19 +103,25 @@ function getContents(ev) {
 
 function createElementHtml(href, name, seq, x0, y0, diameter, boundLength, colors) {
 	var body = document.getElementsByClassName("vertical-menu");
+  var div = document.createElement("div");
   var newA = document.createElement("a");
 	newA.href = href;
 	newA.textContent = name;
+  div.id=name;
+  div.classList.add("element");
 	newA.classList.add("vert-menu");
 	newA.onclick = function () {
+    var res = document.getElementById(this.textContent);
+    res.classList.add("active");
     this.classList.add("active");
     setup(seq, x0, y0, diameter, boundLength, colors)};
-	body[0].appendChild(newA);
+	div.appendChild(newA);
 	var newP =  document.createElement("p");
 	var highValue = aaPercent(seq);
 	newP.classList.add("pourcentage");
-	newP.textContent = highValue[0] + " " + highValue[1]  + "%";
-	body[0].appendChild(newP);
+	newP.textContent = "Acide aminé le plus présent dans la chaîne: "+highValue[0] + " " + highValue[1]  + "%";
+	div.appendChild(newP);
+  body[0].appendChild(div);
 }
 
 function drawSeq(seq,x0,y0,diameter,boundLength,colors,period){
