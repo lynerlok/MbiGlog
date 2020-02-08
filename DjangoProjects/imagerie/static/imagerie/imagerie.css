@@ -72,3 +72,34 @@
     background-color: #b54936;
     transition: transform .1s ease;
 }
+
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(-45deg);
+}
+
+.main-text a {
+    color: #7ab64a;
+}
+
+.main-text a:hover {
+    color: rgba(33, 33, 33, 0.89);
+    transition: transform .5s ease;
+}
+
+#taxons {
+    text-align: left;
+    width: intrinsic;           /* Safari/WebKit utilisent un nom non-standard */
+      width: -moz-max-content;    /* Firefox/Gecko */
+      width: -webkit-max-content; /* Chrome */
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: 3px solid #d1e0b3;
+}
