@@ -30,7 +30,7 @@ class Annotation(models.Model):
 class FastQ(models.Model):
     archive = models.FileField(upload_to='ngs/fastq/')
     request = models.ForeignKey(Request, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    # name = models.CharField(max_length=200)
 
     def generate_fastqc(self):
         rc = 1
