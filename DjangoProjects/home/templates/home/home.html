@@ -1,9 +1,103 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-    MBI GLOG
+    Home
+{% endblock %}
+
+{% block menu %}    
 {% endblock %}
 
 {% block content %}
-    Welcome !
+    <section class='content'>
+        Welcome ! You have reached the home page of <b>Plant Bioinformatics</b>. <br><br>
+        This site presents the results of a 6 months-long project aiming to create an ensemble of four webservices : <b>Imaging</b>, <b>NGS</b>, <b>Metabolomics</b> and <b>Proteomics</b>. <br><br>
+        Those webservices aim respectively to apply different types of bioinformatics analysis on plant species.  
+    </section>
+{% endblock %}
+
+{% block nav %}
+    <nav> <!--container-->
+        <ul>  <!--topnav-->
+            <li class="imaging"><a href="{% url "img_home" %}">
+                <div class="text">
+                    <img src="{% static "home/camera.png" %}"><br>
+                    Imaging
+                </div>
+                <div class="text-on-hover">
+                    <img src="{% static "home/camera.png" %}"><br>
+                    Imaging<br><br>
+                    <p style="font-size:14px">
+                        Identify the vegetal species<br>on your personal pictures<br>
+                    </p>
+                    <p style="font-size:10px">
+                        Created by :<br>
+                        Theo GAUVRIT - Axel POLLIN<br>
+                        Amelie GRUEL - Eliot RAGUENEAU<br>
+                        Jeremie PAJOLE - Melissa SADOUKI
+                    </p>
+                </div>
+            </a></li>
+
+            <li class="metabo"><a href="{% url "mtb_home" %}">
+                <div class="text">
+                    <img src="{% static "home/metabo.png" %}"><br>
+                    Metabolomics
+                </div>
+                <div class="text-on-hover">
+                    <img src="{% static "home/metabo.png" %}"><br>
+                    Metabolomics<br><br>
+                    <p style="font-size:14px">
+                        blablablabla<br>
+                    </p>
+                    <p style="font-size:10px">
+                        Created by :<br>
+                        Charlotte ANDRE - Maxime LECOMTE<br>
+                        Jean-Clement GAILLARDO - Kevin MERCHADOU<br>
+                        Antoine LAPORTE - Yann PREVOT
+                    </p>
+                </div>
+            </a></li>
+
+            <li class="ngs"><a href="{% url "ngs_home" %}">
+                <div class="text">
+                    <img src="{% static "home/ngs.png" %}"><br>
+                    NGS
+                </div>
+                <div class="text-on-hover">
+                    <img src="{% static "home/ngs.png" %}"><br>
+                    NGS<br><br>
+                    <p style="font-size:14px">
+                        blablablabla<br>
+                    </p>
+                    <p style="font-size:10px">
+                        Created by :<br>
+                        Jeremy BULLE - Elisabeth GUEUX<br>
+                        Vincent CASAMAYOU - Alexia KUNTZ<br>
+                        Elsa CLAUDE - Coralie MULLER
+                    </p>
+                </div>
+            </a></li>
+
+            <li class="proteo"><a href="{% url "prt_home" %}">
+                <div class="text">
+                    <img src="{% static "home/proteo.png" %}"><br>
+                    Proteomics
+                </div>
+                <div class="text-on-hover">
+                    <img src="{% static "home/proteo.png" %}"><br>
+                    Proteomics<br><br>
+                    <p style="font-size:14px">
+                        blablablabla<br>
+                    </p>
+                    <p style="font-size:10px">
+                        Created by :<br>
+                        Pierre-Valerien ABATE - Alexis HUCTEAU<br>
+                        Marina BOUDIN - Mirna MARIE-JOSEPH<br>
+                        Francois CALAJI - Vincent MOCO
+                    </p>
+                </div>
+            </a></li>
+        </ul>
+    </nav>
 {% endblock %}

@@ -12,4 +12,5 @@ urlpatterns = [
     path('3D/', views.Threedimension, name="three_dimension"),
     path('view3D/', views.ViewThree, name="view_three"),
     path('view3D/<str', views.ViewThree, name="view_three"),
+    path('2D/modeling', views.model, name="model"),
 ]
