@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import url
+from proteo import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +27,7 @@ urlpatterns = [
     path('metabolomics/', include("metabo.urls")),
     path('ngs/', include("ngs.urls")),
     path('proteomics/', include("proteo.urls")),
+    url(r'^external',views.external),
+    url(r'^ext',views.ext),
+    url(r'^model',views.model),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
