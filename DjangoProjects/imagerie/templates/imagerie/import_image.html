@@ -1,6 +1,4 @@
 {% extends "imagerie/base.html" %}
-{% block title %}Imaging{% endblock %}
-{% block title-page %} - Imaging{% endblock %}
 
 {% block style %}
     {% load static %}
@@ -9,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="import">
+    <div class="main-text">
         <h2>Import photography</h2>
         {% if envoi %}Your image has been uploaded !{% endif %}
 

@@ -4,7 +4,8 @@
     margin-right: auto;
     background: #ebece9;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     border: 1px solid #d1e0b3;
 }
 
@@ -39,12 +40,10 @@
 
 #first-head {
     border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
 }
 
 #last-head {
     border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
 }
 
 
