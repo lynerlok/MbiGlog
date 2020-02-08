@@ -1,9 +1,9 @@
 
 function getfile(){
-  input = document.getElementById("thefile");
-  var files = input.files;
-  if (files.length!=0){
-    var data_path = files[0].name;
+  input = document.getElementById("link");
+  if (input!=null){
+    var lien = input.href;
+    sessionStorage.setItem("Path",lien);
     var url = "/proteomics/view3D/";
     var link = document.createElement('a');
     var node = document.createTextNode("GO to the analysis.");
@@ -13,6 +13,7 @@ function getfile(){
     parent.appendChild(link);
   }
 }
+
 
 
 function showit(show,hide){
@@ -26,8 +27,7 @@ function add_interaction(){
   file.addEventListener("click",function(){
     showit("FILE","PDB_VIEW");
   });
-  upload = document.getElementById("upload");
-  upload.addEventListener("click",getfile);
+  getfile();
 }
 
 
