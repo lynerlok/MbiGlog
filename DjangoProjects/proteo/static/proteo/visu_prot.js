@@ -85,21 +85,60 @@ function parseFasta(text) {
 	return fastaDict;
 }
 
-function getContents(ev) {
-	if (window.File && window.FileReader && window.FileList && window.Blob) {
-		console.log(ev);
-		let f = ev.target.files[0];
-		let reader = new FileReader();
-		reader.onload = (e) => {
-			let text = reader.result;
-			fasta = parseFasta(text);
+function get_path(){
+  let path = sessionStorage.getItem("Path");
+  if (path!="null"){
+    fetch(path).then(x=>x.text()).then(response=>{
+      fasta = parseFasta(response);
 			addProteinDisplay(fasta);
-		}
-		reader.readAsText(f);
-	} else {
-		alert('The File APIs are not fully supported by your browser.');
-	}
+    });
+    sessionStorage.setItem("Path",null);
+    let a = document.getElementById("link");
+    a.href=path;
+    prepare_2D();
+  }
 }
+
+function getfile(){
+  input = document.getElementById("link");
+  if (input!=null){
+    var lien = input.href;
+    sessionStorage.setItem("Path",lien);
+    get_path();
+  }
+}
+
+function prepare_2D(){
+  let want = document.getElementById("want");
+  want.addEventListener("click",function(){
+    console.log("coucou");
+    this.style["display"]="none";
+    getfile();
+    let div = document.getElementById("principal");
+    div.style["display"]="none";
+    let wish = document.getElementById("wish");
+    wish.style["display"]="block";
+  });
+}
+
+// function getContents(ev) {
+//   console.log(sessionStorage.getItem("Path"));
+// 	if (window.File && window.FileReader && window.FileList && window.Blob) {
+//     let f = ev.target.files[0];
+// 		let reader = new FileReader();
+// 		reader.onload = (e) => {
+// 			let text = reader.result;
+// 			fasta = parseFasta(text);
+// 			addProteinDisplay(fasta);
+// 		};
+// 		reader.readAsText(f);
+// 	} else {
+// 		alert('The File APIs are not fully supported by your browser.');
+// 	};
+//   console.log(sessionStorage.getItem("Path"));
+//   sessionStorage.setItem("Path",null);
+//   prepare_2D();
+// }
 
 function createElementHtml(href, name, seq, x0, y0, diameter, boundLength, colors) {
 	var body = document.getElementsByClassName("vertical-menu");
@@ -144,7 +183,6 @@ function drawSeq(seq,x0,y0,diameter,boundLength,colors,period){
 
 function setup(seq, x0, y0, diameter, boundLength, colors) {
   let div_cvn = document.getElementById("canvas");
-  console.log(div_cvn.offsetWidth);
 	if (seq != undefined) {
 		var cnv  = createCanvas(div_cvn.offsetWidth, div_cvn.offsetHeight);
 		cnv.position(0, 0);
@@ -175,5 +213,3 @@ function addProteinDisplay(fasta) {
 
 ////////////////////////////////////////////////////////////////////
 //Add Event Listener
-let whatifBrowse = document.querySelector('#whatif');
-whatifBrowse.addEventListener('change',getContents);

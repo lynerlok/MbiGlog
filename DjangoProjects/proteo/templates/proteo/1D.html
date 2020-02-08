@@ -4,10 +4,15 @@
 {% block content %}
 <body style="background-color: #262626;">
 	{% load static %}
-	<div class="subdiv">
+	<div class="subdiv" id="principal">
 		<label class="label" for="whatif"><h2 style="text-align: left;margin-left: 5%;">Protein fasta file:</h2></label>
-		<div class="file">
-			<input style="color:white;" type="file" id="whatif">
+		<div class="file choose_file">
+			{% load static %}
+			<form method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				<input type="file" name="myfile" accept=".fasta.txt,.fasta">
+				<button type="submit" id="whatif">Upload</button>
+			</form>
 		</div>
 		<div class="vertical-menu" id="menu_1D">
 		</div>
@@ -15,13 +20,32 @@
 		</div>
 		<p id="demo"></p>
 	</div>
+	<div style="display: none;margin-top:1%;padding-bottom:1%;"class="subdiv" id="next">
+		<div class="file" style="margin-top:1%;">
+			<a style="display: none;" id="link" href="{{ uploaded_file }}"></a>
+			<p class="toclick" id="want" style="text-align: center;"> I want to go to prediction 2D view</p>
+			<h2 id="wish"style="display: none;margin: auto;" class="toclick"><a class="ref" href="{% url "two_dimension" %}"> Go to prediction 2D</a></h2>
+		</div>
+	</div>
 	<script src="{% static "proteo/p5.js" %}"></script>
 	<script src="{% static "proteo/visu_prot.js" %}"> </script>
 	<script type="text/javascript">
+	function activer_onglet(){
 		let one=document.getElementById("one");
 		one.classList.add("activated");
-		let canvas=document.getElementById("defaultCanvas0");
-		console.log(canvas);
+	}
+	function main_html(){
+		activer_onglet();
+	}
+	main_html();
 	</script>
+	{% if uploaded_file %}
+	<script>
+		let file = document.getElementById("next");
+		file.style["display"]="block";
+		console.log("fichier uploaded");
+		getfile();
+	</script>
+	{% endif %}
 </body>
 {% endblock %}
