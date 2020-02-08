@@ -23,7 +23,7 @@ def upload_ngs_file(request):
             correlDict = co.translateMatrix(result_correlation)
             output = co.meltDict(correlDict, 0.9)
             output = json.dumps(output)
-            return render(request, 'metabo/graph.html', locals())
+            return render(request, 'metabo/cytoscape.html', locals())
     else:
         ngs_data_form = NGSForm()
 
@@ -35,7 +35,7 @@ def upload_ngs_file(request):
             file = gene_data_form.cleaned_data['Gene_data']
             res = file.split(" ")
             print(res)
-            return render(request, 'metabo/graph.html', locals())
+            return render(request, 'metabo/cytoscape.html', locals())
     else:
         gene_data_form = GeneForm()
     return render(request, 'metabo/ngs_input.html', locals())
@@ -78,4 +78,4 @@ def graph(request):
                     json_net[p.name][r.name]['produit'] = met.produit
                     json_net[p.name][r.name]['cofactors'] = met.cofactors
     json_string2 = json.dumps(json_net)
-    return render(request, "metabo/graph.html", locals())
+    return render(request, "metabo/cytoscape.html", locals())
