@@ -39,3 +39,6 @@ termcolor==1.1.0
 urllib3==1.25.7
 Werkzeug==0.16.0
 wrapt==1.11.2
+itolapi == 4.0.0
+biopython == 1.76.0
+xmltramp2 == 3.1.1
