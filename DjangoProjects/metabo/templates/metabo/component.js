@@ -7,28 +7,25 @@ MERCHADOU Kévin
 GALLARDO Jean-Clément
 */
 
-
-
 const struct = (groups) => {
 	console.log(groups);
-	let pwy_ID = {
-		"enzName" : [],
-		"cofactor": []
-	};
+	let componment = {
+		"location": [], // lieu ou les reactions se font
+		"pwys" : []
 
+	};
 	groups.forEach(cur =>
-		cur.attributes.length === 0 ?
-		pwy_ID.cofactor.push(cur.textContent) :
-		(pwy_ID.enzName.length === 0 && cur.attributes[0].value.match("entry name") && cur.attributes[1].value.match(/[A-Z][a-z]*_[A-Z][a-z]*/g)) ?
-		pwy_ID.enzName.push(cur.attributes[1].value) : 		pwy_ID.cofactor.length != 0 ?
-		delete pwy_ID.cofactor[0] : 0);
-	return pwy_ID;
+		(cur.attributes[1].nodeValue.match(/C:[a-z]*/g)) ?
+		componment.location.push(cur.attributes[1].nodeValue) :
+		cur.attributes[0].value.match(/Pathway/g) ?
+		componment.pwys.push(cur.attributes[1].name+"= "+cur.attributes[1].value) : 0);
+	return componment;
 }
 
 const parseXML = (text) => {
 	let parser = new DOMParser();
 	let doc = parser.parseFromString(text, "application/xml");
-	let secStruct = struct(doc.querySelectorAll("name,property") );// balise a recuperer
+	let secStruct = struct(doc.querySelectorAll("dbReference,property")); // balise a recuperer
 	console.log(secStruct);
 }
 

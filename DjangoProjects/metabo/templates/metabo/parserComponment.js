@@ -1,12 +1,10 @@
 /*
-PARSER XML
-04/11/2019
 ANDRÉ Charlotte
 GALLARDO Jean Clément
 LECOMTE Maxime
 LAPORTE Antoine
 MERCHADOU Kévin
-
+GALLARDO Jean-Clément
 */
 
 const struct = (groups) => {

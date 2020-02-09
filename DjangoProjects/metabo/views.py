@@ -1,4 +1,12 @@
-from django.http import HttpResponseRedirect
+"""
+ANDRÉ Charlotte
+GALLARDO Jean Clément
+LECOMTE Maxime
+LAPORTE Antoine
+MERCHADOU Kévin
+GALLARDO Jean-Clément
+"""
+
 from django.shortcuts import render, redirect
 from metabo.models import *
 from .forms import NGSForm, GeneForm
