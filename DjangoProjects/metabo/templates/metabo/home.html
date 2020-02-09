@@ -1,19 +1,6 @@
 {% extends "metabo/base.html" %}
 
 
-{% block nav %}
-    <nav id="navigation-bar">
-        <ul>
-            <li class="activated"><a href="{% url "mtb_home" %}">Metabolics Home</a></li>
-            <li class="activated"><a href="{% url "mtb_ngs" %}">Load NGS data</a></li>
-            <li class="activated"><a href="{% url "mtb_visu" %}">Visualize Gene Networks</a></li>
-            <li class="activated"><a href="{% url "mtb_graph" %}">Visualize Pathways</a></li>
-        </ul>
-    </nav>
-
-{% endblock %}
-
-
 {% block content %}
     <h2>Welcome in the Metabolic's section!</h2>
     <img class="centerimg"
