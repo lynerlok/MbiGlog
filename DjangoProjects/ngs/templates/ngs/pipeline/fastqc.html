@@ -2,25 +2,27 @@
 
 {% block content %}
 
+
     {% for fastqc in fastqcs %}
         <div>
-         The FastQC HTML file associated with {{fastqc.fastq.archive }} is located at : {{ fastqc.file.url }}
+            The FastQC HTML file associated with {{ fastqc.fastq.archive }} is located at : {{ fastqc.file.file }}
         </div>
     {% endfor %}
 
     <form enctype="multipart/form-data" action="" method="post">
+
         <div class="container">
-        <h2> Trimmomatic treatments</h2>
-        <p>Select parameters of Trimmomatic </p> <br>
-    {% csrf_token %}
-    {{ trim.as_p }}
-     <input type="submit" name="trimo" value="Set Trimmomatic Paramater">
+            <h2> Trimmomatic treatments</h2>
+            <p>Select parameters of Trimmomatic </p> <br>
+            {% csrf_token %}
+            {{ trim.as_p }}
+            <input type="submit" name="trimo" value="Set Trimmomatic Paramater">
     </form>
 
 
     <form action="" method='post'>
-    {%  csrf_token %}
-    <button type='submit' name="hisat">Go Hisat</button>
+        {% csrf_token %}
+        <button type='submit' name="hisat">Go Hisat</button>
     </form>
 {% endblock %}
 

@@ -37,7 +37,7 @@ DEBUG = True
 
 MESSAGE_LEVEL = 0
 
-ALLOWED_HOSTS = ['127.0.0.1', 'glog.dust-of-the-universe.com']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.29', 'glog.dust-of-the-universe.com']
 
 # Application definition
 
