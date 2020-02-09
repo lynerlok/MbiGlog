@@ -216,8 +216,8 @@ class CNN(ImageClassifier):
 
         (tf.TensorShape([]), tf.TensorShape([None]))
 
-        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16), (224, 224, 3, 1))
-        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16), (224, 224, 3, 1))
+        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
+        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
 
     def classify(self, images: List):
         # if not self.available:
