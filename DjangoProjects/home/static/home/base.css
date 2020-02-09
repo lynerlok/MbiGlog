@@ -17,6 +17,15 @@ main {
     min-height: 100vh;
 }
 
+.main-text {
+    height: auto;
+    width: 100%;
+    margin-top: 50vh;
+    transform: translateY(-50%);
+    text-align: center;
+    position: absolute;
+}
+
 header h1 {
     background-color: #7ab64a;
     padding: 14px;
