@@ -7,16 +7,15 @@ class FileFieldForm(forms.Form):
 
 
 class GenomeAnnotationsForm(forms.Form):
-    genome_file = forms.FileField(label= 'Genome file')
-    annotations_file = forms.FileField(label='Annotations file')
+    genome_file = forms.FileField(label='Genome file')
+    annotations_file_gff = forms.FileField(label='Annotations file GFF')
+    annotations_file_gtf = forms.FileField(label='Annotations file GTF')
 
-    # file_field = forms.CharField(label='Fastq name', max_length=200)
-    #
-    # def __init__(self, *args, **kwargs):
-    #     super(GenomeAnnotationsForm, self).__init__(*args, **kwargs)
-    #     for field in self.fields:
-    #         self.fields[field].widget.attrs.update({'required': 'True'})
-
+    fastq = forms.ModelMultipleChoiceField(
+        label='FastQ to work on',
+        queryset=FastQ.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'fastq', 'required': ''})
+    )
 
 class IDProteoForm(forms.Form):
     id_field = forms.CharField(label="ID GenBank", max_length=50)
@@ -28,11 +27,12 @@ class RNAFileFieldForm(forms.Form):
 
 
 class AlignFieldForm(forms.Form):
-    file_field = forms.FileField(label= 'Fasta containing ARN18s')
+    file_field = forms.FileField(label='Fasta containing ARN18s')
     your_email = forms.EmailField(label='your email', max_length=200)
 
+
 class TreeForm(forms.Form):
-    file_field = forms.FileField(label = 'Aligned Sequences (Clustal, Fasta, MSF')
+    file_field = forms.FileField(label='Aligned Sequences (Clustal, Fasta, MSF')
     your_email = forms.EmailField(label='your email', max_length=200)
 
 
@@ -101,4 +101,3 @@ class SelectFastQForm(forms.Form):
         queryset=FastQ.objects.all(),
         widget=forms.Select(attrs={'class': 'fastq', 'required': 'True'})
     )
-
