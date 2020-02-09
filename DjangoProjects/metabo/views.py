@@ -39,17 +39,6 @@ def upload_ngs_file(request):
             return render(request, 'metabo/visualize.html', locals())
     else:
         ngs_data_form = NGSForm()
-
-    if request.method == 'POST' and not ngs_data_form.is_valid():
-        gene_data_form = GeneForm(request.POST, request.FILES)
-        ngs_data = NGSForm()
-        geneList = []
-        if gene_data_form.is_valid():
-            file = gene_data_form.cleaned_data['Gene_data']
-            res = file.split(" ")
-            return render(request, 'metabo/cytoscape.html', locals())
-    else:
-        gene_data_form = GeneForm()
     return render(request, 'metabo/ngs_input.html', locals())
 
 
@@ -60,10 +49,6 @@ def handle_binary_uploaded_file(f):
             destination.write(chunk)
     return tmp
 
-    # geneList = ['AT5G52560', 'AT4G16130']
-    # geneList = res
-
-
 def graph(request):
     if request.method == 'POST':
         gene_data_form = GeneForm(request.POST, request.FILES)
@@ -72,7 +57,6 @@ def graph(request):
         if gene_data_form.is_valid():
             file = gene_data_form.cleaned_data['Gene_data']
             res = file.split(" ")
-
             json_net = {}
             geneList = res
             print(res)
