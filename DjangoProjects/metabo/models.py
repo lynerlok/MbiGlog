@@ -60,39 +60,42 @@ class Gene(models.Model):
         """
         responseBiocyc = requests.get('https://websvc.biocyc.org/apixml',
                                       {'fn': 'pathways-of-gene', 'id': 'ARA:' + self.id_gene})
-        root = ET.fromstring(responseBiocyc.content)
-        if not Request.objects.filter(name=responseBiocyc.url).exists():
-            for pathwayElement in root.findall('Pathway'):
-                pwy, _ = Pathway.objects.get_or_create(name=pathwayElement.attrib['frameid'])
-                pwy.save()
-                for reactionList in pathwayElement.findall('reaction-list'):
-                    for reactionElement in reactionList.findall("Reaction"):
-                        reaction, _ = Reaction.objects.get_or_create(name=reactionElement.attrib['frameid'])
-                        reaction.save()
-                        pwy.reactions.add(reaction)
-                        reponseBiocycSubstrate = requests.get('https://websvc.biocyc.org/apixml',
-                                                              {'fn': 'substrates-of-reaction',
-                                                               'id': 'ARA:' + reaction.name})
-                        rootSubstrates = ET.fromstring(reponseBiocycSubstrate.content)
-                        rxn = ''
-                        for substrate in rootSubstrates.findall('Compound'):
-                            if 'CPD' in substrate.attrib['ID']:
-                                for cml in substrate.findall('cml'):
-                                    for mol in cml.findall('molecule'):
-                                        rxn += mol.attrib['title'] + ' '
-                            elif (substrate.attrib['frameid'] == 'PROTON'):
-                                rxn += 'H+ '
-                            elif (substrate.attrib['frameid'] == ('WATER')):
-                                rxn += 'H2O '
-                            else:
-                                rxn += substrate.attrib['frameid'] + ' '
-                        metabolite, _ = Metabolite.objects.get_or_create(ensemble=rxn)
-                        reaction.metaboList.add(metabolite)
-                    if self not in pwy.genes.all():
-                        pwy.genes.add(self)
-            request, _ = Request.objects.get_or_create(name=responseBiocyc.url)
-            request.save()
-            Enzyme.create_enzyme_metabolite()
+        if responseBiocyc.status_code != 200:
+            print("Gene not in Biocyc's database")
+        else:
+            root = ET.fromstring(responseBiocyc.content)
+            if not Request.objects.filter(name=responseBiocyc.url).exists():
+                for pathwayElement in root.findall('Pathway'):
+                    pwy, _ = Pathway.objects.get_or_create(name=pathwayElement.attrib['frameid'])
+                    pwy.save()
+                    for reactionList in pathwayElement.findall('reaction-list'):
+                        for reactionElement in reactionList.findall("Reaction"):
+                            reaction, _ = Reaction.objects.get_or_create(name=reactionElement.attrib['frameid'])
+                            reaction.save()
+                            pwy.reactions.add(reaction)
+                            reponseBiocycSubstrate = requests.get('https://websvc.biocyc.org/apixml',
+                                                                  {'fn': 'substrates-of-reaction',
+                                                                   'id': 'ARA:' + reaction.name})
+                            rootSubstrates = ET.fromstring(reponseBiocycSubstrate.content)
+                            rxn = ''
+                            for substrate in rootSubstrates.findall('Compound'):
+                                if 'CPD' in substrate.attrib['ID']:
+                                    for cml in substrate.findall('cml'):
+                                        for mol in cml.findall('molecule'):
+                                            rxn += mol.attrib['title'] + ' '
+                                elif (substrate.attrib['frameid'] == 'PROTON'):
+                                    rxn += 'H+ '
+                                elif (substrate.attrib['frameid'] == ('WATER')):
+                                    rxn += 'H2O '
+                                else:
+                                    rxn += substrate.attrib['frameid'] + ' '
+                            metabolite, _ = Metabolite.objects.get_or_create(ensemble=rxn)
+                            reaction.metaboList.add(metabolite)
+                        if self not in pwy.genes.all():
+                            pwy.genes.add(self)
+                request, _ = Request.objects.get_or_create(name=responseBiocyc.url)
+                request.save()
+                Enzyme.create_enzyme_metabolite()
 
     @staticmethod
     def gene_from_name(name, list):
