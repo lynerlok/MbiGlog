@@ -9,6 +9,7 @@ urlpatterns = [
     path('pipeline/fastqc-<int:id_request>/', views.fastqc, name="ngs fastqc"),
     path('pipeline/hisat/',views.hisat, name="hisat2"),
     path('pipeline/R_analysis/',views.ranalysis, name='R analysis'),
+    path('pipeline/results/',views.results, name="Results"),
 
     path('proteo/fasta',views.proteo, name='Proteo fasta'),
 

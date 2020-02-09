@@ -1,5 +1,8 @@
 {% extends "ngs/base.html" %}
 
 {% block content %}
-    MDRRRRRRRRRRRRRR GLOG CEST DE LA MERDE
+    <form action="" method='post'>
+     {% csrf_token %}
+    <button type='submit' name="r_analysis">Make R analysis and get gene expression file</button>
+    </form>
 {% endblock %}
