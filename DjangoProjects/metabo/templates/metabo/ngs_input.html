@@ -21,7 +21,7 @@
             <form action="{% url 'mtb_ngs' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ gene_data_form }}
-                <input type="submit" value="Submit">
+                <input class="submit" type="submit" value="Submit">
             </form>
 
         </fieldset>
