@@ -22,8 +22,21 @@
             <li><a href="{% url "ngs_home" %}">Phylogeny<br>Sequence finder<br>GEAP</a>
             <li><a href="{% url "mtb_home" %}">Metabolomics</a>
             <li><a href="{% url "prt_home" %}">Proteomics</a>
-        {% endblock %}
         </ul>
+        {% endblock %}
+        {% block info %}
+            <div class="info">
+                <img src="{% static "home/info.png" %}">
+                <div class="info-hidden">
+                    <h2>Goal of the webservice:</h2>
+                    {% block info-goal %}
+                    {% endblock %}
+                    Created by :
+                    {% block info-authors %}
+                    {% endblock %}
+                </div>
+            </div>
+        {% endblock %}
     </header>
 
     <main>
