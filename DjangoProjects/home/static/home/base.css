@@ -119,6 +119,19 @@ header h1 a {
     width: 100%;
 }
 
+.hover-menu:hover + .menu {
+    display: block;
+    transition: transform .5s ease;
+}
+
+.menu li:hover {
+    background-color: #d1e0b3;
+}
+
+.menu {
+    display: block;
+}
+
 /* Choix de webservices dans le home */
 
 nav ul {
@@ -173,6 +186,26 @@ nav li a {
 
 .text-on-hover {
     display: none;
+}
+
+/* --- Bigger icon for each webservice on hover --- */
+
+nav li:hover {
+    transform: translateX(-50%) translateY(-50%) scale(1.5);
+    transition: transform .5s ease;
+    z-index: 10;
+}
+
+nav li a:hover {
+    background-color: #111;
+}
+
+nav li:hover .text {
+    display: none;
+}
+
+nav li:hover .text-on-hover {
+    display: block;
 }
 
 /* Footer */
@@ -239,34 +272,3 @@ ul.messages li.error {
     text-shadow: rgba(234, 5, 0, 0.72) 1px 1px 2px;
 }
 
-
-/* Bigger icon for each webservice on hover */
-
-nav li:hover {
-    transform: translateX(-50%) translateY(-50%) scale(1.5);
-    transition: transform .5s ease;
-    z-index: 10;
-}
-
-nav li a:hover {
-    background-color: #111;
-}
-
-nav li:hover .text {
-    display: none;
-}
-
-nav li:hover .text-on-hover {
-    display: block;
-}
-
-/* Display menu */
-
-.hover-menu:hover + .menu {
-    display: block;
-    transition: transform .5s ease;
-}
-
-.menu li:hover {
-    background-color: #d1e0b3;
-}
