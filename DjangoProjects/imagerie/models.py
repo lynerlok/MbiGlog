@@ -14,10 +14,8 @@ from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from django.dispatch import receiver
 from django.utils.text import slugify
-from sklearn.model_selection import StratifiedShuffleSplit
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.utils import to_categorical
 
 class Label(models.Model):
     name = models.CharField(max_length=50)
@@ -100,7 +98,7 @@ class Image(models.Model):
 
     def preprocess(self):
         img = imageio.imread(self.image.path, pilmode='RGB')
-        img = np.array(PImage.fromarray(img).resize((224, 224)), dtype=np.float_)
+        img = np.array(PImage.fromarray(img).resize((224, 224)), dtype=np.float_) / 255
         return img
 
 
@@ -137,21 +135,19 @@ class Request(models.Model):
 
 class CNN(ImageClassifier):
     checkpoint_dir = models.FilePathField(allow_folders=True, null=True)
-    classes = models.ManyToManyField(Specie, through="Class", related_name='+')
     available = models.BooleanField(default=False)
     specialized_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT, null=True, default=None)
     specialized_background = models.ForeignKey('BackgroundType', on_delete=models.PROTECT, null=True, default=None)
     nn_model = None
-    train_images = None
-    train_labels = None
-    test_images = None
-    test_labels = None
+    train_ds = None
+    test_ds = None
 
     @abstractmethod
     def set_tf_model(self):
         pass
 
-    def train(self, training_data=None):
+    def train(self, training_data=None, nb_image_by_class=50):
+        self.nb_image_by_class = nb_image_by_class
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
         checkpoint_dir = self.checkpoint_dir_path
@@ -161,9 +157,9 @@ class CNN(ImageClassifier):
                                                          verbose=1, period=2)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=64, epochs=50, verbose=2,
+        self.nn_model.fit(self.train_ds, epochs=50, verbose=2,
                           callbacks=[cp_callback])
-        _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
+        _, accuracy = self.nn_model.evaluate(self.test_ds, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
         self.available = True
@@ -176,14 +172,18 @@ class CNN(ImageClassifier):
             images = images.filter(plant_organ=self.specialized_organ)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=50)
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=self.nb_image_by_class)
 
+        self.classes.all().delete()
         for specie in species.iterator():
             print(specie['specie__name'], specie['nb_image'])
 
         specie_to_pos = {}
+        specie_to_nb = {}
+        specie_to_counter = {}
         self.save()  # allow to create ref to CNN in classes
-        for i in range(species.count()):
+        nb_class = species.count()
+        for i in range(nb_class):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             try:
                 class_m = Class.objects.get(cnn=self, specie=specie)
@@ -192,26 +192,60 @@ class CNN(ImageClassifier):
             class_m.pos = i
             class_m.save()
             specie_to_pos[specie] = i
+            specie_to_nb[specie] = species[i]['nb_image']
+            specie_to_counter[specie] = 0
 
-        data_images, data_labels = [], []
+        train_images = []
+        test_images = []
 
         for image in images.iterator():
-            if image.specie in specie_to_pos:
-                data_images.append(image.preprocess())
-                data_labels.append(specie_to_pos[image.specie])
+            specie = image.specie
+            if specie in specie_to_pos:
+                if specie_to_counter[specie] / specie_to_nb[specie] < 1 - test_fraction:
+                    train_images.append(image)
+                else:
+                    test_images.append(image)
+                specie_to_counter[specie] += 1
 
-        data_images_np = np.array(data_images)
-        data_labels_np = np.array(data_labels)
-        shufflesplit = StratifiedShuffleSplit(n_splits=2, test_size=0.2)
-        train_index, test_index = list(shufflesplit.split(data_images_np, data_labels_np))[0]
-        self.train_images, self.test_images = data_images_np[train_index], data_images_np[test_index]
-        self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(
-            data_labels_np[test_index])
-        print(self.train_images.shape)
+        batch_size = 64
+
+        def train_generator():
+            i = 0
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                    dtype=np.int8)
+            for image in train_images:
+                i += 1
+                if i == batch_size - 1:
+                    yield xs, ys
+                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                            dtype=np.int8)
+
+                    i = 0
+                xs[i] = image.preprocess()
+                ys[i, specie_to_pos[image.specie]] = 1
+
+        def test_generator():
+            i = 0
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                    dtype=np.int8)
+            for image in test_images:
+                i += 1
+                if i == batch_size - 1:
+                    yield xs, ys
+                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                            dtype=np.int8)
+                    i = 0
+                xs[i] = image.preprocess()
+                ys[i] = tf.keras.utils.to_categorical(specie_to_pos[image.specie], nb_class)
+
+        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float64, tf.int8),
+                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)))
+        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.float32),
+                                                      ((batch_size, 224, 224, 3), (batch_size, nb_class)))
 
     def classify(self, images: List):
-        # if not self.available:
-        #     raise Exception('The CNN is not available yet')
+        if not self.available:
+            raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
         processed_images = np.array([image.preprocess() for image in images])
@@ -220,7 +254,7 @@ class CNN(ImageClassifier):
 
         for i in range(len(images)):
             for j in range(5):
-                specie = self.class_set.get(pos=original_index_sorted[i, j]).specie
+                specie = self.classes.get(pos=original_index_sorted[i, j]).specie
                 try:
                     pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
                 except Prediction.DoesNotExist:
@@ -249,8 +283,11 @@ class CNN(ImageClassifier):
 
 class Class(models.Model):
     pos = models.IntegerField()
-    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE)
+    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='classes')
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.specie.name + ' => ' + str(self.pos)
 
 
 class Prediction(models.Model):

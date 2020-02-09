@@ -1,7 +1,7 @@
 {% extends "metabo/home.html" %}
 
 {% block title %}
-    computecyto
+    Compute pathways
 {% endblock %}
 
 {% block style %}
@@ -67,14 +67,8 @@
     <h1 style="text-align: center" id="title"></h1>
 
     <div class="menu" id="menu">
-      <h1>Pathways visualization</h1>
+      <h1>Pathways<br>visualization</h1>
       <div class="selects" id="selects">
-        <label for="gene-select">Select a gene :</label><br>
-        <select name="genes" id="gene-select">
-          <option value="vide">null</option>
-          <option value="test">test</option>
-        </select><br><br>
-
         <label for="pathway-select">Select a pathway :</label><br>
         <select name="pathway" id="pathway-select" onchange="RXN_clear(document.getElementById('reaction-select'));RXN_list(dict_object,document.getElementById('pathway-select').value)">
         </select><br><br>
@@ -90,15 +84,17 @@
       </div><br>
       <div class="buttons" id="button2">
         <input type='button' id='btnSave' value='Save as JSON' onclick='saveFile();'/>
-          <input type="button" onclick="readFile(gene_path)" value="Gene Network Compute"/>
-      </div>
+      </div><br>
+    <div class="buttons" id="button2">
+        <input type="button" onclick="selected_rxn(dict_object,document.getElementById('pathway-select').value,document.getElementById('reaction-select').value)" value="Select reaction"/>
+    </div>
     </div>
 
 
 
     <script>
 
-    var gene_path = "{% static 'metabo/tmp.txt' %}";
+    var gene_path = "{% static 'metabo/geneTMP.txt' %}";
     var networkGraph = ('{{ json_net | escapejs }}');
 
     var cy = cytoscape({
@@ -107,6 +103,7 @@
 
     // Create gene visualization with .tab file
     function readFile(path_data) {
+        cy.elements().remove();
         fetch(path_data)
             .then(response => {
                 if (response.ok) {
@@ -118,11 +115,12 @@
             })
             .then(txt => parseFile(txt))
             .catch(err => console.log(err));
-        document.getElementById('title').innerHTML = "Gene Network";
     }
+
     const parseFile = (text) => {
         var lines = text.split("\n");
-        var s3D = lines.reduce(parseLine, [])
+        lines.reduce(parseLine, []);
+        layout_graph("cose");
     };
 
     const parseLine = (accu, line, i) => {
@@ -172,7 +170,6 @@
     }
 
     function create_gene_visu(obj, line) {
-        cy.elements().remove();
         var id_src = obj.src_gene;
         var id_trg = obj.trg_gene;
         var check_src = check_id(id_src);
@@ -206,7 +203,7 @@
                 },
             });
         }
-        layout_graph("cose");
+        console.log(cy)
     }
 
 
@@ -466,6 +463,24 @@
         }
     }
 
+    function selected_rxn(dict_object,pwy,rxn){
+        for (var key in dict_object[pwy]){
+            for (var j = 0; j < dict_object[pwy][key].length; j++){
+                if (cy.getElementById(dict_object[pwy][key][j]).selectable()) {
+                    console.log(dict_object[pwy][key][j]);
+                    var node = cy.getElementById(dict_object[pwy][key][j]);
+                    node_style("white", "rectangle", node);
+                }
+            }
+        }
+        for (var i = 0; i < dict_object[pwy][rxn].length; i++){
+            if (cy.getElementById(dict_object[pwy][rxn][i]).selectable()) {
+                var node = cy.getElementById(dict_object[pwy][rxn][i]);
+                node_style("red", "rectangle", node);
+            }
+        }
+    }
+
     //Function to store what's to be saved in a variable
     function saveFile() {
         var data = cy.json(true);
@@ -478,12 +493,12 @@
                 "position" : data.elements[i].position
             })
         }
-        download(JSON.stringify(data_to_save), "test.json","data:text/json;charset=utf8")
+        download(JSON.stringify(data_to_save), "cytoscape.json","data:text/json;charset=utf8")
     }
 
     // Function to download data to a file
     function download(data, filename, type) {
-        var file = new Blob([data], {type: type});
+        var file = new Blob([data], {"type": type});
         if (window.navigator.msSaveOrOpenBlob) // IE10+
             window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
