@@ -3,7 +3,7 @@ import shutil
 from abc import abstractmethod
 from typing import *
 from xml.etree import ElementTree
-import math
+
 import imageio
 import numpy as np
 import requests
@@ -16,7 +16,6 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.utils import Sequence
 
 
 class Label(models.Model):
@@ -217,8 +216,8 @@ class CNN(ImageClassifier):
 
         (tf.TensorShape([]), tf.TensorShape([None]))
 
-        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
-        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
+        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16), (224, 224, 3, 1))
+        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16), (224, 224, 3, 1))
 
     def classify(self, images: List):
         # if not self.available:
@@ -347,6 +346,3 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     if instance.image:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
-
-
-
