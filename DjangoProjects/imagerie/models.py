@@ -14,10 +14,8 @@ from django.db import models
 from django.db.models import QuerySet, Count, Sum
 from django.dispatch import receiver
 from django.utils.text import slugify
-from sklearn.model_selection import StratifiedShuffleSplit
 from tensorflow.keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.utils import to_categorical
 
 
 class Label(models.Model):
@@ -143,10 +141,8 @@ class CNN(ImageClassifier):
     specialized_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT, null=True, default=None)
     specialized_background = models.ForeignKey('BackgroundType', on_delete=models.PROTECT, null=True, default=None)
     nn_model = None
-    train_images = None
-    train_labels = None
-    test_images = None
-    test_labels = None
+    train_ds = None
+    test_ds = None
 
     @abstractmethod
     def set_tf_model(self):
@@ -162,9 +158,9 @@ class CNN(ImageClassifier):
                                                          verbose=1, period=2)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit(self.train_images, self.train_labels, batch_size=64, epochs=50, verbose=2,
+        self.nn_model.fit(self.train_ds, batch_size=32, epochs=50, verbose=2,
                           callbacks=[cp_callback])
-        _, accuracy = self.nn_model.evaluate(self.test_images, self.test_labels, verbose=1)
+        _, accuracy = self.nn_model.evaluate(self.test_ds, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
         self.available = True
@@ -183,6 +179,8 @@ class CNN(ImageClassifier):
             print(specie['specie__name'], specie['nb_image'])
 
         specie_to_pos = {}
+        specie_to_nb = {}
+        specie_to_counter = {}
         self.save()  # allow to create ref to CNN in classes
         for i in range(species.count()):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
@@ -193,22 +191,31 @@ class CNN(ImageClassifier):
             class_m.pos = i
             class_m.save()
             specie_to_pos[specie] = i
+            specie_to_nb[specie] = species[i]['nb_image']
+            specie_to_counter[specie] = 0
 
-        data_images, data_labels = [], []
+        train_images = []
+        test_images = []
 
         for image in images.iterator():
-            if image.specie in specie_to_pos:
-                data_images.append(image.preprocess())
-                data_labels.append(specie_to_pos[image.specie])
+            specie = image.specie
+            if specie in specie_to_pos:
+                if specie_to_counter[specie] / specie_to_nb[specie] < 1 - test_fraction:
+                    train_images.append(image)
+                else:
+                    test_images.append(image)
+                specie_to_counter[specie] += 1
 
-        data_images_np = np.array(data_images)
-        data_labels_np = np.array(data_labels)
-        shufflesplit = StratifiedShuffleSplit(n_splits=2, test_size=0.2)
-        train_index, test_index = list(shufflesplit.split(data_images_np, data_labels_np))[0]
-        self.train_images, self.test_images = data_images_np[train_index], data_images_np[test_index]
-        self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(
-            data_labels_np[test_index])
-        print(self.train_images.shape)
+        def train_generator():
+            for image in train_images:
+                yield image.preprocess(), specie_to_pos[image.specie]
+
+        def test_generator():
+            for image in test_images:
+                yield image.preprocess(), specie_to_pos[image.specie]
+
+        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16))
+        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16))
 
     def classify(self, images: List):
         # if not self.available:
