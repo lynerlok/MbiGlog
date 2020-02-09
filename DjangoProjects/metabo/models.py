@@ -5,14 +5,25 @@ import re
 import json
 
 
-#
-# # Create your models here.
+# Create your models here.
 
 
 class Pathway(models.Model):
+    """Build Pathway Table."""
+
     name = models.CharField(max_length=64)
 
     def save(self, *args, **kwargs):
+        """
+            overwrite save method.
+
+        Parameters
+        ----------
+        *args : list
+        **kwargs : dict
+
+        """
+
         if Pathway.objects.filter(name=self.name).count() == 0:
             super(Pathway, self).save(*args, **kwargs)
             response = requests.get('https://websvc.biocyc.org/apixml',
@@ -26,11 +37,18 @@ class Pathway(models.Model):
 
 
 class Gene(models.Model):
+    """Build Gene table."""
     id_gene = models.CharField(max_length=20,
                                primary_key=True)
     pathways = models.ManyToManyField(Pathway, related_name='genes')
 
     def get_or_create_pathways(self):
+        """
+            1. associate gene to pathway and reaction to pathway.
+            2. associate metabolites to one reaction ( biocyc)
+            3. create enzyme
+        
+        """
         responseBiocyc = requests.get('https://websvc.biocyc.org/apixml',
                                       {'fn': 'pathways-of-gene', 'id': 'ARA:' + self.id_gene})
         root = ET.fromstring(responseBiocyc.content)
@@ -69,17 +87,45 @@ class Gene(models.Model):
 
     @staticmethod
     def gene_from_name(name, list):
+        """  method to get name of gene.
+
+        Parameters
+        ----------
+        name : string
+            name of the enzymatic protein
+        list : queryset
+            List of severals dictionnary of id gene
+
+        Returns
+        -------
+            name of each gene in queryset
+
+        """
         for i in range(len(list)):
             if list[i].id_gene == name:
                 return list[i]
 
 
 class Enzyme(models.Model):
+    """Build Enzyme table."""
     name = models.CharField(max_length=250, primary_key=True)
     gene = models.ForeignKey(Gene, related_name='enzymes', on_delete=models.CASCADE, null=True)
 
     @staticmethod
     def get_enzyme_names(liste):
+        """ Method to get name of enzyme from the table Enzyme.
+
+        Parameters
+        ----------
+        liste : list
+            elements in the table Enzyme
+            
+        Returns
+        -------
+        type : 
+            All the name of each enzyme
+
+        """
         names = []
         for i in range(len(liste)):
             names.append(liste[i].name)
@@ -87,6 +133,10 @@ class Enzyme(models.Model):
 
     @staticmethod
     def create_enzyme_metabolite():
+        """
+            1. Link enzyme to gene
+            2. associate metabolite to one enzyme via uniprot.
+        """
         for pwy in Pathway.objects.all():
             name = pwy.name
             genes = Gene.objects.filter(pathways__name=name)
@@ -152,17 +202,24 @@ class Enzyme(models.Model):
 
 
 class Reaction(models.Model):
+    """ Build Reaction table."""
     name = models.TextField()
     pathway = models.ManyToManyField(Pathway, related_name='reactions')
     enzyme = models.ManyToManyField(Enzyme, related_name='reactions')
 
 
 class Metabolite(models.Model):
+    """Build Metabolite table."""
     ensemble = models.TextField()
     reaction = models.ManyToManyField(Reaction, related_name='metaboList')
 
     @staticmethod
     def createMetabolites():
+        """ 
+            Create metabolite from biocyc.
+            Using intersection method to know which metabolites are in input and which are in output.
+            Compare two reactions.            
+        """
         for pwy in Pathway.objects.all():
             reactions = pwy.reactions.all()
             metabolites = []
@@ -234,15 +291,18 @@ class Metabolite(models.Model):
 
 
 class Component(models.Model):
+    """Build Component table"""
     name = models.CharField(max_length=50)
     enzymes = models.ForeignKey(Enzyme, related_name='componentName', on_delete=models.CASCADE, null=True)
 
 
 class Request(models.Model):
+    """Build Request table"""
     name = models.TextField()
 
 
 class Bilan(models.Model):
+    """Build Bilan table."""
     reactif = models.TextField()
     produit = models.TextField()
     cofactors = models.TextField()
