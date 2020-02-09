@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "base.html" %}
 
 {% block title %}
@@ -18,3 +19,25 @@
     </nav>
 {% endblock %}
 
+=======
+{% extends "base.html" %}
+
+{% block title %}
+    Proteomics
+{% endblock %}
+
+{% block style %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "proteo/proteo.css" %}">
+{% endblock %}
+{% block nav %}
+<nav>
+  <li id="home"><a href="{% url "prt_home" %}">Home</a></li>
+  <li id="one"><a href="{% url "one_dimension" %}">1D</a></li>
+  <li id="two"><a href="{% url "two_dimension" %}">2D</a></li>
+  <li id="three"><a href="{% url "three_dimension" %}">Visu3D</a></li>
+</nav>
+{% endblock %}
+{% block content %}
+{% endblock %}
+>>>>>>> 7076816ac9249f0cbb2beee0ca3e81b2640d3ff0

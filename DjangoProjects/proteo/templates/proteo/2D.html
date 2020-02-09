@@ -1,0 +1,75 @@
+{{% extends "proteo/base.html" %}
+
+{% block content %}
+
+<BODY onload="init()" style="background-color: #262626;">
+  <script type="text/javascript">
+  let two=document.getElementById("two");
+  two.classList.add("activated");
+  </script>
+  <p>2 DIMENSION</p>
+  <form action="/ext/" method="post">
+    {% csrf_token %}
+    Type PDB id:
+    <input type="text" name="par" required><br><br>
+    {{data}}
+    <br><br>
+    <input type="submit" value="Export Model from PDB id">
+  </form>
+  <form action="/external/" method="post">
+    {% csrf_token %}
+    Type PDB id:
+    <input type="text" name="param" required><br><br>
+    {{data_external}}<br><br>
+    {{data1}}
+    <br><br>
+    <input type="submit" value="Execute PSIPRED Analysis">
+  </form>
+  <div style="width:560px; margin:auto; position:relative; font-size: 9pt; color: #777777;">
+    <canvas id="cv" style="border: 1px solid;" width="560" height="420" ></canvas>
+    <div id="tip" style="display:block; color:#ffffff; padding:5px; position:absolute; left:10px; top:370px; background-color:#000000; height:32px; width:250px; border-radius:5px; border:1px solid #777777; font-family:Arial,sans-serif; opacity:0.5; pointer-events:none;">
+      Drag mouse to rotate <br> Drag mouse with shift pressed to zoom
+    </div>
+    <form action="/model/" method="post">
+    <div>
+        {% csrf_token %}
+    <input type="text" id ="PDBinp" name="par2" placeholder="Enter PDB id to read model....">
+    <button onclick="loadModel()" id ="PDBbtn">Load</button>
+    </div>
+    </form>
+  </div>
+  {% load static %}
+  <script type="text/javascript" src="{% static "proteo/jsc3d.js"%}"></script>
+  <script type="text/javascript" src="{% static "proteo/jsc3d.webgl.js"%}"></script>
+  <script type="text/javascript" src="{% static "proteo/jsc3d.touch.js"%}"></script>
+
+  <script type="text/javascript">
+  var canvas;
+  var viewer;
+
+  function init() {
+    canvas = document.getElementById('cv');
+    viewer = new JSC3D.Viewer(canvas);
+    viewer.setParameter('SceneUrl','');
+    viewer.setParameter('InitRotationX', 0);
+    viewer.setParameter('InitRotationY', -30);
+    viewer.setParameter('InitRotationZ', 0);
+    viewer.setParameter('ModelColor', '#CAA618');
+    viewer.setParameter('BackgroundColor1', '#AFAFAF');
+    viewer.setParameter('BackgroundColor2', '#000000');
+    viewer.setParameter('RenderMode', 'textureflat');
+    viewer.setParameter('MipMapping', 'on');
+    viewer.setParameter('Renderer', 'webgl');
+    viewer.init();
+    viewer.update();
+  }
+
+  function loadModel() {
+    var pdb_inp = document.getElementById("PDBinp").value;
+    console.log(pdb_inp);
+    viewer.replaceSceneFromUrl(pdb_inp+'.obj');
+    viewer.update();
+  }
+  </script>
+</BODY>
+{% endblock %}

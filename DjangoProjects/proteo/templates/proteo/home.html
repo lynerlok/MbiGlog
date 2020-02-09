@@ -1,5 +1,57 @@
+<<<<<<< HEAD
 {% extends "proteo/base.html" %}
 
 {% block content %}
 
 {% endblock %}
+=======
+{% extends "proteo/base.html" %}
+
+{% block content %}
+<body>
+  <div class="subdiv">
+    <h1> Welcome to the proteomic side ! </h1>
+    <div id="choose_file" class="inputdiv" style="width:80%;margin-left:10%;">
+      <p>You can charge your file here and start the process with the 1D view :</p>
+      {% load static %}
+      <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+        <input type="file" name="myfile" accept=".fasta,.fasta.txt">
+        <button type="submit">Upload</button>
+      </form>
+      <p style="margin-left: 5%;"><font size="1"> Only fasta file if you want to start the 1D view. (FORMAT : .fasta or .fasta.txt).</font></p>
+    </div>
+    {% if uploaded_file %}
+    <div class="inputdiv" style="width:80%;margin-left:10%;">
+      <a style="display: none;" id="link" href="{{ uploaded_file }}"></a>
+      <h2 class="toclick"><a class="ref" href="{% url "one_dimension" %}"> Go to the 1D view</a></h2>
+    </div>
+    <script>
+    console.log("fichier uploaded");
+    let div = document.getElementById("choose_file");
+    div.style="display:none;"
+    </script>
+    {% endif %}
+  </div>
+  <script>
+  function activer_onglet(){
+    let home=document.getElementById("home");
+    home.classList.add("activated");
+  }
+  function getfile(){
+    input = document.getElementById("link");
+    if (input!=null){
+      var lien = input.href;
+      sessionStorage.setItem("Path",lien);
+      console.log(sessionStorage.getItem("Path"));
+    }
+  }
+  function main(){
+    activer_onglet();
+    getfile();
+  }
+  window.onload=main;
+  </script>
+</body>
+{% endblock %}
+>>>>>>> 7076816ac9249f0cbb2beee0ca3e81b2640d3ff0
