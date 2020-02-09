@@ -39,6 +39,7 @@ header h1 {
     box-shadow: 0px 0px 8px 3px rgba(0,0,0,0.41);
 }
 
+
 header h1 a {
     font-size: xx-large;
     color: #111111;
@@ -87,12 +88,10 @@ nav li {
     top: 25px;
 }
 
-
 .ngs {
     top: -215px;
-    right:25%;
-    transform: translateX(50%);
-    margin-left: auto;
+    left: 75%;
+    transform: translateX(-50%);
     position: relative;
 }
 
@@ -105,9 +104,8 @@ nav li {
 
 .proteo {
     top: -165px;
-    right:25%;
-    transform: translateX(50%);
-    margin-left: auto;
+    left:75%;
+    transform: translateX(-50%);
     position: relative;
 }
 
@@ -140,7 +138,10 @@ footer {
     left: 25%;
     text-align: center;
     position: absolute;
-    top: 20%; }
+    top: 20%;
+    margin: 0px;
+    padding: 0px;
+}
 
 /* Change the link color to #111 (black) on hover */
 header nav li a:hover {
@@ -189,6 +190,7 @@ ul.messages li.error {
 /* Bigger icon for each webservice on hover */
 
 nav li:hover {
+    transform: translateX(-50%) translateY(-50%) scale(1.5);
     transition: transform .5s ease;
     z-index: 10;
 }
@@ -203,14 +205,6 @@ nav li:hover .text {
 
 nav li:hover .text-on-hover {
     display: block;
-}
-
-.imaging:hover, .metabo:hover {
-    transform: translateX(-50%) scale(1.5);
-}
-
-.ngs:hover, .proteo:hover {
-    transform: translateX(50%) scale(1.5);
 }
 
 /* Display menu */
