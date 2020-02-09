@@ -211,12 +211,14 @@ class CNN(ImageClassifier):
 
         def train_generator():
             i = 0
-            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class), dtype=np.int8)
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                    dtype=np.int8)
             for image in train_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
-                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class), dtype=np.int8)
+                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                            dtype=np.int8)
 
                     i = 0
                 xs[i] = image.preprocess()
@@ -224,7 +226,8 @@ class CNN(ImageClassifier):
 
         def test_generator():
             i = 0
-            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class), dtype=np.int8)
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                    dtype=np.int8)
             for image in test_images:
                 i += 1
                 if i == batch_size - 1:
@@ -241,8 +244,8 @@ class CNN(ImageClassifier):
                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)))
 
     def classify(self, images: List):
-        # if not self.available:
-        #     raise Exception('The CNN is not available yet')
+        if not self.available:
+            raise Exception('The CNN is not available yet')
         if self.nn_model is None:
             self.load_model()
         processed_images = np.array([image.preprocess() for image in images])
@@ -251,7 +254,7 @@ class CNN(ImageClassifier):
 
         for i in range(len(images)):
             for j in range(5):
-                specie = self.class_set.get(pos=original_index_sorted[i, j]).specie
+                specie = self.classes.get(pos=original_index_sorted[i, j]).specie
                 try:
                     pred = Prediction.objects.get(cnn=self, image=images[i], specie=specie)
                 except Prediction.DoesNotExist:
