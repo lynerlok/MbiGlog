@@ -211,29 +211,31 @@ class CNN(ImageClassifier):
 
         def train_generator():
             i = 0
-            xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class), dtype=np.int8)
             for image in train_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
-                    xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class), dtype=np.int8)
+
                     i = 0
                 xs[i] = image.preprocess()
                 ys[i, specie_to_pos[image.specie]] = 1
 
         def test_generator():
             i = 0
-            xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class), dtype=np.int8)
             for image in test_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
-                    xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                                                                                            dtype=np.int8)
                     i = 0
                 xs[i] = image.preprocess()
                 ys[i] = tf.keras.utils.to_categorical(specie_to_pos[image.specie], nb_class)
 
-        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.float32),
+        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float64, tf.int8),
                                                        ((batch_size, 224, 224, 3), (batch_size, nb_class)))
         self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.float32),
                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)))
