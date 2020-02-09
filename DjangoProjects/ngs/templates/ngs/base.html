@@ -6,6 +6,11 @@
 
 {% block title-page %} - NGS{% endblock %}
 
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "ngs/ngs.css" %}">
+{% endblock %}
+
 {% block info-goal %}
     This module allows you to create a phylogenic tree based on a text file with various names of species. You can also
     get a fasta file of a protein sequence based on its GenBank ID. Finally you could analyze RNA-Seq Fastq files, apply
