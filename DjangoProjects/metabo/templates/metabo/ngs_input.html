@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1 style="text-align: center; text-shadow :2px 2px 4px black;">Load NGS File</h1>
+    <h1>Load NGS File</h1>
 
     <form class="box" id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
 
@@ -14,7 +14,7 @@
             <form action="{% url 'mtb_ngs' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ ngs_data_form }}
-                <input type="submit" value="Submit">
+                <input class="submit" type="submit" value="Submit">
             </form>
             <br>
             <br>
