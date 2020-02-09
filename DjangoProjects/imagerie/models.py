@@ -99,7 +99,7 @@ class Image(models.Model):
 
     def preprocess(self):
         img = imageio.imread(self.image.path, pilmode='RGB')
-        img = np.array(PImage.fromarray(img).resize((224, 224)), dtype=np.float_)
+        img = np.array(PImage.fromarray(img).resize((224, 224)), dtype=np.float_) / 255
         return img
 
 
@@ -215,12 +215,11 @@ class CNN(ImageClassifier):
             for image in train_images:
                 i += 1
                 if i == batch_size - 1:
-                    print(ys)
                     yield xs, ys
                     xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
                     i = 0
                 xs[i] = image.preprocess()
-                ys[i] = tf.keras.utils.to_categorical(specie_to_pos[image.specie], nb_class)
+                ys[i, specie_to_pos[image.specie]] = 1
 
         def test_generator():
             i = 0
