@@ -194,20 +194,19 @@ class CNN(ImageClassifier):
             class_m.save()
             specie_to_pos[specie] = i
 
-        data_images, data_labels = [], []
+        data_images = np.array([])
+        data_labels = np.array([])
 
         for image in images.iterator():
             if image.specie in specie_to_pos:
-                data_images.append(image.preprocess())
-                data_labels.append(specie_to_pos[image.specie])
+                np.append(data_images, image.preprocess())
+                np.append(data_labels, specie_to_pos[image.specie])
 
-        data_images_np = np.array(data_images)
-        data_labels_np = np.array(data_labels)
         shufflesplit = StratifiedShuffleSplit(n_splits=2, test_size=0.2)
-        train_index, test_index = list(shufflesplit.split(data_images_np, data_labels_np))[0]
-        self.train_images, self.test_images = data_images_np[train_index], data_images_np[test_index]
-        self.train_labels, self.test_labels = to_categorical(data_labels_np[train_index]), to_categorical(
-            data_labels_np[test_index])
+        train_index, test_index = list(shufflesplit.split(data_images, data_labels))[0]
+        self.train_images, self.test_images = data_images[train_index], data_images[test_index]
+        self.train_labels, self.test_labels = to_categorical(data_labels[train_index]), to_categorical(
+            data_labels[test_index])
         print(self.train_images.shape)
 
     def classify(self, images: List):
