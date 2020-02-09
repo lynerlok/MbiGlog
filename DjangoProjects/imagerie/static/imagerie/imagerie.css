@@ -91,3 +91,7 @@
     padding-bottom: 5px;
     border: 3px solid #d1e0b3;
 }
+
+#rectangle_background img {
+    height: 200px;
+}
