@@ -34,3 +34,7 @@ DjangoProjects/proteo/migrations/
 # Ignore merge artifacts
 
 *.orig
+
+# Ignore statics
+
+DjangoProjects/static/
