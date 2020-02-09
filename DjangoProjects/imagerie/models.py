@@ -147,7 +147,8 @@ class CNN(ImageClassifier):
     def set_tf_model(self):
         pass
 
-    def train(self, training_data=None):
+    def train(self, training_data=None, nb_image_by_class=50):
+        self.nb_image_by_class = nb_image_by_class
         self.split_images(training_data, test_fraction=0.2)
         self.set_tf_model()
         checkpoint_dir = self.checkpoint_dir_path
@@ -172,7 +173,7 @@ class CNN(ImageClassifier):
             images = images.filter(plant_organ=self.specialized_organ)
         if self.specialized_background:
             images = images.filter(background_type=self.specialized_background)
-        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=50)
+        species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=self.nb_image_by_class)
 
         self.classes.all().delete()
         for specie in species.iterator():

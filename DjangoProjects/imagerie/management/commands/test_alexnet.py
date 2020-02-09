@@ -22,6 +22,6 @@ class Command(BaseCommand):
             a, _ = AlexNet.objects.get_or_create(name=f"N{organ.name}", specialized_background=background,
                                                  specialized_organ=organ)
             try:
-                a.train()
+                a.train(nb_image_by_class=5)
             except:
                 pass
