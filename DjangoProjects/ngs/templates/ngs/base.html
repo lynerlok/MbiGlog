@@ -7,16 +7,7 @@
 {% block title-page %} - NGS{% endblock %}
 
 {% block nav %}
-    <nav>
-        <ul>
-            <li><a href="{% url "img_home" %}">Imagerie</a></li>
-            <li class="activated"><a href="{% url "ngs_home" %}">NGS</a></li>
-            <li><a href="{% url "mtb_home" %}">Métabolomique</a></li>
-            <li><a href="{% url "prt_home" %}">Protéomique</a></li>
-        </ul>
-    </nav>
 
-    <p><a href="{% url 'home' %}">Return to home</a></p>
 {% endblock %}
 
 {% block style %}
@@ -25,4 +16,17 @@
 
 {% block content %}
 
+{% endblock %}
+
+{% block info-goal %}
+    This module allows you to create a phylogenic tree based on a text file with various names of species. You can also
+    get a fasta file of a protein sequence based on its GenBank ID. Finally you could analyze RNA-Seq Fastq files, apply
+    trimmer, align reads to a genome and get a file with normalized gene expression in order to visualize it in the
+    Metabolic module.
+{% endblock %}
+
+{% block info-authors %}
+Jeremy BULLE - Elisabeth GUEUX<br>
+Vincent CASAMAYOU - Alexia KUNTZ<br>
+Elsa CLAUDE - Coralie MULLER
 {% endblock %}

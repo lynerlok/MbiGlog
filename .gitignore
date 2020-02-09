@@ -38,3 +38,4 @@ DjangoProjects/proteo/migrations/
 # Ignore statics
 
 DjangoProjects/static/
+DjangoProjects/media/

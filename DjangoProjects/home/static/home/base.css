@@ -6,7 +6,6 @@ html {
 body {
     margin: 0;
 }
-
 main {
     background-color: #fff;
     background-image: url(multi-plants_left.jpg), url(multi-plants_right.jpg);
@@ -18,7 +17,6 @@ main {
 }
 
 .main-text {
-    height: auto;
     width: 100%;
     margin-top: 50vh;
     transform: translateY(-50%);
@@ -39,10 +37,23 @@ header h1 {
     box-shadow: 0px 0px 8px 3px rgba(0,0,0,0.41);
 }
 
+
 header h1 a {
     font-size: xx-large;
     color: #111111;
     text-decoration: none;
+}
+
+.info img {
+    z-index: 30;
+    position: absolute;
+    margin-left: auto;
+    right: 0%;
+    margin: 18px;
+}
+
+.info-hidden {
+    display: none;
 }
 
 .menu {
@@ -78,31 +89,34 @@ nav li {
     height: 120px;
     display: flex;
     background-color: #333;
-    position: absolute;
 }
 
 .imaging {
-    left:30%;
-    top: 40%;
-    position: absolute;
+    position: relative;
+    left:25%;
+    transform: translateX(-50%);
+    top: 25px;
 }
 
 .ngs {
-    left:55%;
-    top: 40%;
-    position: absolute;
+    top: -215px;
+    left: 75%;
+    transform: translateX(-50%);
+    position: relative;
 }
 
 .metabo {
-    left:30%;
-    top: 65%;
-    position: absolute;
+    top: 75px;
+    left:25%;
+    transform: translateX(-50%);
+    position: relative;
 }
 
 .proteo {
-    left:55%;
-    top: 65%;
-    position: absolute;
+    top: -165px;
+    left:75%;
+    transform: translateX(-50%);
+    position: relative;
 }
 
 nav li a {
@@ -129,12 +143,15 @@ footer {
 
 /* Contents */
 
-.content {
+.content-home {
     width:50%;
     left: 25%;
     text-align: center;
     position: absolute;
-    top: 20%; }
+    top: 25vh;
+    margin: 0px;
+    padding: 0px;
+}
 
 /* Change the link color to #111 (black) on hover */
 header nav li a:hover {
@@ -183,7 +200,7 @@ ul.messages li.error {
 /* Bigger icon for each webservice on hover */
 
 nav li:hover {
-    transform: scale(1.5);
+    transform: translateX(-50%) translateY(-50%) scale(1.5);
     transition: transform .5s ease;
     z-index: 10;
 }

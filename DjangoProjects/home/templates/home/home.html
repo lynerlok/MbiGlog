@@ -8,8 +8,11 @@
 {% block menu %}
 {% endblock %}
 
-{% block content %}
-    <section class='content'>
+{% block info %}
+{% endblock %}
+
+{% block nav %}
+    <section class='content-home'>
         Welcome ! You have reached the home page of <b>Plant Bioinformatics</b>. <br><br>
         This site presents the results of a 6 months-long project aiming to create an ensemble of four webservices : <b>Imaging</b>,
         <b>NGS</b>, <b>Metabolomics</b> and <b>Proteomics</b>. <br><br>
@@ -66,7 +69,7 @@
                         <img src="{% static "home/ngs.png" %}"><br>
                         Phylogeny - Sequence finder<br>GEAP<br><br>
                         <p style="font-size:14px">
-                            Create a phylogenic tree, get a fasta file of a gene sequence and analyze gene
+                            Create a phylogenic tree,<br>get a fasta file of a gene sequence<br>and analyze gene
                             expression<br>
                         </p>
                         <p style="font-size:10px">
@@ -87,7 +90,7 @@
                         <img src="{% static "home/proteo.png" %}"><br>
                         Proteomics<br><br>
                         <p style="font-size:14px">
-                            blablablabla<br>
+                            Visualise multiple protein structures<br>
                         </p>
                         <p style="font-size:10px">
                             Created by :<br>

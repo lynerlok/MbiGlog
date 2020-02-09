@@ -40,16 +40,14 @@
 
 #first-head {
     border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
 }
 
 #last-head {
     border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
 }
 
 .buttons input, .buttons button {
-    background-color:#d48e48;
+    background-color: #d48e48;
     font-size: 18px;
     color: white;
     border-radius: 10px;
@@ -82,9 +80,9 @@
 
 #taxons {
     text-align: left;
-    width: intrinsic;           /* Safari/WebKit utilisent un nom non-standard */
-      width: -moz-max-content;    /* Firefox/Gecko */
-      width: -webkit-max-content; /* Chrome */
+    width: intrinsic; /* Safari/WebKit utilisent un nom non-standard */
+    width: -moz-max-content; /* Firefox/Gecko */
+    width: -webkit-max-content; /* Chrome */
     margin-left: auto;
     margin-right: auto;
     position: relative;
