@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Think run before run script :
-source /home/marina/.local/bin/virtualenvwrapper.sh
+# Think run before run scripts :
+source /usr/local/bin/virtualenvwrapper.sh
 workon PythonVenv
 
 # Django server in development mode

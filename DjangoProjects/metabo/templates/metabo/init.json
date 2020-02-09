@@ -1,0 +1,22 @@
+[
+  {
+    "data": {
+      "id": "a",
+      "label": "Gene1"
+    }
+  },
+  {
+    "data": {
+      "id": "b",
+      "label": "Gene2"
+    }
+  },
+  {
+    "data": {
+      "id": "ab",
+      "source": "a",
+      "target": "b"
+    }
+  }
+]
+

@@ -24,7 +24,6 @@ def get_env_variable(var_name):
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
