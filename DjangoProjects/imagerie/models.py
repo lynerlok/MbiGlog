@@ -207,14 +207,14 @@ class CNN(ImageClassifier):
                 specie_to_counter[specie] += 1
 
         def train_generator():
-            for image in train_images:
-                yield image.preprocess(), specie_to_pos[image.specie]
+            while True:
+                for image in train_images:
+                    yield image.preprocess(), specie_to_pos[image.specie]
 
         def test_generator():
-            for image in test_images:
-                yield image.preprocess(), specie_to_pos[image.specie]
-
-        (tf.TensorShape([]), tf.TensorShape([None]))
+            while True:
+                for image in test_images:
+                    yield image.preprocess(), specie_to_pos[image.specie]
 
         self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
         self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
