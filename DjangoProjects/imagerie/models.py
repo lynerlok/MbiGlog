@@ -209,10 +209,10 @@ class CNN(ImageClassifier):
 
         batch_size = 32
 
-        def generator(images_ds):
+        def train_generator():
             i = 0
             xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
-            for image in images_ds:
+            for image in train_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
@@ -221,12 +221,22 @@ class CNN(ImageClassifier):
                 xs[i] = image.preprocess()
                 ys[i, specie_to_pos[image.specie]] = 1
 
-        self.train_ds = tf.data.Dataset.from_generator(generator, (tf.float32, tf.int16),
-                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)),
-                                                       args=[train_images])
-        self.test_ds = tf.data.Dataset.from_generator(generator, (tf.float32, tf.int16),
-                                                      ((batch_size, 224, 224, 3), (batch_size, nb_class)),
-                                                      args=[test_images])
+        def test_generator():
+            i = 0
+            xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+            for image in test_images:
+                i += 1
+                if i == batch_size - 1:
+                    yield xs, ys
+                    xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+                    i = 0
+                xs[i] = image.preprocess()
+                ys[i, specie_to_pos[image.specie]] = 1
+
+        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16),
+                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)))
+        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16),
+                                                      ((batch_size, 224, 224, 3), (batch_size, nb_class)))
 
     def classify(self, images: List):
         # if not self.available:
