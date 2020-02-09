@@ -121,6 +121,10 @@ header h1 a {
 
 /* Choix de webservices dans le home */
 
+nav ul {
+    padding: 0;
+}
+
 nav li {
     width: 300px;
     height: 120px;

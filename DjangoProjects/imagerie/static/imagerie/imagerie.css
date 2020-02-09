@@ -95,3 +95,11 @@
 #rectangle_background img {
     height: 200px;
 }
+
+#rectangle_background ul {
+    padding: 0;
+}
+
+#rectangle_background ul li {
+    display: block;
+}
