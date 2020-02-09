@@ -183,6 +183,7 @@ class CNN(ImageClassifier):
         specie_to_counter = {}
         self.save()  # allow to create ref to CNN in classes
         nb_class = species.count()
+        self.classes.all().delete()
         for i in range(nb_class):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             try:
