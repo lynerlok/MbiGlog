@@ -51,3 +51,27 @@
     color: rgba(33, 33, 33, 0.89);
     transition: transform .5s ease;
 }
+
+.box {
+    text-align: center;
+    background-color: rgba(255, 255, 255, .2);
+    margin: auto;
+    width: 45%;
+    height: 100%;
+}
+
+.cy {
+    width: 85%;
+    height: 65%;
+    position: absolute;
+    top: 20%;
+    left: 7.5%;
+    border: solid black;
+    background-color: white;
+}
+
+.bottom {
+    position: absolute;
+    left: 45%;
+    bottom: 3%;
+}
