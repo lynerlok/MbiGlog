@@ -6,7 +6,6 @@ html {
 body {
     margin: 0;
 }
-
 main {
     background-color: #fff;
     background-image: url(multi-plants_left.jpg), url(multi-plants_right.jpg);
@@ -44,6 +43,18 @@ header h1 a {
     color: #111111;
     text-decoration: none;
 }
+
+.info img {
+    z-index: 30;
+    position: absolute;
+    margin-left: auto;
+    right: 0%;
+}
+
+.info-hidden {
+    display: none;
+}
+
 
 .menu {
     position: fixed;
