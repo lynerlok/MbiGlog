@@ -158,7 +158,7 @@ class CNN(ImageClassifier):
                                                          verbose=1, period=2)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit(self.train_ds, batch_size=32, epochs=50, verbose=2,
+        self.nn_model.fit(self.train_ds, epochs=50, verbose=2,
                           callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_ds, verbose=1)
         self.accuracy = accuracy
