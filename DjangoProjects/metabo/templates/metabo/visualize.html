@@ -1,0 +1,82 @@
+{% extends "metabo/home.html" %}
+
+{% block title %}
+    Compute gene networks
+{% endblock %}
+
+{% block style %}
+    <style>
+        html {
+            height : 100%;
+            background: linear-gradient(#78ab8d, #10361f);
+            color: white;
+            font-family : Verdana, Geneva, sans-serif;
+        }
+
+        .box {
+            text-align: center;
+            background-color : rgba(255,255,255,.2);
+            margin : auto;
+            width : 45%;
+            height: 100%;
+        }
+
+        .cy{
+            width: 75%;
+            height: 65%;
+            position: absolute;
+            top: 350px;
+            right: 0%;
+            border: solid black;
+            background-color: white;
+        }
+
+        .menu{
+            position: absolute;
+            width: 20%;
+            height: 64.5%;
+            top: 350px;
+            left : 3%;
+            background-color: linear-gradient(#78ab8d, #10361f);
+            color: white;
+        }
+
+    </style>
+{% endblock %}
+{% load static %}
+
+{% block content %}
+    <script src="{% static "metabo/visualize.js" %}"></script>
+    <script src="{% static "metabo/cytoscape.umd.js" %}"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+    <h1 style="text-align: center; text-shadow :2px 2px 4px black;">Compute gene networks</h1>
+
+    <form class="box" id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
+        <fieldset>
+            <h2>Compute a Gene Network from a JSON </h2>
+            <input type='file' id='fileinput' accept="application/JSON">
+            <input type='button' id='btnLoad' value='Compute from JSON file' onclick='loadFile();'>
+            <input type="button" onclick="readFile(gene_path)" value="Compute NGS loaded file"/>
+        </fieldset>
+    </form>
+
+    <div class="cy" id="cy"></div>
+
+    <script>
+
+        var cy = cytoscape({
+            container: document.getElementById('cy')
+        });
+        var gene_path = "{% static 'metabo/geneTMP.txt' %}";
+
+    </script>
+    <div class="menu">
+        <label for="gene-select">Select a gene :</label><br>
+        <select name="genes" id="gene-select"></select></br></br>
+        <input type = "button" onclick = "neighborNode(document.getElementById('gene-select').value, 'cyan', 'green')" value ="Gene and its Neighborhood"/></br></br>
+        <input type = "button" onclick = "clear_coloration(list_node)" value="Clear Coloration"/></br></br>
+        <input type="button" id="btnsave" value="Save as JSON" onclick="saveFile();">
+    </div>
+{% endblock %}
