@@ -174,6 +174,7 @@ class CNN(ImageClassifier):
             images = images.filter(background_type=self.specialized_background)
         species = images.values('specie__name').annotate(nb_image=Count('specie')).filter(nb_image__gte=100)
 
+        self.classes.all().delete()
         for specie in species.iterator():
             print(specie['specie__name'], specie['nb_image'])
 
