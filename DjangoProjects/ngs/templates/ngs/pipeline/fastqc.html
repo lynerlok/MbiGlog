@@ -5,7 +5,7 @@
 
     {% for fastqc in fastqcs %}
         <div>
-            The FastQC HTML file associated with {{ fastqc.fastq.archive }} is located at : {{ fastqc.file.file }}
+            The FastQC HTML file associated with {{ fastqc.fastq }} is located at : {{ fastqc.file.file }}
         </div>
     {% endfor %}
 
