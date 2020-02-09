@@ -158,9 +158,9 @@ class CNN(ImageClassifier):
                                                          verbose=1, period=2)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit(self.train_ds.batch(32), epochs=50, verbose=2,
+        self.nn_model.fit(self.train_ds, epochs=50, verbose=2,
                           callbacks=[cp_callback])
-        _, accuracy = self.nn_model.evaluate(self.test_ds.batch(32), verbose=1)
+        _, accuracy = self.nn_model.evaluate(self.test_ds, verbose=1)
         self.accuracy = accuracy
         print(accuracy)
         self.available = True
@@ -182,7 +182,8 @@ class CNN(ImageClassifier):
         specie_to_nb = {}
         specie_to_counter = {}
         self.save()  # allow to create ref to CNN in classes
-        for i in range(species.count()):
+        nb_class = species.count()
+        for i in range(nb_class):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             try:
                 class_m = Class.objects.get(cnn=self, specie=specie)
@@ -206,18 +207,26 @@ class CNN(ImageClassifier):
                     test_images.append(image)
                 specie_to_counter[specie] += 1
 
-        def train_generator():
-            while True:
-                for image in train_images:
-                    yield image.preprocess(), specie_to_pos[image.specie]
+        batch_size = 32
 
-        def test_generator():
-            while True:
-                for image in test_images:
-                    yield image.preprocess(), specie_to_pos[image.specie]
+        def generator(images_ds):
+            i = 0
+            xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+            for image in images_ds:
+                i += 1
+                if i == batch_size - 1:
+                    yield xs, ys
+                    xs, ys = np.zeros((batch_size, 224, 224, 3)), np.zeros((batch_size, nb_class))
+                    i = 0
+                xs[i] = image.preprocess()
+                ys[i, specie_to_pos[image.specie]] = 1
 
-        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
-        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.int16), ((224, 224, 3), 1))
+        self.train_ds = tf.data.Dataset.from_generator(generator, (tf.float32, tf.int16),
+                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)),
+                                                       args=[train_images])
+        self.test_ds = tf.data.Dataset.from_generator(generator, (tf.float32, tf.int16),
+                                                      ((batch_size, 224, 224, 3), (batch_size, nb_class)),
+                                                      args=[test_images])
 
     def classify(self, images: List):
         # if not self.available:
