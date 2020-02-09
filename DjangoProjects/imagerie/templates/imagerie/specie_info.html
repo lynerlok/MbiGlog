@@ -1,0 +1,41 @@
+{% extends 'imagerie/base.html' %}
+
+{% block content %}
+    <div class="main-text">
+        <h1>{{ specie.latin_name }}</h1>
+        Vernacular name : <em>{{ specie.vernacular_name }}</em><br>
+        N° NCBI : <a
+            href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ specie.tax_id }}">{{ specie.tax_id }}</a><br><br><br>
+
+        <img src="{{ image.image.url }}" alt="[Image : {{ image }}]"><br><br><br>
+
+        <b>Hierarchical taxa :</b><br>
+        <div id="taxons">
+            {% for taxon in taxons %}
+                <div id="{{ taxon.rank.name }}">
+                    {% if taxon.rank.name == "Regnum" %}
+                        <i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% elif taxon.rank.name == "Class" %}
+                        <b>-</b><i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% elif taxon.rank.name == "Subclass" %}
+                        <b>--</b><i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% elif taxon.rank.name == "Superorder" %}
+                        <b>---</b><i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% elif taxon.rank.name == "Order" %}
+                        <b>----</b><i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% elif taxon.rank.name == "Family" %}
+                        <b>-----</b><i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% elif taxon.rank.name == "Genus" %}
+                        <b>------</b><i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% elif taxon.rank.name == "Species" %}
+                        <b>-------</b><i class="arrow"></i><span style="display:inline-block; width: 15px;"></span>{{ taxon.name }}
+                    {% endif %}
+                    {% if taxon.tax_id %}
+                        <a class="tax-id"
+                           href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id={{ taxon.tax_id }}"> {{ taxon.tax_id }}</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
