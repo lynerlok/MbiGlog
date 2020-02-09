@@ -19,7 +19,6 @@ main {
 
 .main-text {
     width: 100%;
-    height: 75vh;
     margin-top: 50vh;
     transform: translateY(-50%);
     text-align: center;
@@ -133,12 +132,12 @@ footer {
 
 /* Contents */
 
-.content {
+.content-home {
     width:50%;
     left: 25%;
     text-align: center;
     position: absolute;
-    top: 20%;
+    top: 25vh;
     margin: 0px;
     padding: 0px;
 }
