@@ -18,8 +18,8 @@ main {
 }
 
 .main-text {
-    height: auto;
     width: 100%;
+    height: 75vh;
     margin-top: 50vh;
     transform: translateY(-50%);
     text-align: center;
@@ -78,31 +78,37 @@ nav li {
     height: 120px;
     display: flex;
     background-color: #333;
-    position: absolute;
 }
 
 .imaging {
-    left:30%;
-    top: 40%;
-    position: absolute;
+    position: relative;
+    left:25%;
+    transform: translateX(-50%);
+    top: 25px;
 }
 
+
 .ngs {
-    left:55%;
-    top: 40%;
-    position: absolute;
+    top: -215px;
+    right:25%;
+    transform: translateX(50%);
+    margin-left: auto;
+    position: relative;
 }
 
 .metabo {
-    left:30%;
-    top: 65%;
-    position: absolute;
+    top: 75px;
+    left:25%;
+    transform: translateX(-50%);
+    position: relative;
 }
 
 .proteo {
-    left:55%;
-    top: 65%;
-    position: absolute;
+    top: -165px;
+    right:25%;
+    transform: translateX(50%);
+    margin-left: auto;
+    position: relative;
 }
 
 nav li a {
@@ -183,7 +189,6 @@ ul.messages li.error {
 /* Bigger icon for each webservice on hover */
 
 nav li:hover {
-    transform: scale(1.5);
     transition: transform .5s ease;
     z-index: 10;
 }
@@ -198,6 +203,14 @@ nav li:hover .text {
 
 nav li:hover .text-on-hover {
     display: block;
+}
+
+.imaging:hover, .metabo:hover {
+    transform: translateX(-50%) scale(1.5);
+}
+
+.ngs:hover, .proteo:hover {
+    transform: translateX(50%) scale(1.5);
 }
 
 /* Display menu */
