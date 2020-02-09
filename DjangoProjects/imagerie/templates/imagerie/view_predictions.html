@@ -1,0 +1,32 @@
+{% extends 'imagerie/base.html' %}
+
+{% block content %}
+    <div class="main-text">
+        <table id="rectangle_background">
+            <thead id="forms-table">
+            <tr>
+                <th>Images</th>
+                <th>Prediction</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for image in r.submitted_images.all %}
+                <tr>
+                    <td><img src="{{ image.image.url }}" alt="{{ image.image.path }}"></td>
+                    <td>
+                        <ul>
+                            {% for prediction in image.prediction_set.all %}
+                                <li>
+                                    <a href="{% url 'img-specie-detail'  prediction.specie.slug %}">{{ prediction.specie }}</a>
+                                    :
+                                    <em>{{ prediction.confidence }} %</em>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

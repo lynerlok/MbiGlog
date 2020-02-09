@@ -1,5 +1,4 @@
 {% extends "imagerie/base.html" %}
-{% block title %}Ma page d'accueil{% endblock %}
 
 {% block style %}
     {% load static %}
@@ -8,41 +7,45 @@
 {% endblock %}
 
 {% block content %}
-    <div id="rectangle_background">
+    <div class="main-text">
         <h2>Import photography</h2>
-        {% if envoi %}Votre image a bien été envoyé !{% endif %}
+        {% if envoi %}Your image has been uploaded !{% endif %}
 
-        <form method="post" enctype="multipart/form-data" action="{% url "img_import" %}">
-            {% csrf_token %}
-            {{ formset.management_form }}
-            <table id="forms-table">
-                <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Plant Organ</th>
-                    <th>Background Type</th>
-                    <th>Remove</th>
-                </tr>
-                </thead>
-                <tbody id="forms">
-                {% for form in formset %}
-                    <tr id="tr-id_form-{{ forloop.counter0 }}">
-                        {% for field in form %}
-                            <td>
-                                <label for="{{ field.id_for_label }}"></label> {{ field }}
-                            </td>
+        <form method="post" enctype="multipart/form-data" action="{% url "img_home" %}">
+            <div id="rectangle_background">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                <table id="forms-table">
+                    <thead>
+                    <tr>
+                        {% for field in formset.empty_form %}
+                            <th{% if forloop.counter0 == 0 %} id="first-head"{% endif %}>{{ field.label }}</th>
                         {% endfor %}
-                        <td>
-                            <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
-                        </td>
+                        <th id="last-head">Remove</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <button type="submit" value="Submit">Upload</button>
-            <input type="button" value="Add More" id="add_more">
-        </form>
+                    </thead>
+                    <tbody id="forms">
+                    {% for form in formset %}
+                        <tr id="tr-id_form-{{ forloop.counter0 }}">
+                            {% for field in form %}
+                                <td{% if forloop.counter0 == 0 %} id="first-bottom"{% endif %}>
+                                    <label for="{{ field.id_for_label }}"></label> {{ field }}
+                                </td>
+                            {% endfor %}
+                            <td id="last-bottom">
+                                <button id="remove-id_form-0" type="button" class="remove_btn">Remove</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
+            <div class="buttons">
+                <button type="submit" value="Submit">Upload</button>
+                <input type="button" value="Add {{ row_name }}" id="add_more">
+            </div>
+        </form>
         <table style="display:none">
             <tbody id="empty_form">
             <tr id="tr-id_form-__prefix__">
@@ -57,6 +60,7 @@
             </tr>
             </tbody>
         </table>
+
     </div>
 
 {% endblock %}

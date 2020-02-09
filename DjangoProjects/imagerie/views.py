@@ -1,18 +1,8 @@
-from django.contrib import messages
 from django.forms import formset_factory
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import ImportImageForm
-from .models import Request, AlexNet
-
-
-# Create your views here.
-def home(request):
-    messages.debug(request, "debug")
-    messages.success(request, "You successfully came here")
-    messages.warning(request, "WARNING")
-    return render(request, "imagerie/home.html", locals())
+from .models import Request, AlexNet, Specie
 
 
 def import_image(request):
@@ -32,13 +22,28 @@ def import_image(request):
                 else:
                     cnns[submitted.plant_organ, submitted.background_type].append(submitted)
             for plant_organ, background_type in cnns:
-                alex = AlexNet.objects.get(specialized_organ=plant_organ, specialized_background=background_type)
+                alex = AlexNet.objects.filter(specialized_organ=plant_organ,
+                                              specialized_background=background_type).order_by('-date').first()
                 alex.classify(cnns[plant_organ, background_type])
             envoi = True
+            return redirect('img_view_predictions', r.pk)
     else:
         formset = ImageFormSet()
     return render(request, "imagerie/import_image.html", locals())
 
 
-def success(request):
-    return HttpResponse('successfully uploaded')
+def view_predictions(request, id_request):
+    r = Request.objects.get(pk=id_request)
+    return render(request, "imagerie/view_predictions.html", locals())
+
+
+def specie_detail(request, specie_slug):
+    specie = get_object_or_404(Specie, slug=specie_slug)
+    image = specie.groundtruthimage_set.filter(background_type__name__contains='Natural').first()
+    taxons = [specie]
+    taxon = specie
+    while taxon.sup_taxon:
+        taxons.append(taxon.sup_taxon)
+        taxon = taxon.sup_taxon
+    taxons.reverse()
+    return render(request, "imagerie/specie_info.html", locals())
