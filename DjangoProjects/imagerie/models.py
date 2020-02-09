@@ -136,7 +136,6 @@ class Request(models.Model):
 
 class CNN(ImageClassifier):
     checkpoint_dir = models.FilePathField(allow_folders=True, null=True)
-    classes = models.ManyToManyField(Specie, through="Class", related_name='+')
     available = models.BooleanField(default=False)
     specialized_organ = models.ForeignKey('PlantOrgan', on_delete=models.PROTECT, null=True, default=None)
     specialized_background = models.ForeignKey('BackgroundType', on_delete=models.PROTECT, null=True, default=None)
@@ -183,7 +182,6 @@ class CNN(ImageClassifier):
         specie_to_counter = {}
         self.save()  # allow to create ref to CNN in classes
         nb_class = species.count()
-        self.classes.all().delete()
         for i in range(nb_class):
             specie = Specie.objects.get(latin_name=species[i]['specie__name'])
             try:
@@ -279,8 +277,11 @@ class CNN(ImageClassifier):
 
 class Class(models.Model):
     pos = models.IntegerField()
-    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE)
+    cnn = models.ForeignKey(CNN, on_delete=models.CASCADE, related_name='classes')
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.specie.name + ' => ' + str(self.pos)
 
 
 class Prediction(models.Model):
