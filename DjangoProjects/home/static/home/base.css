@@ -128,7 +128,7 @@ header h1 a {
     background-color: #d1e0b3;
 }
 
-.menu {
+.menu:hover {
     display: block;
 }
 
