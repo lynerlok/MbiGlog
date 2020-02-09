@@ -7,10 +7,8 @@
 {% block title-page %} - Metabolomics{% endblock %}
 
 {% block style %}
-{% endblock %}
-
-{% block content %}
-
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "metabo/metabo.css" %}">
 {% endblock %}
 
 {% block info-goal %}
