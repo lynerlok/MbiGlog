@@ -198,8 +198,8 @@ class CNN(ImageClassifier):
 
         for image in images.iterator():
             if image.specie in specie_to_pos:
-                data_images.append(images.preprocess())
-                data_labels.append(specie_to_pos[images.specie])
+                data_images.append(image.preprocess())
+                data_labels.append(specie_to_pos[image.specie])
 
         data_images_np = np.array(data_images)
         data_labels_np = np.array(data_labels)
