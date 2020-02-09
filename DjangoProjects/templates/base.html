@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>PB - {% block title %}{% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static "home/base.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static " home
+    /base.css" %}">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
@@ -12,36 +13,41 @@
     {% endblock %}
 </head>
 <body>
-    <header>
-        <div  class="hover-menu">
-            <h1><a href="{% url "home" %}">Plant Bioinformatics{% block title-page %}{% endblock %}</a></h1>
-        </div>
-        {% block menu %}
-        <ul class="menu">
-            <li><a href="{% url "img_home" %}">Imaging</a>
-            <li><a href="{% url "ngs_home" %}">NGS</a>
-            <li><a href="{% url "mtb_home" %}">Metabolomics</a>
-            <li><a href="{% url "prt_home" %}">Proteomics</a>
-        {% endblock %}
-        </ul>
-    </header>
+<header>
+    <div class="hover-menu">
+        <h1><a href="{% url " home" %}">Plant Bioinformatics{% block title-page %}{% endblock %}</a></h1>
+    </div>
+    {% block menu %}
+    <ul class="menu">
+        <li><a href="{% url " img_home" %}">Imaging</a>
+        <li><a href="{% url " ngs_home" %}">NGS</a>
+        <li><a href="{% url " mtb_home" %}">Metabolomics</a>
+        <li><a href="{% url " prt_home" %}">Proteomics</a>
+            {% endblock %}
+    </ul>
+</header>
 
-    <main>
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+<main>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li
+        {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
+    <div class="main-text">
         {% block content %}
         {% endblock %}
+    </div>
 
-        {% block nav %}
-        {% endblock %}
-    </main>
 
-    <footer>Project realised by students from Bordeaux's Master of Bioinformatics, within the Software Engineering course</footer>
+    {% block nav %}
+    {% endblock %}
+</main>
+
+<footer>Project realised by students from Bordeaux's Master of Bioinformatics, within the Software Engineering course
+</footer>
 </body>
 </html>
