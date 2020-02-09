@@ -40,6 +40,7 @@ def view_predictions(request, id_request):
 def specie_detail(request, specie_slug):
     specie = get_object_or_404(Specie, slug=specie_slug)
     image = specie.groundtruthimage_set.filter(background_type__name__contains='Natural').first()
+    url = image.image.path.replace('/media/Datas/MbiGlog/media/', '')
     taxons = [specie]
     taxon = specie
     while taxon.sup_taxon:
