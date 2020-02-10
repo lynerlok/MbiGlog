@@ -96,7 +96,7 @@ button {
 }
 
 
-.cy-visu {
+#cy-visu {
     position: relative;
     width: 60vw;
     height: 65vh;
