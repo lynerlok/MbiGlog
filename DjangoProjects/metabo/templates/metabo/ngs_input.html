@@ -7,7 +7,7 @@
 {% block content %}
     <h1>Load NGS File</h1>
 
-    <form class="box" id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
+    <div class="box">
 
         <fieldset>
             <h2>Please load a file</h2>
@@ -16,14 +16,6 @@
                 {{ ngs_data_form }}
                 <input class="submit" type="submit" value="Submit">
             </form>
-            <br>
-            <br>
-            <form action="{% url 'mtb_ngs' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ gene_data_form }}
-                <input class="submit" type="submit" value="Submit">
-            </form>
-
         </fieldset>
-    </form>
+    </div>
 {% endblock %}
