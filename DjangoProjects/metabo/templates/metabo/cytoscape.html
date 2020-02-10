@@ -7,18 +7,14 @@
 {% load static %}
 
 {% block content %}
-    <div class="cy" id="cy"></div>
+    <div id="cy-visu"></div>
     <script src="{% static "metabo/cytoscape.umd.js" %}"></script>
 
-    <h1></h1>
-
     {# TODO #}
-    <form class="box" id="geneID" name="geneID" enctype="multipart/form-data" method="post">
-        <form action="{% url 'mtb_graph' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ gene_data_form }}
-            <input type="submit" value="Submit gene(s)">
-        </form>
+    <form action="{% url 'mtb_graph' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ gene_data_form }}
+        <input type="submit" value="Submit gene(s)">
     </form>
 
     <div class="menu-visu">
