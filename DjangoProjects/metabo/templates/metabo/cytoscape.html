@@ -14,7 +14,7 @@
     <form action="{% url 'mtb_graph' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ gene_data_form }}
-        <input type="submit" value="Submit gene(s)">
+        <input class="button-input" type="submit" value="Submit gene(s)">
     </form>
 
     <div class="menu-visu">
