@@ -4,57 +4,10 @@
     Load NGS Data
 {% endblock %}
 
-    {% block nav %}
-        <nav>
-            <ul>
-                <li class="activated"><a href="{% url "mtb_home" %}">Metabolics Home</a></li>
-                <li class="activated"><a href="{% url "mtb_ngs" %}">Load NGS data</a></li>
-                <li class="activated"><a href="{% url "mtb_visu" %}">Visualize Gene Networks</a></li>
-                <li class="activated"><a href="{% url "mtb_graph" %}">Visualize Pathways</a></li>
-            </ul>
-        </nav>
-
-    {% endblock %}
-
-{% block style %}
-    <style>
-        html {
-            height : 100%;
-            background: linear-gradient(#78ab8d, #10361f);
-            color: white;
-            font-family : Verdana, Geneva, sans-serif;
-        }
-
-        .box {
-            text-align: center;
-            background-color : rgba(255,255,255,.2);
-            margin : auto;
-            width : 45%;
-            height: 100%;
-        }
-
-        .cy{
-            width: 85%;
-            height: 65%;
-            position:absolute;
-            top: 20%;
-            left: 7.5%;
-            border: solid black;
-            background-color: white;
-        }
-
-        .bottom{
-            position: absolute;
-            left: 45%;
-            bottom : 3%;
-        }
-
-    </style>
-{% endblock %}
 
 {% block content %}
 
-    <h1 style="text-align: center; text-shadow :2px 2px 4px black;">Load NGS File</h1>
+    <h1>Load NGS File</h1>
 
     <form class="box" id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
         <fieldset>
