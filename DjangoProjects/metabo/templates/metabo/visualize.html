@@ -4,45 +4,6 @@
     Compute gene networks
 {% endblock %}
 
-{% block style %}
-    <style>
-        html {
-            height : 100%;
-            background: linear-gradient(#78ab8d, #10361f);
-            color: white;
-            font-family : Verdana, Geneva, sans-serif;
-        }
-
-        .box {
-            text-align: center;
-            background-color : rgba(255,255,255,.2);
-            margin : auto;
-            width : 45%;
-            height: 100%;
-        }
-
-        .cy{
-            width: 75%;
-            height: 65%;
-            position: absolute;
-            top: 350px;
-            right: 0%;
-            border: solid black;
-            background-color: white;
-        }
-
-        .menu{
-            position: absolute;
-            width: 20%;
-            height: 64.5%;
-            top: 350px;
-            left : 3%;
-            background-color: linear-gradient(#78ab8d, #10361f);
-            color: white;
-        }
-
-    </style>
-{% endblock %}
 {% load static %}
 
 {% block content %}
@@ -62,7 +23,7 @@
         </fieldset>
     </form>
 
-    <div class="cy" id="cy"></div>
+    <div class="cy-visu"></div>
 
     <script>
 

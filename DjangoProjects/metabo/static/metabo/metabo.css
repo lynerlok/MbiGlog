@@ -95,3 +95,24 @@ button {
     left: 45%;
     bottom: 3%;
 }
+
+
+.cy-visu {
+    width: 75%;
+    height: 65%;
+    position: absolute;
+    top: 350px;
+    right: 0%;
+    border: solid black;
+    background-color: white;
+}
+
+.menu {
+    position: absolute;
+    width: 20%;
+    height: 64.5%;
+    top: 350px;
+    left: 3%;
+    background-color: linear-gradient(#78ab8d, #10361f);
+    color: white;
+}
