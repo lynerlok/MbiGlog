@@ -66,6 +66,17 @@
 
     <h1 style="text-align: center" id="title"></h1>
 
+    {# TODO #}
+    <form class="box" id="geneID" name="geneID" enctype="multipart/form-data" method="post">
+        <fieldset>
+            <form action="{% url 'mtb_graph' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ gene_data_form }}
+                <input type="submit" value="Submit gene(s)">
+            </form>
+        </fieldset>
+    </form>
+
     <div class="menu" id="menu">
       <h1>Pathways<br>visualization</h1>
       <div class="selects" id="selects">
