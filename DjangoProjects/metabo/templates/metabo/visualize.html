@@ -21,11 +21,13 @@
     <div id="cy-visu"></div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var cy = cytoscape({
+                container: document.getElementById('cy-visu')
+            });
+            var gene_path = "{% static 'metabo/geneTMP.txt' %}";
+        })
 
-        var cy = cytoscape({
-            container: document.getElementById('cy-visu')
-        });
-        var gene_path = "{% static 'metabo/geneTMP.txt' %}";
 
     </script>
     <div class="menu-visu">
