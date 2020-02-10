@@ -98,19 +98,21 @@ button {
 
 
 .cy-visu {
-    width: 75%;
-    height: 65%;
-    position: absolute;
-    top: 350px;
-    right: 0%;
+    position: relative;
+    width: 60vw;
+    height: 65vh;
+    margin-right: auto;
+    margin-left: auto;
     border: solid black;
     background-color: white;
+    bottom: -5vh;
 }
 
 .menu-visu {
     position: absolute;
     width: 15%;
-    top: 0vh;
+    top: 50%;
+    transform: translateY(-50%);
     margin: 30px;
     left: 80%;
     background-color: rgba(255,255,255,.8);
