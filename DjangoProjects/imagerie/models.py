@@ -161,7 +161,7 @@ class CNN(ImageClassifier):
         self.nn_model.fit(self.train_ds, epochs=50, verbose=2,
                           callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_ds, verbose=1)
-        self.accuracy = accuracy
+        self.accuracy = float(accuracy)
         print(accuracy)
         self.available = True
         self.save()
