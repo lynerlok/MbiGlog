@@ -4,7 +4,7 @@ GALLARDO Jean Clément
 LECOMTE Maxime
 LAPORTE Antoine
 MERCHADOU Kévin
-GALLARDO Jean-Clément
+PREVOT Yann
 """
 
 from django.shortcuts import render, redirect
