@@ -167,7 +167,8 @@ def phylo_hub(request):
         rna_list.file = rna_list_request.cleaned_data['file_field']
         email = rna_list_request.cleaned_data['email_field']
         rna_list.save()
-        rna_list_path = settings.MEDIA_ROOT + 'ngs/tree/test.txt'
+        rna_list_path = settings.MEDIA_ROOT + 'ngs/tree/' + email  + '.txt'
+        preprocess = subprocess.Popen(["touch" + rna_list_path])
         rna_list = open(rna_list_path)
         script = settings.BASE_DIR + '/ngs/getSeq.py'
         output = settings.MEDIA_ROOT + 'ngs/fasta'
@@ -258,7 +259,7 @@ def phylo_tree(request):
         tree.save()
         script = settings.BASE_DIR + '/ngs/simple_phylogeny.py'
         output = settings.MEDIA_ROOT + '/ngs/tree_result'
-        tool = subprocess.Popen(['python', script, '--email', tree.mail, '--outfile', 'tree', tree.file.path],
+        tool = subprocess.Popen(['python', script, '--email', tree.mail, '--outfile','tree', tree.file.path],
                                 close_fds=True, cwd=output)
         tool.communicate()
         tool.communicate()
