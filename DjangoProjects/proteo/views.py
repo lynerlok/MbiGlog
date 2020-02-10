@@ -27,7 +27,7 @@ def get_fasta(name):
 def clean_media():
     print("Clean succesful")
     cwd = os.getcwd();
-    if (len([name for name in os.listdir(cwd+"/DjangoProjects/media/") if os.path.isfile(name)])>=10):
+    if (len([name for name in os.listdir(cwd+"/media/") if os.path.isfile(name)])>=10):
         shellscript = subprocess.Popen([cwd+"/DjangoProjects/proteo/clean_media_PDB.sh"], stdin=subprocess.PIPE)
         returncode = shellscript.returncode
         return returncode
