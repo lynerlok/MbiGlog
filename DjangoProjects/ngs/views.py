@@ -167,8 +167,8 @@ def phylo_hub(request):
         rna_list.file = rna_list_request.cleaned_data['file_field']
         email = rna_list_request.cleaned_data['email_field']
         rna_list.save()
-        rna_list_path = settings.MEDIA_ROOT + 'ngs/tree/test.txt'
-        rna_list = open(rna_list_path)
+        rna_list_path = settings.MEDIA_ROOT + 'ngs/tree/data_test_phylo.txt'
+        rna_list = open(rna_list.file.path)
         script = settings.BASE_DIR + '/ngs/getSeq.py'
         output = settings.MEDIA_ROOT + 'ngs/fasta'
 
