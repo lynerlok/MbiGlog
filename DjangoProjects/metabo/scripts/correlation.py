@@ -1,4 +1,11 @@
-import csv
+"""
+ANDRÉ Charlotte
+GALLARDO Jean Clément
+LECOMTE Maxime
+LAPORTE Antoine
+MERCHADOU Kévin
+PREVOT Yann
+"""
 import pandas as pd
 
 def reader(data):
