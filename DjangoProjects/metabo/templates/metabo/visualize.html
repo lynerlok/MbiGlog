@@ -18,11 +18,11 @@
         <br>
     </form>
 
-    <div id="cy-visu"></div>
+    <div id="cy"></div>
 
     <script>
         var cy = cytoscape({
-            container: document.getElementById('cy-visu')
+            container: document.getElementById('cy')
         });
         var gene_path = "{% static 'metabo/geneTMP.txt' %}";
     </script>
