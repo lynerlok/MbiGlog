@@ -12,13 +12,12 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 
-    <h1>Compute gene networks</h1>
-
     <form class="box" id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
         <h2>Compute a Gene Network from a JSON </h2>
         <input type='file' id='fileinput' accept="application/JSON">
         <input type='button' id='btnLoad' value='Compute from JSON file' onclick='loadFile();'>
         <input type="button" onclick="readFile(gene_path)" value="Compute NGS loaded file"/>
+        <br>
     </form>
 
     <div class="cy-visu"></div>
