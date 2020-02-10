@@ -6,16 +6,9 @@
 
 {% block title-page %} - NGS{% endblock %}
 
-{% block nav %}
-
-{% endblock %}
-
 {% block style %}
-
-{% endblock %}
-
-{% block content %}
-
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "ngs/ngs.css" %}">
 {% endblock %}
 
 {% block info-goal %}

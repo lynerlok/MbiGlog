@@ -1,31 +1,35 @@
 {% extends 'imagerie/base.html' %}
 
 {% block content %}
-<table id="rectangle_background">
-    <thead id="forms-table">
-    <tr>
-        <th>Images</th>
-        <th>Prediction</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for image in r.submitted_images.all %}
-    <tr>
-        <td><img src="{{ image.image.url }}" alt="{{ image.image.path }}"></td>
-        <td>
-            <ul>
-                {% for prediction in image.prediction_set.all %}
-                <li>
-                    <a href="{% url 'img-specie-detail'  prediction.specie.slug %}">{{ prediction.specie }}</a>
-                    :
-                    <em>{{ prediction.confidence }} %</em>
-                </li>
-                {% endfor %}
-            </ul>
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <div id="rectangle_background">
+
+        <table id="forms-table">
+            <thead>
+            <tr>
+                <th id="first-head">Images</th>
+                <th id="last-head">Prediction</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for image in r.submitted_images.all %}
+                <tr>
+                    <td><img src="{{ image.image.url }}" alt="{{ image.image.path }} height=" 200px""></td>
+                    <td>
+                        <ul>
+                            {% for prediction in image.prediction_set.all %}
+                                <li>
+                                    <a href="{% url 'img-specie-detail'  prediction.specie.slug %}">{{ prediction.specie }}</a>
+                                    :
+                                    <em>{{ prediction.confidence }} %</em>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
 
 {% endblock %}

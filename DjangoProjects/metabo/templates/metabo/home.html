@@ -1,54 +1,12 @@
 {% extends "metabo/base.html" %}
 
-{% block title %}
-    cytoscape
-{% endblock %}
-
-{% block style %}
-    <style>
-        html {
-            height : 100%;
-            background: linear-gradient(#78ab8d, #10361f);
-            color: white;
-            font-family : Verdana, Geneva, sans-serif;
-        }
-
-        h2 {
-            font-size: 36px;
-            text-align: center;
-            text-shadow :2px 2px 4px black;
-        }
-
-        .center {
-            font-size: 24px;
-            text-align: center;
-        }
-
-        .centerimg {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 40%;
-        }
-    </style>
-
-{% endblock %}
-
-    {% block nav %}
-        <nav>
-            <ul>
-                <li class="activated"><a href="{% url "mtb_home" %}">Metabolics Home</a></li>
-                <li class="activated"><a href="{% url "mtb_ngs" %}">Load NGS data</a></li>
-                <li class="activated"><a href="{% url "mtb_visu" %}">Visualize Gene Networks</a></li>
-                <li class="activated"><a href="{% url "mtb_graph" %}">Visualize Pathways</a></li>
-            </ul>
-        </nav>
-
-    {% endblock %}
-
 
 {% block content %}
     <h2>Welcome in the Metabolic's section!</h2>
-    <img class="centerimg" src="https://www.broadinstitute.org/files/styles/landing_page/public/landing-page/featured/image/Metabolomics_385x300.png?itok=U2x-xAcI" alt="Metabolics"></br>
-    <div class="center">You are able to <a href="{% url "mtb_ngs" %}">load data files</a> and get representations of it's <a href="{% url "mtb_graph" %}">Gene network</a> or <a href="{% url "mtb_visu" %}">Pathways</a>.</div>
+    <img class="centerimg"
+         src="https://www.broadinstitute.org/files/styles/landing_page/public/landing-page/featured/image/Metabolomics_385x300.png?itok=U2x-xAcI"
+         alt="Metabolics"></br>
+    <div class="center">You are able to <a href="{% url "mtb_ngs" %}">load data files</a> and get representations of
+        it's <a href="{% url "mtb_graph" %}">Gene network</a> or <a href="{% url "mtb_visu" %}">Pathways</a>.
+    </div>
 {% endblock %}
