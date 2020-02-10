@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -18,3 +20,4 @@ urlpatterns = [
     path('phylo_hub/tree', views.phylo_tree, name="phylogenic compute tree"),
     path('phylo_hub/visu', views.phylo_visu, name="phylogenic visualization")
 ]
+

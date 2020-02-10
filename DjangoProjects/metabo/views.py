@@ -34,7 +34,7 @@ def upload_ngs_file(request):
             result_correlation = co.corrPearson(dic)
             correlDict = co.translateMatrix(result_correlation)
             output = co.meltDict(correlDict, 0.9)
-            co.saveResult(output, "home/static/metabo/geneTMP.txt")
+            co.saveResult(output, settings.STATIC_ROOT+"metabo/geneTMP.txt")
             output = json.dumps(output)
             return render(request, 'metabo/visualize.html', locals())
     else:

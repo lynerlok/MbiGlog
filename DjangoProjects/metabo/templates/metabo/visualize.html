@@ -6,10 +6,6 @@
 
 {% block content %}
     {% load static %}
-    <script src="{% static "metabo/visualize.js" %}"></script>
-    <script src="{% static "metabo/cytoscape.umd.js" %}"></script>
-
-
     <form class="box" id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
         <h2>Compute a Gene Network from a JSON </h2>
         <input type='file' id='fileinput' accept="application/JSON">
@@ -21,15 +17,15 @@
     <div id="cy-visu"></div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("load", function () {
             var cy = cytoscape({
                 container: document.getElementById('cy-visu')
             });
             var gene_path = "{% static 'metabo/geneTMP.txt' %}";
         })
-
-
     </script>
+    <script src="{% static "metabo/visualize.js" %}"></script>
+    <script src="{% static "metabo/cytoscape.umd.js" %}"></script>
     <div class="menu-visu">
         <label for="gene-select">Select a gene :</label><br>
         <select name="genes" id="gene-select"></select></br></br>
