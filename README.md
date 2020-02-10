@@ -50,10 +50,18 @@ Here all instructions to install and run the server :
 
 18. OPTIONAL : To use the main database server rename DjangoProjects/glogServer/settings.py.prod into settings.py (make your backup before)
 
-19. Make a pull request on Github if your test is conclusive.
+19. Add an upstream to test with my latest commit : git remote add upstream https://github.com/lynerlok/lynerlok/MbiGlog.git
 
-20. Be patient, I will process your request as soon as possible.
+20. Update your repo with : git pull upstream master
 
-21. Your request is added to the main code !
+21. Remove conflicts
 
-## NOTE : TO update forked repository please make a pull request between this repo and your repo !
+22. Continue to perform your test !
+
+23. Make a pull request on Github if your test is conclusive.
+
+24. Be patient, I will process your request as soon as possible.
+
+25. Your request is added to the main code !
+
+## NOTE : TO update forked repository please make a pull request between this repo and your repo ! (see 19,20,21)
