@@ -7,12 +7,14 @@
 {% block content %}
     <h1>Load NGS File</h1>
 
-    <div class="box">
-            <h2>Please load a file</h2>
-            <form action="{% url 'mtb_ngs' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ ngs_data_form }}
-                <input class="submit" type="submit" value="Submit">
-            </form>
-    </div>
+
+    <h2>Please load a file</h2>
+    <form action="{% url 'mtb_ngs' %}" method="post" enctype="multipart/form-data">
+        <div class="box">
+            {% csrf_token %}
+            {{ ngs_data_form }}
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+
 {% endblock %}
