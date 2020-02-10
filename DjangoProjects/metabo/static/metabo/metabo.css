@@ -119,21 +119,8 @@ button {
     border-radius: 15px;
 }
 
-#cy {
-    position: relative;
-    width: 80%;
-    height: 88.3%;
-    left: 20%;
-    bottom: 0;
-    background-color: white;
-}
 
-.selects {
+.submit-genes {
     position: relative;
-    left: 5%;
-}
-
-.buttons {
-    display: flex;
-    justify-content: center;
+    bottom: -7vh;
 }
