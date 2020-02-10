@@ -42,12 +42,7 @@ def view_predictions(request, id_request):
 
 def specie_detail(request, specie_slug):
     specie = get_object_or_404(Specie, slug=specie_slug)
-    max_id = specie.groundtruthimage_set.all().aggregate(max_id=Max("id"))['max_id']
-    while True:
-        pk = random.randint(1, max_id)
-        image = specie.groundtruthimage_set.get(id=pk)
-        if image:
-            break
+    image = specie.groundtruthimage_set.order_by('?').first()
     url = image.image.path.replace('/media/Datas/MbiGlog/DjangoProjects/media', '')
     taxons = [specie]
     taxon = specie
