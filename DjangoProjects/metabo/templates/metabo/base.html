@@ -4,6 +4,10 @@
     Metabolomics
 {% endblock %}
 
+{% block security-metabo %}
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+{% endblock %}
+
 {% block title-page %} - Metabolomics{% endblock %}
 
 {% block nav %}
@@ -27,7 +31,7 @@
 {% endblock %}
 
 {% block info-authors %}
-Charlotte ANDRE - Maxime LECOMTE<br>
-Jean-Clement GAILLARDO - Kevin MERCHADOU<br>
-Antoine LAPORTE - Yann PREVOT
+    Charlotte ANDRE - Maxime LECOMTE<br>
+    Jean-Clement GAILLARDO - Kevin MERCHADOU<br>
+    Antoine LAPORTE - Yann PREVOT
 {% endblock %}
