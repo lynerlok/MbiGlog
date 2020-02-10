@@ -33,7 +33,7 @@
 #navigation-bar ul {
     padding: 0px;
     position: absolute;
-    transform: translateY(-70%);
+    top: 25vh;
 }
 
 #navigation-bar li a:hover {
@@ -58,6 +58,7 @@
     background: #ebece9;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.4);
     border-radius: 15px;
+    padding: 20px;
 }
 
 .button-input {
