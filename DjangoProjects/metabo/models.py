@@ -147,7 +147,8 @@ class Enzyme(models.Model):
     def create_enzyme_metabolite():
         """
             1. Link enzyme to gene
-            2. associate metabolite to one enzyme via uniprot.
+            2. Link enzyme to reaction
+            3. Link enzyme to compartment
         """
         for pwy in Pathway.objects.all():
             name = pwy.name
@@ -230,7 +231,8 @@ class Metabolite(models.Model):
         """ 
             Create metabolite from biocyc.
             Using intersection method to know which metabolites are in input and which are in output.
-            Compare two reactions.            
+            Compare two reactions.
+            Link metabolites to reaction
         """
         for pwy in Pathway.objects.all():
             reactions = pwy.reactions.all()
