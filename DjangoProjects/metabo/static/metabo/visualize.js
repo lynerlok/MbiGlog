@@ -31,7 +31,7 @@ function loadFile() {
 
         cy = cytoscape(
             {
-                container: document.getElementById('cy'),
+                container: document.getElementById('cy-visu'),
                 elements: obj,
                 style: [ // the stylesheet for the graph
                     {
