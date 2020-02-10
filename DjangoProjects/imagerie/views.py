@@ -1,3 +1,6 @@
+import random
+
+from django.db.models import Max
 from django.forms import formset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -39,7 +42,9 @@ def view_predictions(request, id_request):
 
 def specie_detail(request, specie_slug):
     specie = get_object_or_404(Specie, slug=specie_slug)
-    image = specie.groundtruthimage_set.filter(background_type__name__contains='Natural').first()
+    max_id = specie.groundtruthimage_set.all().aggregate(max_id=Max("id"))['max_id']
+    pk = random.randint(1, max_id)
+    image = specie.groundtruthimage_set.get(pk=pk)
     url = image.image.path.replace('/media/Datas/MbiGlog/DjangoProjects/media', '')
     taxons = [specie]
     taxon = specie
