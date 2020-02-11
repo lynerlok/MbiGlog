@@ -158,7 +158,7 @@ class CNN(ImageClassifier):
                                                          verbose=1, period=2)
 
         self.nn_model.save_weights(checkpoint_path.format(epoch=0))
-        self.nn_model.fit(self.train_ds, epochs=50, verbose=2,
+        self.nn_model.fit(self.train_ds, epochs=4, verbose=2,
                           callbacks=[cp_callback])
         _, accuracy = self.nn_model.evaluate(self.test_ds, verbose=1)
         self.accuracy = float(accuracy)
@@ -214,13 +214,13 @@ class CNN(ImageClassifier):
         def train_generator():
             i = 0
             xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
-                                                                                    dtype=np.int8)
+                                                                                    dtype=np.float_)
             for image in train_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
                     xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
-                                                                                            dtype=np.int8)
+                                                                                            dtype=np.float_)
 
                     i = 0
                 xs[i] = image.preprocess()
@@ -229,20 +229,20 @@ class CNN(ImageClassifier):
         def test_generator():
             i = 0
             xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
-                                                                                    dtype=np.int8)
+                                                                                    dtype=np.float_)
             for image in test_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
                     xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
-                                                                                            dtype=np.int8)
+                                                                                            dtype=np.float_)
                     i = 0
                 xs[i] = image.preprocess()
                 ys[i] = tf.keras.utils.to_categorical(specie_to_pos[image.specie], nb_class)
 
-        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float64, tf.int8),
+        self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float64, tf.float64),
                                                        ((batch_size, 224, 224, 3), (batch_size, nb_class)))
-        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float32, tf.float32),
+        self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float64, tf.float64),
                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)))
 
     def classify(self, images: List):
