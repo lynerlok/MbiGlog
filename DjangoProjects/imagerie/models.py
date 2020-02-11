@@ -213,37 +213,37 @@ class CNN(ImageClassifier):
 
         def train_generator():
             i = 0
-            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros(batch_size,
                                                                                     dtype=np.float_)
             for image in train_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
-                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros(batch_size,
                                                                                             dtype=np.float_)
 
                     i = 0
                 xs[i] = image.preprocess()
-                ys[i, specie_to_pos[image.specie]] = 1
+                ys[i] = specie_to_pos[image.specie]
 
         def test_generator():
             i = 0
-            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+            xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros(batch_size,
                                                                                     dtype=np.float_)
             for image in test_images:
                 i += 1
                 if i == batch_size - 1:
                     yield xs, ys
-                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros((batch_size, nb_class),
+                    xs, ys = np.zeros((batch_size, 224, 224, 3), dtype=np.float_), np.zeros(batch_size,
                                                                                             dtype=np.float_)
                     i = 0
                 xs[i] = image.preprocess()
-                ys[i] = tf.keras.utils.to_categorical(specie_to_pos[image.specie], nb_class)
+                ys[i] = specie_to_pos[image.specie]
 
         self.train_ds = tf.data.Dataset.from_generator(train_generator, (tf.float64, tf.float64),
-                                                       ((batch_size, 224, 224, 3), (batch_size, nb_class)))
+                                                       ((batch_size, 224, 224, 3), batch_size))
         self.test_ds = tf.data.Dataset.from_generator(test_generator, (tf.float64, tf.float64),
-                                                      ((batch_size, 224, 224, 3), (batch_size, nb_class)))
+                                                      ((batch_size, 224, 224, 3), batch_size))
 
     def classify(self, images: List):
         # if not self.available:
@@ -365,7 +365,7 @@ class AlexNet(CNN):
 
         # Compile the self.nn_model
 
-        self.nn_model.compile(loss="categorical_crossentropy",
+        self.nn_model.compile(loss="mse",
                               optimizer="adam",
                               metrics=["accuracy"])
 
