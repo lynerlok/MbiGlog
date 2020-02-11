@@ -79,16 +79,6 @@ button {
     display: none;
 }
 
-.cy {
-    width: 85%;
-    height: 65%;
-    position: absolute;
-    top: 20%;
-    left: 7.5%;
-    border: solid black;
-    background-color: white;
-}
-
 .bottom {
     position: absolute;
     left: 45%;
@@ -97,13 +87,13 @@ button {
 
 
 #cy {
+    text-align: justify;
     position: relative;
-    width: 60vw;
-    height: 65vh;
+    width: 60%;
+    height: 65%;
     margin-right: auto;
     margin-left: auto;
     border: solid black;
-    background-color: white;
     bottom: -5vh;
 }
 
